@@ -54,9 +54,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Spike Mark", group="Robot")
+@Autonomous(name="Sample Auto", group="Robot")
 // @Disabled
-public class SpikeMark extends LinearOpMode {
+public class SampleAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime     runtime = new ElapsedTime();
@@ -66,22 +66,16 @@ public class SpikeMark extends LinearOpMode {
     public DcMotor backRightMotor = null;
 
     public DcMotor elevatorMotor = null;
-    
-    public DcMotor rightWinchMotor = null;
-    public DcMotor leftWinchMotor = null;
 
     
-    public Servo bucketServo = null;
+    public Servo clawServo = null;
 
 
 
-    // Intake
-    public boolean isIntakeOn = false;
-    public boolean isIntakePressed = false;
 
 
-    // Winch
-    public int targetWinchPosition;
+
+
 
     // Elevator
     public int targetElevatorPosition;
@@ -97,12 +91,6 @@ public class SpikeMark extends LinearOpMode {
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
 
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elevator");
-        leftWinchMotor = hardwareMap.get(DcMotor.class, "left_winch");
-        rightWinchMotor = hardwareMap.get(DcMotor.class, "right_winch");
-
-        bucketServo = hardwareMap.get(Servo.class, "bucket");
-
 
         // To drive forwareversed, because the axles point in opposite directions.
         // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -111,17 +99,7 @@ public class SpikeMark extends LinearOpMode {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftWinchMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        // ENCODER
-        leftWinchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftWinchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftWinchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
-        rightWinchMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightWinchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightWinchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -129,68 +107,11 @@ public class SpikeMark extends LinearOpMode {
         elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-
-
-
-
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-
-        runtime.reset();
-        MoveWinch(MotorPositions.FOLD_OUT_INTAKE__WINCH_POSITION);
-
-        while (runtime.seconds() < 2) {
-            bucketServo.setPosition(MotorPositions.BUCKET_UP_POSITION);
-        }
-
-        runtime.reset();
-        while (runtime.seconds() < 0.25) {
-            MoveRobot(0, 1, 0);
-        }
-        MoveRobot(0, 0, 0);
-
-        runtime.reset();
-        while (runtime.seconds() < 0.2) {
-
-        }
-
-        runtime.reset();
-        while (runtime.seconds() < 1.5) {
-            MoveWinch(MotorPositions.WINCH_HOVER_POSITION);
-        }
-
-        runtime.reset();
-        while (runtime.seconds() < 1.25) {
-            bucketServo.setPosition(MotorPositions.BUCKET_DOWN_POSITION);
-        }
-
-        runtime.reset();
-        while (runtime.seconds() < 1.25) {
-            MoveWinch(401);
-        }
-        
-        runtime.reset();
-        while (runtime.seconds() < 2.5) {
-            bucketServo.setPosition(MotorPositions.BUCKET_UP_POSITION);
-        }
-
-        runtime.reset();
-        while (runtime.seconds() < 1.5) {
-            MoveWinch(0);
-        }
-
-        MoveWinch(0);
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-
-        sleep(30000);
     }
+
 
     private void MoveRobot(double movementX, double movementZ, double rotationY)
     {
@@ -208,34 +129,7 @@ public class SpikeMark extends LinearOpMode {
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
     }
-    private void MoveWinch(int targetWinchPosition) {
-        // Determine new target position, and pass to motor controller
-        rightWinchMotor.setTargetPosition(targetWinchPosition);
-        leftWinchMotor.setTargetPosition(targetWinchPosition);
 
-        // Turn On RUN_TO_POSITION
-        rightWinchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftWinchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftWinchMotor.setPower(MotorPositions.WINCH_POWER);
-        rightWinchMotor.setPower(MotorPositions.WINCH_POWER);
-
-        if (targetWinchPosition == MotorPositions.FOLD_OUT_INTAKE__WINCH_POSITION)
-        {
-            leftWinchMotor.setPower(MotorPositions.FOLD_OUT_INTAKE__WINCH_POWER);
-            rightWinchMotor.setPower(MotorPositions.FOLD_OUT_INTAKE__WINCH_POWER);
-        }
-
-        if (!leftWinchMotor.isBusy()) {
-            // Stop all motion;
-            rightWinchMotor.setPower(0);
-            leftWinchMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            rightWinchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftWinchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-    }
     private void MoveElevator(int targetElevatorPosition) {
         // Determine new target position, and pass to motor controller
         elevatorMotor.setTargetPosition(targetElevatorPosition);
@@ -246,13 +140,8 @@ public class SpikeMark extends LinearOpMode {
         elevatorMotor.setPower(1);
 
 
-        if (!elevatorMotor.isBusy()) {
-            // Stop all motion;
-            elevatorMotor.setPower(0);
 
-            // Turn off RUN_TO_POSITION
-            elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+
     }
 
 }
