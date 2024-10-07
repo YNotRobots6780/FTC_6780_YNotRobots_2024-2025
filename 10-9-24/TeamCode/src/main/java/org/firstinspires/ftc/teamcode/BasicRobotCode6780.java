@@ -58,13 +58,6 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor frontRightMotor;
     private DcMotor backLeftMotor;
     private DcMotor backRightMotor;
-    private DcMotor intakeMotor;
-    private DcMotor elevatorMotor;
-    private DcMotor leftWinchMotor;
-    private DcMotor rightWinchMotor;
-    private Servo bucketServo;
-    private Servo droneServo;
-
 
 
 
@@ -92,23 +85,14 @@ public class BasicRobotCode6780 extends OpMode
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake");
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elevator");
-        leftWinchMotor = hardwareMap.get(DcMotor.class, "left_winch");
-        rightWinchMotor = hardwareMap.get(DcMotor.class, "right_winch");
-        bucketServo = hardwareMap.get(Servo.class, "bucket");
-        droneServo = hardwareMap.get(Servo.class, "drone");
+
+
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftWinchMotor.setDirection(DcMotor.Direction.REVERSE);
-        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftWinchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightWinchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
@@ -156,66 +140,6 @@ public class BasicRobotCode6780 extends OpMode
 
 
 
-        if (gamepad1.a)
-        {
-            intakeMotor.setPower(INTAKE_SPEED);
-        }
-        else
-        {
-            intakeMotor.setPower(0);
-        }
-
-
-        if (gamepad1.b)
-        {
-            droneServo.setPosition(DRONRE_LAUNCH_POSITION);
-        }
-
-        if (gamepad1.dpad_down)
-        {
-            bucketServo.setPosition(BUCKET_DOWN_POSITION);
-        }
-        else if (gamepad1.dpad_left || gamepad1.dpad_right)
-        {
-            bucketServo.setPosition(BUCKET_FLAT_POSITION);
-        }
-        else  if (gamepad1.dpad_up)
-        {
-            bucketServo.setPosition(BUCKET_UP_POSITION);
-
-        }
-
-
-
-        if (gamepad1.left_trigger > 0.15)
-        {
-            leftWinchMotor.setPower(WINCH_SPEED * gamepad1.left_trigger);
-            rightWinchMotor.setPower(WINCH_SPEED * gamepad1.left_trigger);
-        }
-        else if (gamepad1.left_bumper)
-        {
-            leftWinchMotor.setPower(-WINCH_SPEED);
-            rightWinchMotor.setPower(-WINCH_SPEED);
-        }
-        else
-        {
-            leftWinchMotor.setPower(0);
-            rightWinchMotor.setPower(0);
-        }
-
-
-        if (gamepad1.right_trigger > 0.15)
-        {
-            elevatorMotor.setPower(ELEVATOR_SPEED * gamepad1.right_trigger);
-        }
-        else if (gamepad1.right_bumper)
-        {
-            elevatorMotor.setPower(-ELEVATOR_SPEED);
-        }
-        else
-        {
-            elevatorMotor.setPower(0);
-        }
 
     }
 
