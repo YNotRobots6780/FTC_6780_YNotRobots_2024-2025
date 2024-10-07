@@ -64,13 +64,6 @@ public class BasicRobotCode6780 extends OpMode
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
     private static final double MOVEMENT_SPEED = 1;
-    private static final double INTAKE_SPEED = 0.5;
-    private static final double WINCH_SPEED = 0.5;
-    private static final double ELEVATOR_SPEED = 0.75;
-    private static final double BUCKET_DOWN_POSITION = 0.75;
-    private static final double BUCKET_FLAT_POSITION = 0.475;
-    private static final double BUCKET_UP_POSITION = 0.35;
-    private static final double DRONRE_LAUNCH_POSITION = 1;
 
     // ====================================================================================================================================================================
 
