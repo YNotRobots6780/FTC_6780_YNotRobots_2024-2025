@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /*
@@ -53,13 +54,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BasicRobotCode6780 extends OpMode
 {
 
+
+
     /* Declare OpMode members. */
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor backLeftMotor;
     private DcMotor backRightMotor;
-
-
+    private DcMotor intakeMotor;
+    private DcMotor intakeLiftMotor;
+    private DcMotor elavatorMotor;
 
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
@@ -78,6 +82,16 @@ public class BasicRobotCode6780 extends OpMode
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
+        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
+
+
+        elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -85,8 +99,8 @@ public class BasicRobotCode6780 extends OpMode
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
     }
@@ -129,6 +143,72 @@ public class BasicRobotCode6780 extends OpMode
         frontRightMotor.setPower(frontRightPower * MOVEMENT_SPEED);
         backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
         backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
+
+        // a= intke b=intake up x= intake down
+
+
+
+        if(gamepad1.a)
+        {
+            intakeMotor.setPower(1);
+        }
+
+
+        if(gamepad1.b)
+        {
+            intakeLiftMotor.setPower(1);
+            intakeLiftMotor.setTargetPosition(0);
+            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        if(gamepad1.y)
+        {
+           intakeLiftMotor.setPower(1);
+            intakeLiftMotor.setTargetPosition(0);
+            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        if(gamepad1.dpad_down)
+        {
+            elavatorMotor.setPower(1);
+            elavatorMotor.setTargetPosition(0);
+            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+
+        if(gamepad1.dpad_right)
+        {
+            elavatorMotor.setPower(1);
+            elavatorMotor.setTargetPosition(0);
+            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+
+        if(gamepad1.dpad_left)
+        {
+            elavatorMotor.setPower(1);
+            elavatorMotor.setTargetPosition(0);
+            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+
+
+
+        if(gamepad1.dpad_up)
+        {
+            elavatorMotor.setPower(1);
+            elavatorMotor.setTargetPosition(0);
+            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+
+        if(gamepad1.left_bumper)
+        {
+            elavatorMotor.setPower(1);
+            elavatorMotor.setTargetPosition(0);
+            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
 
 
 
