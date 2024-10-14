@@ -33,8 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
@@ -53,6 +51,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="6780 New robot code!", group="Robot")
 public class BasicRobotCode6780 extends OpMode
 {
+    private boolean isOnOverride = false;
+    private boolean isCurrentlySwichingOverride =false;
+    private boolean firstTimeIntake = false;
+    private boolean shouldPowerIntake = false;
 
 
 
@@ -101,6 +103,8 @@ public class BasicRobotCode6780 extends OpMode
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
         elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
     }
@@ -125,94 +129,208 @@ public class BasicRobotCode6780 extends OpMode
     @Override
     public void loop() {
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
-        double z = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
-        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-        double ry = gamepad1.right_stick_x;
-
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio, but only when
-        // at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(ry), 1);
-        double frontLeftPower = (z + x + ry) / denominator;
-        double frontRightPower = (z - x - ry) / denominator;
-        double backLeftPower = (z - x + ry) / denominator;
-        double backRightPower = (z + x - ry) / denominator;
-
-        frontLeftMotor.setPower(frontLeftPower * MOVEMENT_SPEED);
-        frontRightMotor.setPower(frontRightPower * MOVEMENT_SPEED);
-        backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
-        backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
-
-        // a= intke b=intake up x= intake down
-
-
-
-        if(gamepad1.a)
+        if (gamepad2.back || gamepad1.back)
         {
-            intakeMotor.setPower(1);
+
+            if (isCurrentlySwichingOverride == false)
+            {
+                isCurrentlySwichingOverride = true;
+                if (isOnOverride == true)
+                {
+                    isOnOverride = false;
+                    elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
+                else
+                {
+                    isOnOverride = true;
+                    elavatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            }
+
         }
-
-
-        if(gamepad1.b)
+        else
         {
-            intakeLiftMotor.setPower(1);
-            intakeLiftMotor.setTargetPosition(0);
-            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        if(gamepad1.y)
-        {
-           intakeLiftMotor.setPower(1);
-            intakeLiftMotor.setTargetPosition(0);
-            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        if(gamepad1.dpad_down)
-        {
-            elavatorMotor.setPower(1);
-            elavatorMotor.setTargetPosition(0);
-            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-
-        if(gamepad1.dpad_right)
-        {
-            elavatorMotor.setPower(1);
-            elavatorMotor.setTargetPosition(0);
-            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-
-        if(gamepad1.dpad_left)
-        {
-            elavatorMotor.setPower(1);
-            elavatorMotor.setTargetPosition(0);
-            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            isCurrentlySwichingOverride = false;
         }
 
 
 
-
-        if(gamepad1.dpad_up)
+        if ( isOnOverride == true)
         {
-            elavatorMotor.setPower(1);
-            elavatorMotor.setTargetPosition(0);
-            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
+            double z = -gamepad2.left_stick_y; // Remember, Y stick is reversed!
+            double x = gamepad2.left_stick_x * 1.1; // Counteract imperfect strafing
+            double ry = gamepad2.right_stick_x;
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio, but only when
+            // at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(ry), 1);
+            double frontLeftPower = (z + x + ry) / denominator;
+            double frontRightPower = (z - x - ry) / denominator;
+            double backLeftPower = (z - x + ry) / denominator;
+            double backRightPower = (z + x - ry) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower * MOVEMENT_SPEED);
+            frontRightMotor.setPower(frontRightPower * MOVEMENT_SPEED);
+            backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
+            backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
+
+
+
+            if(gamepad2.a)
+            {
+                intakeMotor.setPower(1);
+            }
+
+            if (gamepad2.b)
+            {
+                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                intakeMotor.setPower(1);
+            }
+
+            if(gamepad2.y)
+            {
+                intakeLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                intakeMotor.setPower(1);
+                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            }
+
+            if(gamepad2.right_bumper)
+            {
+                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                elavatorMotor.setPower(1);
+            }
+
+            if (gamepad2.right_trigger > 0.5)
+            {
+                elavatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                elavatorMotor.setPower(1);
+                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            }
+
+            if(gamepad2.left_bumper)
+            {
+                elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
         }
-
-
-        if(gamepad1.left_bumper)
+        else
         {
-            elavatorMotor.setPower(1);
-            elavatorMotor.setTargetPosition(0);
-            elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
+            double z = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double ry = gamepad1.right_stick_x;
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio, but only when
+            // at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(ry), 1);
+            double frontLeftPower = (z + x + ry) / denominator;
+            double frontRightPower = (z - x - ry) / denominator;
+            double backLeftPower = (z - x + ry) / denominator;
+            double backRightPower = (z + x - ry) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower * MOVEMENT_SPEED);
+            frontRightMotor.setPower(frontRightPower * MOVEMENT_SPEED);
+            backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
+            backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
+
+            // a= intke b=intake up y= intake down
+
+
+
+            if (gamepad1.a)
+            {
+
+                if (firstTimeIntake == false)
+                {
+                    firstTimeIntake = true;
+                    if (shouldPowerIntake)
+                    {
+                        shouldPowerIntake = false;
+                    }
+                    else
+                    {
+                        shouldPowerIntake = true;
+                    }
+                }
+
+            }
+            else
+            {
+                firstTimeIntake = false;
+            }
+
+            if(shouldPowerIntake == true)
+            {
+                intakeMotor.setPower(1);
+            }
+
+            if(gamepad1.b)
+            {
+                intakeLiftMotor.setPower(1);
+                intakeLiftMotor.setTargetPosition(0);
+                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            if(gamepad1.y)
+            {
+                intakeLiftMotor.setPower(1);
+                intakeLiftMotor.setTargetPosition(0);
+                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            if(gamepad1.dpad_down)
+            {
+                elavatorMotor.setPower(1);
+                elavatorMotor.setTargetPosition(Constants.lowBucket);
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+            if(gamepad1.dpad_right)
+            {
+                elavatorMotor.setPower(1);
+                elavatorMotor.setTargetPosition(Constants.highBucket);
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+            if(gamepad1.dpad_left)
+            {
+                elavatorMotor.setPower(1);
+                elavatorMotor.setTargetPosition(Constants.lowSample);
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+
+
+            if(gamepad1.dpad_up)
+            {
+                elavatorMotor.setPower(1);
+                elavatorMotor.setTargetPosition(Constants.highSample);
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+            if(gamepad1.left_bumper)
+            {
+                elavatorMotor.setPower(1);
+                elavatorMotor.setTargetPosition(0);
+                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
         }
-
-
-
-
-
 
     }
 
