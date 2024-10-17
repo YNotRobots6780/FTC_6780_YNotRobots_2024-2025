@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
@@ -55,6 +56,10 @@ public class BasicRobotCode6780Intervew extends OpMode
     private boolean isCurrentlySwichingOverride =false;
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
+    private boolean servoOpen = false;
+    private boolean servoClosed = false;
+    private boolean servoLoopBreak = false;
+    private boolean servoFirstTime = false;
 
 
 
@@ -62,7 +67,7 @@ public class BasicRobotCode6780Intervew extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elavatorMotor;
-
+    private Servo clawOpenAndClose;
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
     private static final double MOVEMENT_SPEED = 1;
@@ -80,7 +85,7 @@ public class BasicRobotCode6780Intervew extends OpMode
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
         elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
-
+        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
 
         elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -284,11 +289,87 @@ public class BasicRobotCode6780Intervew extends OpMode
                 elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
+
+            if(servoOpen==true)
+            {
+                clawOpenAndClose.setPosition(Constants.clawOpen);
+            }
+
+
+            if (servoClosed==true)
+            {
+                clawOpenAndClose.setPosition(Constants.clawclosed);
+            }
+
         }
+
+
 
     }
 
-    /*
+
+    public void ToggleLoops()
+    {
+
+//==============================================ServoToggle=====================================================================
+        if (gamepad1.x)
+        {
+
+            if (servoFirstTime == false)
+            {
+                servoFirstTime = true;
+                if (servoFirstTime == true)
+                {
+                    servoFirstTime = false;
+
+                    servoOpen = true;
+
+                }
+                else
+                {
+                    servoClosed = true;
+                    servoFirstTime = true
+                }
+            }
+
+        }
+        else
+        {
+            servoFirstTime = false;
+        }
+
+//====================================================IntakeToggle================================================
+
+        if (gamepad1.a)
+        {
+
+            if (firstTimeIntake == false)
+            {
+                firstTimeIntake = true;
+                if (shouldPowerIntake == true)
+                {
+                    shouldPowerIntake = false;
+
+                }
+                else
+                {
+                    shouldPowerIntake = true;
+                }
+            }
+
+        }
+        else
+        {
+            firstTimeIntake = false;
+        }
+
+        if(shouldPowerIntake == true)
+        {
+            intakeMotor.setPower(1);
+        }
+
+
+        /*
      * Code to run ONCE after the driver hits STOP
      */
     @Override

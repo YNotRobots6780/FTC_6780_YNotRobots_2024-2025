@@ -7,4 +7,6 @@ public class Constants
     public final static int lowBucket  = 0;
     public final static int lowSample = 0;
     public final static int highSample = 0;
+    public final static int clawclosed =0;
+    public final static int clawOpen =0;
 }

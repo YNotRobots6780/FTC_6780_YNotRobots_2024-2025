@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
@@ -51,11 +52,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp(name="6780 New robot code!", group="Robot")
 public class BasicRobotCode6780 extends OpMode
 {
+
+  //=====================overide controll==========================================
     private boolean isOnOverride = false;
     private boolean isCurrentlySwichingOverride =false;
+
+ //====================Intake loop contoll==================================================================
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
 
+   //==============Servo loop controll========================================================================
+    private boolean servoOpen = false;
+    private boolean servoClosed = false;
+    private boolean servoLoopBreak = false;
+    private boolean servoFirstTime = false;
 
 
     /* Declare OpMode members. */
@@ -66,7 +76,7 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elavatorMotor;
-
+    private Servo clawOpenAndClose;
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
     private static final double MOVEMENT_SPEED = 1;
@@ -87,7 +97,7 @@ public class BasicRobotCode6780 extends OpMode
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
         elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
-
+        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
 
         elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -129,6 +139,7 @@ public class BasicRobotCode6780 extends OpMode
     @Override
     public void loop() {
 
+        //===============================================overideToggle===================================================
         if (gamepad2.back || gamepad1.back)
         {
 
@@ -180,7 +191,7 @@ public class BasicRobotCode6780 extends OpMode
             backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
             backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
 
-
+            ToggleLoops();
 
             if(gamepad2.a)
             {
@@ -225,6 +236,8 @@ public class BasicRobotCode6780 extends OpMode
         }
         else
         {
+            ToggleLoops();
+
             // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
             double z = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -248,32 +261,7 @@ public class BasicRobotCode6780 extends OpMode
 
 
 
-            if (gamepad1.a)
-            {
 
-                if (firstTimeIntake == false)
-                {
-                    firstTimeIntake = true;
-                    if (shouldPowerIntake)
-                    {
-                        shouldPowerIntake = false;
-                    }
-                    else
-                    {
-                        shouldPowerIntake = true;
-                    }
-                }
-
-            }
-            else
-            {
-                firstTimeIntake = false;
-            }
-
-            if(shouldPowerIntake == true)
-            {
-                intakeMotor.setPower(1);
-            }
 
             if(gamepad1.b)
             {
@@ -330,7 +318,90 @@ public class BasicRobotCode6780 extends OpMode
                 elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
+
+
+
+
+            if(servoOpen==true)
+            {
+                clawOpenAndClose.setPosition(Constants.clawOpen);
+            }
+
+
+            if (servoClosed==true)
+            {
+                clawOpenAndClose.setPosition(Constants.clawclosed);
+            }
+
         }
+
+    }
+
+
+    public void ToggleLoops()
+    {
+
+//==============================================ServoToggle=====================================================================
+        if (gamepad1.x)
+        {
+
+            if (servoFirstTime == false)
+            {
+                servoFirstTime = true;
+                if (servoFirstTime == true)
+                {
+                    servoFirstTime = false;
+
+                    servoOpen = true;
+                    servoLoopBreak = false;
+                }
+                else
+                {
+                    servoClosed = true;
+                    servoLoopBreak = true;
+                }
+            }
+
+        }
+        else
+        {
+            servoLoopBreak = false;
+
+        }
+
+//====================================================IntakeToggle================================================
+
+        if (gamepad1.a)
+        {
+
+            if (firstTimeIntake == false)
+            {
+                firstTimeIntake = true;
+                if (shouldPowerIntake == true)
+                {
+                    shouldPowerIntake = false;
+                }
+                else
+                {
+                    shouldPowerIntake = true;
+                }
+            }
+
+        }
+        else
+        {
+            firstTimeIntake = false;
+        }
+
+        if(shouldPowerIntake == true)
+        {
+            intakeMotor.setPower(1);
+        }
+
+
+
+
+
 
     }
 
