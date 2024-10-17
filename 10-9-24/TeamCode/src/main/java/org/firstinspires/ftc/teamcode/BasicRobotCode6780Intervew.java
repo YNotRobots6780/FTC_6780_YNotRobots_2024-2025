@@ -308,67 +308,51 @@ public class BasicRobotCode6780Intervew extends OpMode
     }
 
 
-    public void ToggleLoops()
-    {
+    public void ToggleLoops() {
 
 //==============================================ServoToggle=====================================================================
-        if (gamepad1.x)
-        {
+        if (gamepad1.x) {
 
-            if (servoFirstTime == false)
-            {
+            if (servoFirstTime == false) {
                 servoFirstTime = true;
-                if (servoFirstTime == true)
-                {
+                if (servoFirstTime == true) {
                     servoFirstTime = false;
 
                     servoOpen = true;
 
-                }
-                else
-                {
+                } else {
                     servoClosed = true;
-                    servoFirstTime = true
+                    servoFirstTime = true;
                 }
             }
 
-        }
-        else
-        {
+        } else {
             servoFirstTime = false;
         }
 
 //====================================================IntakeToggle================================================
 
-        if (gamepad1.a)
-        {
+        if (gamepad1.a) {
 
-            if (firstTimeIntake == false)
-            {
+            if (firstTimeIntake == false) {
                 firstTimeIntake = true;
-                if (shouldPowerIntake == true)
-                {
+                if (shouldPowerIntake == true) {
                     shouldPowerIntake = false;
 
-                }
-                else
-                {
+                } else {
                     shouldPowerIntake = true;
                 }
             }
 
-        }
-        else
-        {
+        } else {
             firstTimeIntake = false;
         }
 
-        if(shouldPowerIntake == true)
-        {
+        if (shouldPowerIntake == true) {
             intakeMotor.setPower(1);
         }
 
-
+    }
         /*
      * Code to run ONCE after the driver hits STOP
      */
