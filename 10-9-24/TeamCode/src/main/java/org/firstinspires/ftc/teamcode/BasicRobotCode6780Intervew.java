@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -52,10 +53,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="6780 New robot code!", group="Robot")
 public class BasicRobotCode6780Intervew extends OpMode
 {
+    //=====================overide controll==========================================
+
     private boolean isOnOverride = false;
     private boolean isCurrentlySwichingOverride =false;
+
+    //====================Intake loop contoll==================================================================
+
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
+
+    //==============Servo loop controll========================================================================
+
     private boolean servoOpen = false;
     private boolean servoClosed = false;
     private boolean servoLoopBreak = false;
@@ -68,6 +77,8 @@ public class BasicRobotCode6780Intervew extends OpMode
     private DcMotor intakeLiftMotor;
     private DcMotor elavatorMotor;
     private Servo clawOpenAndClose;
+    private ColorSensor frontIntakeColorSensor;
+
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
     private static final double MOVEMENT_SPEED = 1;
@@ -86,6 +97,9 @@ public class BasicRobotCode6780Intervew extends OpMode
         elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
         clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
+        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "ENTER IN THE FRONT INTAKE MOTOR COLOR SENSOR CONFIGURATION NAME HERE!!!");
+
+
 
         elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -157,8 +171,6 @@ public class BasicRobotCode6780Intervew extends OpMode
         if ( isOnOverride == true)
         {
 
-
-
             if(gamepad2.a)
             {
                 intakeMotor.setPower(1);
@@ -167,15 +179,19 @@ public class BasicRobotCode6780Intervew extends OpMode
             if (gamepad2.b)
             {
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
                 intakeMotor.setPower(1);
             }
 
             if(gamepad2.y)
             {
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
                 intakeMotor.setPower(1);
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             }
+
 
             if(gamepad2.right_bumper)
             {

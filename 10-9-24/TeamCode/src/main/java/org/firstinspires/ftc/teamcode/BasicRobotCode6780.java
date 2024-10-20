@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -53,15 +54,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BasicRobotCode6780 extends OpMode
 {
 
-  //=====================overide controll==========================================
-    private boolean isOnOverride = false;
-    private boolean isCurrentlySwichingOverride =false;
+    //=====================overide controll==========================================
 
- //====================Intake loop contoll==================================================================
+    private boolean isOnOverride = false;
+    private boolean isCurrentlySwitchingOverride =false;
+
+    //====================Intake loop contoll==================================================================
+
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
 
-   //==============Servo loop controll========================================================================
+    //==============Servo loop controll========================================================================
+
     private boolean servoOpen = false;
     private boolean servoClosed = false;
     private boolean servoLoopBreak = false;
@@ -75,8 +79,10 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor backRightMotor;
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
-    private DcMotor elavatorMotor;
-    private Servo clawOpenAndClose;
+    private DcMotor elevatorMotor;
+    private Servo clawOpenAndClose; // +++ I would go with "clawServo"
+    private ColorSensor frontIntakeColorSensor;
+
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
 
     private static final double MOVEMENT_SPEED = 1;
@@ -95,14 +101,17 @@ public class BasicRobotCode6780 extends OpMode
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
-        elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
         clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
+        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "ENTER IN THE FRONT INTAKE MOTOR COLOR SENSOR CONFIGURATION NAME HERE!!!");
 
-        elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
@@ -112,7 +121,7 @@ public class BasicRobotCode6780 extends OpMode
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Send telemetry message to signify robot waiting;
@@ -143,21 +152,21 @@ public class BasicRobotCode6780 extends OpMode
         if (gamepad2.back || gamepad1.back)
         {
 
-            if (isCurrentlySwichingOverride == false)
+            if (isCurrentlySwitchingOverride == false)
             {
-                isCurrentlySwichingOverride = true;
+                isCurrentlySwitchingOverride = true;
                 if (isOnOverride == true)
                 {
                     isOnOverride = false;
-                    elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
                 else
                 {
                     isOnOverride = true;
-                    elavatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
             }
@@ -165,7 +174,7 @@ public class BasicRobotCode6780 extends OpMode
         }
         else
         {
-            isCurrentlySwichingOverride = false;
+            isCurrentlySwitchingOverride = false;
         }
 
 
@@ -191,52 +200,80 @@ public class BasicRobotCode6780 extends OpMode
             backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
             backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
 
+            // +++ I would not even recommend running a Servo toggle. The toggle could mess up. So I would recommend having 1 button per servo position.
             ToggleLoops();
 
+
+            // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ START INTAKE NOTES +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+            // +++ I am assuming for intaking in the Samples
             if(gamepad2.a)
             {
                 intakeMotor.setPower(1);
             }
 
+            // +++ You also need to be able to spit out the samples
+
+
+            // +++ I think this is to let the intake down, or bring it up, but you use Intake Motor, Not Intake Lift Motor
             if (gamepad2.b)
             {
+                // +++ It is currently forward. I would Only Recommend using setDirection in the Init Function.
+                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                intakeMotor.setPower(1);
+
+
+                // +++ Why is it "intakeLiftMotor" above, but "intakeMotor" right here?
+                intakeMotor.setPower(1); // +++ Set this to -1 to go backwards
             }
 
+            // +++ Same Problems as the one above
+            // +++ I think this is to let the intake down, or bring it up, but you use Intake Motor, Not Intake Lift Motor
             if(gamepad2.y)
             {
+                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
+                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                intakeMotor.setPower(1);
+
+                // +++ Just like the one above, This is "intakeMotor" but you reverse the "intakeLiftMotor"
+                intakeMotor.setPower(1); // +++ Set this to -1 to go backwards
                 intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             }
+
+
+            // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ END INTAKE NOTES ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
             if(gamepad2.right_bumper)
             {
-                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                elavatorMotor.setPower(1);
+                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
+                elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                elevatorMotor.setPower(1);
             }
 
             if (gamepad2.right_trigger > 0.5)
             {
-                elavatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                elavatorMotor.setPower(1);
-                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
+                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
+                elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                // +++ Set this to -1 to go backwards
+                elevatorMotor.setPower(1); // +++ You can use "elavatorMotor.setPower(gamepad2.right_trigger)" to make it so the more you press the button, the faster it goes
+                elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             }
 
             if(gamepad2.left_bumper)
             {
-                elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
         }
         else
         {
-            ToggleLoops();
+            ToggleLoops(); // +++ Look at comments inside this function.
 
             // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
             double z = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
@@ -257,65 +294,57 @@ public class BasicRobotCode6780 extends OpMode
             backLeftMotor.setPower(backLeftPower * MOVEMENT_SPEED);
             backRightMotor.setPower(backRightPower * MOVEMENT_SPEED);
 
-            // a= intke b=intake up y= intake down
-
-
-
+            // a = intake; b = intake up; y = intake down;
 
 
             if(gamepad1.b)
             {
                 intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0);
+                intakeLiftMotor.setTargetPosition(0); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
             if(gamepad1.y)
             {
                 intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0);
+                intakeLiftMotor.setTargetPosition(0); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
+
+            // +++ Maybe we could have something like this
+            // +++ D-Pad Down: Position 0;
+            // +++ D-Pad Right: Scores in Bucket: Toggle: 1st time is high bucket, 2nd time is low bucket;
+            // +++ D-Pad Left: Scores Specimens: Toggle: 1st time is high bar, 2nd time is low bar;
             if(gamepad1.dpad_down)
             {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.lowBucket);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                elevatorMotor.setPower(1);
+                elevatorMotor.setTargetPosition(Constants.lowBucket);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
-
             if(gamepad1.dpad_right)
             {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.highBucket);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                elevatorMotor.setPower(1);
+                elevatorMotor.setTargetPosition(Constants.highBucket);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
-
             if(gamepad1.dpad_left)
             {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.lowSample);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                elevatorMotor.setPower(1);
+                elevatorMotor.setTargetPosition(Constants.lowSample);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
-
-
-
             if(gamepad1.dpad_up)
             {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.highSample);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                elevatorMotor.setPower(1);
+                elevatorMotor.setTargetPosition(Constants.highSample);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
-
             if(gamepad1.left_bumper)
             {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(0);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                elevatorMotor.setPower(1);
+                elevatorMotor.setTargetPosition(0);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
 
@@ -341,35 +370,36 @@ public class BasicRobotCode6780 extends OpMode
     public void ToggleLoops()
     {
 
-//==============================================ServoToggle=====================================================================
+        //============================================== ServoToggle =====================================================================
+
+        // +++ There is a problem with this toggle. The problem is the "servoLoopBreak" is never used, but some lines that are supposed to have "servoFirstTime" now have "servoLoopBreak"
+        // +++ You also don't even need the "servoLoopBreak" variable, or the "servoClosed" variable.
         if (gamepad1.x)
         {
-
             if (servoFirstTime == false)
             {
                 servoFirstTime = true;
-                if (servoFirstTime == true)
+                if (servoFirstTime == true) // Switch "servoFirstTime" to "servoOpen"
                 {
-                    servoFirstTime = false;
+                    servoFirstTime = false; // Move this line to the "else".
 
-                    servoOpen = true;
-                    servoLoopBreak = false;
+                    servoOpen = true; // THis should be false, because the if checks if it is true.
+                    servoLoopBreak = false; // Remove this
                 }
                 else
                 {
-                    servoClosed = true;
-                    servoLoopBreak = true;
+                    servoClosed = true; // This should be servoOpen = true.
+                    servoLoopBreak = true; // remove this line
                 }
             }
 
         }
         else
         {
-            servoLoopBreak = false;
-
+            servoLoopBreak = false; // THis should be "servoFirstTime = false;"
         }
 
-//====================================================IntakeToggle================================================
+        //==================================================== IntakeToggle ================================================
 
         if (gamepad1.a)
         {
@@ -393,7 +423,8 @@ public class BasicRobotCode6780 extends OpMode
             firstTimeIntake = false;
         }
 
-        if(shouldPowerIntake == true)
+        // +++ I would recommend powering the motor outside This function, This is so you can just look for the motor powering stuff all in 1 area, but this is 100% preference. Do whatever you want.
+        if (shouldPowerIntake == true)
         {
             intakeMotor.setPower(1);
         }
