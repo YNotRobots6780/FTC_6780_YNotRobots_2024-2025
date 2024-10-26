@@ -54,17 +54,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BasicRobotCode6780 extends OpMode
 {
 
-    //=====================overide controll==========================================
+    //=====================override control==========================================
 
     private boolean isOnOverride = false;
     private boolean isCurrentlySwitchingOverride =false;
 
-    //====================Intake loop contoll==================================================================
+    //====================Intake loop control==================================================================
 
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
 
-    //==============Servo loop controll========================================================================
+    //==============Servo loop control========================================================================
 
     private boolean servoOpen = false;
     private boolean servoClosed = false;
