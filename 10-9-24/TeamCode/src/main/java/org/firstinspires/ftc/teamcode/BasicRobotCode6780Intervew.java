@@ -168,7 +168,7 @@ public class BasicRobotCode6780Intervew extends OpMode
 
 
 
-        if ( isOnOverride == true)
+        if (isOnOverride == true)
         {
 
             if(gamepad2.a)

@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 public class ColorSensorDetails {
 
 
-    public ColorSensorDetails(ColorSensor colorSensor)
-    {
+    public ColorSensorDetails(ColorSensor colorSensor) {
         this.colorSensor = colorSensor;
 
-        UpdateColorValues();
+        if (colorSensor != null) {
+            UpdateColorValues();
+        }
     }
 
 
@@ -21,7 +22,7 @@ public class ColorSensorDetails {
     public byte green;
     public byte blue;
     public byte alpha;
-    public byte hue;
+    public short hue;
     public byte saturation;
     public byte brightness;
 
@@ -37,9 +38,9 @@ public class ColorSensorDetails {
 
         Color.RGBToHSV(red, green, blue, hueSaturationBrightness);
 
-        hue = (byte)Math.round(hueSaturationBrightness[0]);
-        saturation = (byte)Math.round(hueSaturationBrightness[1]);
-        brightness = (byte)Math.round(hueSaturationBrightness[2]);
+        hue = (byte)Math.round(hueSaturationBrightness[0] * 360);
+        saturation = (byte)Math.round(hueSaturationBrightness[1] * 256);
+        brightness = (byte)Math.round(hueSaturationBrightness[2] * 256);
     }
 
 

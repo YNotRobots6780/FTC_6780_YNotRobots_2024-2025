@@ -54,6 +54,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BasicRobotCode6780 extends OpMode
 {
 
+    //=====================Color Sensor==========================================
+
+    private ColorSensorDetails frontIntakeColorSensorDetails;
+
     //=====================override control==========================================
 
     private boolean isOnOverride = false;
@@ -105,7 +109,7 @@ public class BasicRobotCode6780 extends OpMode
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
         clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
         frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "ENTER IN THE FRONT INTAKE MOTOR COLOR SENSOR CONFIGURATION NAME HERE!!!");
-
+        frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
 
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -435,6 +439,7 @@ public class BasicRobotCode6780 extends OpMode
 
 
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP
