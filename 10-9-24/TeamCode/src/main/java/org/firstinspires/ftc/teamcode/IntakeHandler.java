@@ -2,6 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 public class IntakeHandler {
 
+    public enum Team
+    {
+        Undetermined,
+        Red,
+        Blue
+    }
+
     public enum Action
     {
         ShutDown,

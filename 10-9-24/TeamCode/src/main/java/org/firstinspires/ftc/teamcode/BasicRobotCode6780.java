@@ -100,15 +100,15 @@ public class BasicRobotCode6780 extends OpMode
     @Override
     public void init() {
         // Define and Initialize Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
-        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
-        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
-        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "ENTER IN THE FRONT INTAKE MOTOR COLOR SENSOR CONFIGURATION NAME HERE!!!");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // 1
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // ex: 3
+        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // 0
+        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // ex: 2
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); // NONE
+        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
+        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
+        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
         frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
 
@@ -304,14 +304,14 @@ public class BasicRobotCode6780 extends OpMode
             if(gamepad1.b)
             {
                 intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0); // +++ Make a Constant variable for this.
+                intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorUp); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
             if(gamepad1.y)
             {
                 intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0); // +++ Make a Constant variable for this.
+                intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorDown); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 

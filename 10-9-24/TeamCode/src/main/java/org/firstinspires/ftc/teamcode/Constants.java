@@ -17,6 +17,8 @@ public class Constants
     public final static int highSample = 0;
     public final static int clawclosed =0; // +++ this should at least have a Capital C
     public final static int clawOpen = 0;
+    public final static int intakeLiftMotorUp = 1000;
+    public final static int intakeLiftMotorDown = 0;
 
     public static Team CURRENT_TEAM = Team.Undetermined;
 
@@ -28,4 +30,7 @@ public class Constants
     public final static short BLUE_RANGE_MAX = 270;
 
     public final static double INTAKE_TIME = 0.5;
+
+
+
 }

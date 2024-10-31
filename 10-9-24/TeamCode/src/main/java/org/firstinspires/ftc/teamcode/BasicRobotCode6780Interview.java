@@ -50,8 +50,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  *
  */
 
-@TeleOp(name="6780 New robot code!", group="Robot")
-public class BasicRobotCode6780Intervew extends OpMode
+@TeleOp(name="6780 New robot code Interview", group="Robot")
+public class BasicRobotCode6780Interview extends OpMode
 {
     //=====================overide controll==========================================
 
@@ -291,11 +291,11 @@ public class BasicRobotCode6780Intervew extends OpMode
 
 
             if(gamepad1.dpad_up)
-            {
+           {
                 elavatorMotor.setPower(1);
                 elavatorMotor.setTargetPosition(Constants.highSample);
                 elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
+           }
 
 
             if(gamepad1.left_bumper)
