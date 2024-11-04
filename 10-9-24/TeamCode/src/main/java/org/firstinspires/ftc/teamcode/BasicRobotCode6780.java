@@ -84,7 +84,7 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
-    private Servo clawOpenAndClose; // +++ I would go with "clawServo"
+   // private Servo clawOpenAndClose; // +++ I would go with "clawServo"
     private ColorSensor frontIntakeColorSensor;
 
     // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
@@ -93,7 +93,7 @@ public class BasicRobotCode6780 extends OpMode
 
     // ====================================================================================================================================================================
 
-
+    private int i;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -105,9 +105,9 @@ public class BasicRobotCode6780 extends OpMode
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // 0
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // ex: 2
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); // NONE
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
+        //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
         frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
         frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
@@ -125,7 +125,7 @@ public class BasicRobotCode6780 extends OpMode
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Send telemetry message to signify robot waiting;
@@ -170,8 +170,8 @@ public class BasicRobotCode6780 extends OpMode
                 else
                 {
                     isOnOverride = true;
-                    elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
             }
 
@@ -215,6 +215,10 @@ public class BasicRobotCode6780 extends OpMode
             {
                 intakeMotor.setPower(1);
             }
+            else {
+                intakeMotor.setPower(0);
+
+            }
 
             // +++ You also need to be able to spit out the samples
 
@@ -222,26 +226,15 @@ public class BasicRobotCode6780 extends OpMode
             // +++ I think this is to let the intake down, or bring it up, but you use Intake Motor, Not Intake Lift Motor
             if (gamepad2.b)
             {
-                // +++ It is currently forward. I would Only Recommend using setDirection in the Init Function.
-                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-                // +++ Why is it "intakeLiftMotor" above, but "intakeMotor" right here?
-                intakeMotor.setPower(1); // +++ Set this to -1 to go backwards
+                intakeLiftMotor.setPower(1); // +++ Set this to -1 to go backwards
             }
-
-            // +++ Same Problems as the one above
-            // +++ I think this is to let the intake down, or bring it up, but you use Intake Motor, Not Intake Lift Motor
-            if(gamepad2.y)
+            else if (gamepad2.y)
             {
-                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
-                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-                // +++ Just like the one above, This is "intakeMotor" but you reverse the "intakeLiftMotor"
-                intakeMotor.setPower(1); // +++ Set this to -1 to go backwards
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                intakeLiftMotor.setPower(-1);
+            }
+            else
+            {
+                intakeLiftMotor.setPower(0);
             }
 
 
@@ -250,19 +243,15 @@ public class BasicRobotCode6780 extends OpMode
 
             if(gamepad2.right_bumper)
             {
-                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
-                elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                elevatorMotor.setPower(1);
+                elevatorMotor.setPower(-1);
             }
-
-            if (gamepad2.right_trigger > 0.5)
+            else if (gamepad2.right_trigger > 0.5)
             {
-                // +++ I would Only Recommend using setDirection in the Init Function. Also you don't need to Reverse then set it back to forwards.
-                // +++ Remember, motors go from -1.0, to 1.0, and are a double so you can have decimals numbers. Servos are 0.0 to 1.0 and are doubles.
-                elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                // +++ Set this to -1 to go backwards
                 elevatorMotor.setPower(1); // +++ You can use "elavatorMotor.setPower(gamepad2.right_trigger)" to make it so the more you press the button, the faster it goes
-                elevatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            }
+            else
+            {
+                elevatorMotor.setPower(0); // +++ You can use "elavatorMotor.setPower(gamepad2.right_trigger)" to make it so the more you press the button, the faster it goes
             }
 
             if(gamepad2.left_bumper)
@@ -303,14 +292,14 @@ public class BasicRobotCode6780 extends OpMode
 
             if(gamepad1.b)
             {
-                intakeLiftMotor.setPower(1);
+                intakeLiftMotor.setPower(0.5);
                 intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorUp); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
             if(gamepad1.y)
             {
-                intakeLiftMotor.setPower(1);
+                intakeLiftMotor.setPower(0.5);
                 intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorDown); // +++ Make a Constant variable for this.
                 intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
@@ -357,17 +346,22 @@ public class BasicRobotCode6780 extends OpMode
 
             if(servoOpen==true)
             {
-                clawOpenAndClose.setPosition(Constants.clawOpen);
+                //clawOpenAndClose.setPosition(Constants.clawOpen);
             }
 
 
             if (servoClosed==true)
             {
-                clawOpenAndClose.setPosition(Constants.clawclosed);
+               // clawOpenAndClose.setPosition(Constants.clawclosed);
             }
 
         }
 
+        i++;
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("<", "i: " + i);
+        telemetry.addData("<", "Elevator Position: " + elevatorMotor.getCurrentPosition());
+        telemetry.addData("<", "Intake Lift Position: " + intakeLiftMotor.getCurrentPosition());
     }
 
 
@@ -407,7 +401,6 @@ public class BasicRobotCode6780 extends OpMode
 
         if (gamepad1.a)
         {
-
             if (firstTimeIntake == false)
             {
                 firstTimeIntake = true;
@@ -420,7 +413,6 @@ public class BasicRobotCode6780 extends OpMode
                     shouldPowerIntake = true;
                 }
             }
-
         }
         else
         {
@@ -433,6 +425,45 @@ public class BasicRobotCode6780 extends OpMode
             intakeMotor.setPower(1);
         }
 
+        if (shouldPowerIntake == false)
+        {
+            intakeMotor.setPower(0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            );
+        }
 
 
 
