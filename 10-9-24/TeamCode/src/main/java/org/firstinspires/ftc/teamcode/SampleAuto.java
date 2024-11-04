@@ -70,8 +70,15 @@ public class SampleAuto extends LinearOpMode {
     
     public Servo clawServo = null;
 
+    public boolean firstStep = false;
+    public boolean secondStep = false;
+    public boolean stepThree = false;
+    public boolean stepFour = false;
+    public boolean StepFive = false;
+    public boolean stepSix = false;
+    public boolean stepSeven = false;
 
-
+    int driveTime = 0;
 
 
 
@@ -110,38 +117,126 @@ public class SampleAuto extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
+
+
+
+
+
+        elevatorMotor.setTargetPosition(Constants.highBucket);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+          // enter servo=============================================================================
+           sleep(0);
+            Return();
+            sleep(50);
+            shimmyLeft(30);
+            sleep(driveTime);
+            turnLeft(10);
+            sleep(driveTime);
+            MoveRobotFoward(10);
+
+
+
+
+
+
+
+
+
     }
 
 
-    private void MoveRobot(double movementX, double movementZ, double rotationY)
+    private void Return ()
     {
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio,
-        // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(movementZ) + Math.abs(movementX) + Math.abs(rotationY), 1);
-        double backLeftPower = (movementZ - movementX + rotationY) / denominator;
-        double frontLeftPower = (movementZ + movementX + rotationY) / denominator;
-        double frontRightPower = (movementZ - movementX - rotationY) / denominator;
-        double backRightPower = (movementZ + movementX - rotationY) / denominator;
+        elevatorMotor.setTargetPosition(0);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+
+    private void MoveRobotFoward (int driveTime)
+    {
+        backLeftMotor.setPower(0.5);
+        frontLeftMotor.setPower(0.5);
+        backRightMotor.setPower(0.5);
+        frontRightMotor.setPower(0.5);
+        sleep(driveTime);
+        backLeftMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontRightMotor.setPower(0);
+    }
+
+    private void turnLeft(int driveTime)
+    {
+    frontRightMotor.setPower(0.5);
+    backRightMotor.setPower(0.5);
+    frontLeftMotor.setPower(-0.5);
+    backLeftMotor.setPower(-0.5);
+    sleep(driveTime);
+    frontRightMotor.setPower(0);
+    backRightMotor.setPower(0);
+    frontLeftMotor.setPower(0);
+    backLeftMotor.setPower(0);
+    }
+
+    private void turnRight(int driveTime)
+    {
+        frontRightMotor.setPower(-0.5);
+        backRightMotor.setPower(-0.5);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(0.5);
+        sleep(driveTime);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+    }
+
+  private void  shimmyRight (int driveTime)
+  {
+      frontRightMotor.setPower(-0.5);
+      backRightMotor.setPower(0.5);
+      frontLeftMotor.setPower(-0.5);
+      backLeftMotor.setPower(0.5);
+      sleep (driveTime);
+      frontRightMotor.setPower(0);
+      backRightMotor.setPower(0);
+      frontLeftMotor.setPower(0);
+      backLeftMotor.setPower(0);
+  }
+
+    private void  shimmyLeft (int driveTime)
+    {
+        frontRightMotor.setPower(0.5);
+        backRightMotor.setPower(-0.5);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(-0.5);
+        sleep(driveTime);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+    }
+
+
+
+
+
+    public  void MoveRobot(double x, double z, double rotation)
+    {   // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio, but only when
+        // at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(rotation), 1);
+        double frontLeftPower = (z + x + rotation) / denominator;
+        double frontRightPower = (z - x - rotation) / denominator;
+        double backLeftPower = (z - x + rotation) / denominator;
+        double backRightPower = (z + x - rotation) / denominator;
 
         frontLeftMotor.setPower(frontLeftPower);
-        backLeftMotor.setPower(backLeftPower);
         frontRightMotor.setPower(frontRightPower);
+        backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
     }
 
-    private void MoveElevator(int targetElevatorPosition) {
-        // Determine new target position, and pass to motor controller
-        elevatorMotor.setTargetPosition(targetElevatorPosition);
-
-        // Turn On RUN_TO_POSITION
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        elevatorMotor.setPower(1);
-
-
-
-
-    }
 
 }

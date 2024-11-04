@@ -31,6 +31,4 @@ public class Constants
 
     public final static double INTAKE_TIME = 0.5;
 
-
-
 }
