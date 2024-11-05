@@ -97,7 +97,7 @@ public class SampleAuto extends LinearOpMode {
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
-
+        elevatorMotor = hardwareMap.get(DcMotor.class,"elavatorMotor");
 
         // To drive forwareversed, because the axles point in opposite directions.
         // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -119,20 +119,21 @@ public class SampleAuto extends LinearOpMode {
         telemetry.update();
 
 
+        waitForStart();
 
 
-
+       elevatorMotor.setPower(1);
         elevatorMotor.setTargetPosition(Constants.highBucket);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
           // enter servo=============================================================================
-           sleep(0);
+           sleep(6000);
             Return();
-            sleep(50);
-            shimmyLeft(30);
+            sleep(8000);
+            shimmyRight(4000);
             sleep(driveTime);
-            turnLeft(10);
+            turnRight(500);
             sleep(driveTime);
-            MoveRobotFoward(10);
+            MoveRobotFoward(4000);
 
 
 
@@ -194,10 +195,10 @@ public class SampleAuto extends LinearOpMode {
 
   private void  shimmyRight (int driveTime)
   {
-      frontRightMotor.setPower(-0.5);
-      backRightMotor.setPower(0.5);
-      frontLeftMotor.setPower(-0.5);
-      backLeftMotor.setPower(0.5);
+      frontRightMotor.setPower(0.5);
+      backRightMotor.setPower(-0.5);
+      frontLeftMotor.setPower(0.5);
+      backLeftMotor.setPower(-0.5);
       sleep (driveTime);
       frontRightMotor.setPower(0);
       backRightMotor.setPower(0);
