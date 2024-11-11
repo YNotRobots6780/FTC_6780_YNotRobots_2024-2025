@@ -2,13 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 public class IntakeHandler {
 
-    public enum Team
-    {
-        Undetermined,
-        Red,
-        Blue
-    }
-
     public enum Action
     {
         ShutDown,
@@ -23,24 +16,34 @@ public class IntakeHandler {
 
     private byte sampleCount = 0;
 
+    private Action currentAction;
+    private double currentActionTime;
+
     public IntakeHandler(Constants.Team team)
     {
         this.team = team;
 
-        if (team == Constants.Team.Red)
-        {
-            exclusiveHueRangeMin = Constants.RED_RANGE_MIN;
-            exclusiveHueRangeMax = Constants.RED_RANGE_MAX;
-        }
-        else if (team == Constants.Team.Blue)
+        if (this.team == Constants.Team.Red)
         {
             exclusiveHueRangeMin = Constants.BLUE_RANGE_MIN;
             exclusiveHueRangeMax = Constants.BLUE_RANGE_MAX;
         }
+        else if (this.team == Constants.Team.Blue)
+        {
+            exclusiveHueRangeMin = Constants.RED_RANGE_MIN;
+            exclusiveHueRangeMax = Constants.RED_RANGE_MAX;
+        }
     }
 
-    private Action Update(ColorSensorDetails colorSensorDetails)
+    private Action Update(ColorSensorDetails colorSensorDetails, double deltatime)
     {
+        currentActionTime += deltatime;
+
+        if (currentAction == Action.OutTake && currentActionTime < Constants.OUTTAKE_TIME)
+        {
+            return Action.OutTake;
+        }
+
         // ============================================= Track new Samples =============================================
         // Sample Did come in
         if (colorSensorDetails.brightness > 100)
@@ -54,7 +57,7 @@ public class IntakeHandler {
             else
             {
                 // Correct Color
-                boolean isInColorRange = colorSensorDetails.hue >= exclusiveHueRangeMin && colorSensorDetails.hue <= exclusiveHueRangeMax;
+                boolean isInColorRange = colorSensorDetails.hue < exclusiveHueRangeMin && colorSensorDetails.hue > exclusiveHueRangeMax;
                 if (!isInColorRange)
                 {
                     sampleCount++;
@@ -62,6 +65,7 @@ public class IntakeHandler {
                 // Wrong Color
                 else
                 {
+                    SetAction(Action.OutTake);
                     return Action.OutTake;
                 }
             }
@@ -70,23 +74,29 @@ public class IntakeHandler {
         // Determine Action
         if (sampleCount == 0)
         {
+            SetAction(Action.InTake);
             return Action.InTake;
         }
         else if (sampleCount == 1)
         {
+            SetAction(Action.ShutDown);
             return Action.ShutDown;
         }
         else if (sampleCount == 2)
         {
+            SetAction(Action.OutTake);
             return Action.OutTake;
         }
         else
         {
+            SetAction(Action.OutTake);
             return Action.ShutDown;
         }
     }
 
-    public void DropSample() {
+
+    public void DropSample()
+    {
         sampleCount--;
         if (sampleCount < 0)
         {
@@ -99,4 +109,12 @@ public class IntakeHandler {
         sampleCount = 0;
     }
 
+    private void SetAction(Action action)
+    {
+        if (currentAction != action)
+        {
+            currentAction = action;
+            currentActionTime = 0;
+        }
+    }
 }

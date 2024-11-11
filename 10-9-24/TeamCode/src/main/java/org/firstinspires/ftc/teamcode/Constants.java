@@ -29,6 +29,7 @@ public class Constants
     public final static short BLUE_RANGE_MIN = 170;
     public final static short BLUE_RANGE_MAX = 270;
 
-    public final static double INTAKE_TIME = 0.5;
+    public final static double INTAKE_TIME = 1;
+    public final static double OUTTAKE_TIME = 0.5;
 
 }
