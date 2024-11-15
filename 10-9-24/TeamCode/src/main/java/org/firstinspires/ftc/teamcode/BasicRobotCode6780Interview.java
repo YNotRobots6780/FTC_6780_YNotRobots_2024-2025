@@ -34,7 +34,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
@@ -53,38 +52,33 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="6780 New robot code Interview", group="Robot")
 public class BasicRobotCode6780Interview extends OpMode
 {
-    //=====================overide controll==========================================
+
+    //=====================Color Sensor==========================================
+
+    private ColorSensorDetails frontIntakeColorSensorDetails;
+
+    //=====================override control==========================================
 
     private boolean isOnOverride = false;
-    private boolean isCurrentlySwichingOverride =false;
+    private boolean isCurrentlySwitchingOverride =false;
 
-    //====================Intake loop contoll==================================================================
+    //====================Intake loop control==================================================================
 
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
 
-    //==============Servo loop controll========================================================================
+    //==============Servo loop control========================================================================
 
-    private boolean servoOpen = false;
-    private boolean servoClosed = false;
-    private boolean servoLoopBreak = false;
+    private boolean isClawOpen = false;
     private boolean servoFirstTime = false;
-
 
 
     /* Declare OpMode members. */
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
-    private DcMotor elavatorMotor;
-    private Servo clawOpenAndClose;
+    private DcMotor elevatorMotor;
+    // private Servo clawOpenAndClose; // +++ I would go with "clawServo"
     private ColorSensor frontIntakeColorSensor;
-
-    // ===================================================================== EDIT THIS STUFF HERE!!! ======================================================================
-
-    private static final double MOVEMENT_SPEED = 1;
-
-    // ====================================================================================================================================================================
-
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -92,26 +86,24 @@ public class BasicRobotCode6780Interview extends OpMode
     @Override
     public void init() {
         // Define and Initialize Motors
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
+        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
+        //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
+        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
+        frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
-        elavatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
-        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor");
-        clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose");
-        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "ENTER IN THE FRONT INTAKE MOTOR COLOR SENSOR CONFIGURATION NAME HERE!!!");
 
-
-
-        elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
-
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
-        elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Send telemetry message to signify robot waiting;
@@ -138,24 +130,25 @@ public class BasicRobotCode6780Interview extends OpMode
     @Override
     public void loop() {
 
+        // =============================================== Overide Toggle ===============================================
         if (gamepad2.back || gamepad1.back)
         {
 
-            if (isCurrentlySwichingOverride == false)
+            if (!isCurrentlySwitchingOverride)
             {
-                isCurrentlySwichingOverride = true;
-                if (isOnOverride == true)
+                isCurrentlySwitchingOverride = true;
+                if (isOnOverride)
                 {
                     isOnOverride = false;
-                    elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
                 else
                 {
                     isOnOverride = true;
-                    elavatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     intakeLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
             }
@@ -163,213 +156,192 @@ public class BasicRobotCode6780Interview extends OpMode
         }
         else
         {
-            isCurrentlySwichingOverride = false;
+            isCurrentlySwitchingOverride = false;
         }
 
 
 
-        if (isOnOverride == true)
+        if (isOnOverride)
         {
+            // ======================================================= INTAKE =======================================================
 
             if(gamepad2.a)
             {
-                intakeMotor.setPower(1);
+                intakeMotor.setPower(Constants.INTAKE_POWER);
             }
+            else {
+                intakeMotor.setPower(0);
+            }
+
 
             if (gamepad2.b)
             {
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-                intakeMotor.setPower(1);
+                intakeLiftMotor.setPower(Constants.INTAKE_LIFT_POWER);
             }
-
-            if(gamepad2.y)
+            else if (gamepad2.y)
             {
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-                intakeMotor.setPower(1);
-                intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                intakeLiftMotor.setPower(-Constants.INTAKE_LIFT_POWER);
             }
+            else
+            {
+                intakeLiftMotor.setPower(0);
+            }
+
+
+            // ======================================================= Elevator =======================================================
 
 
             if(gamepad2.right_bumper)
             {
-                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-                elavatorMotor.setPower(1);
+                elevatorMotor.setPower(-Constants.ELEVATOR_POWER);
+            }
+            else if (gamepad2.right_trigger > 0.5)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+            }
+            else
+            {
+                elevatorMotor.setPower(0);
             }
 
-            if (gamepad2.right_trigger > 0.5)
+
+            // ======================================================= Elevator =======================================================
+        }
+        else
+        {
+            // a = intake; b = intake up; y = intake down;
+
+            ToggleLoops();
+
+
+            // ======================================================= Intake =======================================================
+
+            if (shouldPowerIntake)
             {
-                elavatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-                elavatorMotor.setPower(1);
-                elavatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                intakeMotor.setPower(Constants.INTAKE_POWER);
+            }
+            else
+            {
+                intakeMotor.setPower(0);
             }
 
-            if(gamepad2.left_bumper)
+            if(gamepad1.b)
             {
-                elavatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                intakeLiftMotor.setPower(Constants.INTAKE_LIFT_POWER);
+                intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
+                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if(gamepad1.y)
+            {
+                intakeLiftMotor.setPower(Constants.INTAKE_LIFT_POWER);
+                intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_DOWN);
+                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
 
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+            // ======================================================= Elevator =======================================================
+
+            if(gamepad1.dpad_down)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+                elevatorMotor.setTargetPosition(Constants.LOW_BUCKET);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if(gamepad1.dpad_right)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+                elevatorMotor.setTargetPosition(Constants.HIGH_BUCKET);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if(gamepad1.dpad_left)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+                elevatorMotor.setTargetPosition(Constants.LOW_SAMPLE);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if(gamepad1.dpad_up)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+                elevatorMotor.setTargetPosition(Constants.HIGH_SAMPLE);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if(gamepad1.left_bumper)
+            {
+                elevatorMotor.setPower(Constants.ELEVATOR_POWER);
+                elevatorMotor.setTargetPosition(Constants.ELEVATOR_RETRACTED);
+                elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+
+            // ======================================================= Claw =======================================================
+
+
+            if (isClawOpen)
+            {
+                // clawOpenAndClose.setPosition(Constants.clawOpen);
+            }
+            else // THen the claw has to be closed
+            {
+                // clawOpenAndClose.setPosition(Constants.clawclosed);
+            }
+
+        }
+
+    }
+
+
+    public void ToggleLoops()
+    {
+        //============================================== ServoToggle =====================================================================
+
+        if (gamepad1.x)
+        {
+            if (!servoFirstTime)
+            {
+                servoFirstTime = true;
+                if (isClawOpen)
+                {
+                    isClawOpen = false;
+                }
+                else
+                {
+                    isClawOpen = true;
+                }
             }
 
         }
         else
         {
-
-            // a= intke b=intake up y= intake down
-
-
-
-            if (gamepad1.a)
-            {
-
-                if (firstTimeIntake == false)
-                {
-                    firstTimeIntake = true;
-                    if (shouldPowerIntake)
-                    {
-                        shouldPowerIntake = false;
-                    }
-                    else
-                    {
-                        shouldPowerIntake = true;
-                    }
-                }
-
-            }
-            else
-            {
-                firstTimeIntake = false;
-            }
-
-            if(shouldPowerIntake == true)
-            {
-                intakeMotor.setPower(1);
-            }
-
-            if(gamepad1.b)
-            {
-                intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0);
-                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            if(gamepad1.y)
-            {
-                intakeLiftMotor.setPower(1);
-                intakeLiftMotor.setTargetPosition(0);
-                intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            if(gamepad1.dpad_down)
-            {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.lowBucket);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-
-            if(gamepad1.dpad_right)
-            {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.highBucket);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-
-            if(gamepad1.dpad_left)
-            {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.lowSample);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-
-
-
-            if(gamepad1.dpad_up)
-           {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(Constants.highSample);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           }
-
-
-            if(gamepad1.left_bumper)
-            {
-                elavatorMotor.setPower(1);
-                elavatorMotor.setTargetPosition(0);
-                elavatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-
-            if(servoOpen==true)
-            {
-                clawOpenAndClose.setPosition(Constants.clawOpen);
-            }
-
-
-            if (servoClosed==true)
-            {
-                clawOpenAndClose.setPosition(Constants.clawclosed);
-            }
-
+            servoFirstTime = false; // Move this line to the "else".
         }
 
+        //==================================================== IntakeToggle ================================================
 
-
-    }
-
-
-    public void ToggleLoops() {
-
-//==============================================ServoToggle=====================================================================
-        if (gamepad1.x) {
-
-            if (servoFirstTime == false) {
-                servoFirstTime = true;
-                if (servoFirstTime == true) {
-                    servoFirstTime = false;
-
-                    servoOpen = true;
-
-                } else {
-                    servoClosed = true;
-                    servoFirstTime = true;
-                }
-            }
-
-        } else {
-            servoFirstTime = false;
-        }
-
-//====================================================IntakeToggle================================================
-
-        if (gamepad1.a) {
-
-            if (firstTimeIntake == false) {
+        if (gamepad1.a)
+        {
+            if (!firstTimeIntake)
+            {
                 firstTimeIntake = true;
-                if (shouldPowerIntake == true) {
+                if (shouldPowerIntake)
+                {
                     shouldPowerIntake = false;
-
-                } else {
+                }
+                else
+                {
                     shouldPowerIntake = true;
                 }
             }
-
-        } else {
+        }
+        else
+        {
             firstTimeIntake = false;
         }
 
-        if (shouldPowerIntake == true) {
-            intakeMotor.setPower(1);
-        }
-
     }
-        /*
+
+
+    /*
      * Code to run ONCE after the driver hits STOP
      */
     @Override

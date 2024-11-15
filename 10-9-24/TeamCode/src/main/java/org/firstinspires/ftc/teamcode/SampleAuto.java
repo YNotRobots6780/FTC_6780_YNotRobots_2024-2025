@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -65,7 +64,7 @@ public class SampleAuto extends LinearOpMode {
     public DcMotor frontRightMotor = null;
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
-    public DcMotor intakeLiftMotor= null;
+
     public DcMotor elevatorMotor = null;
 
     
@@ -99,7 +98,7 @@ public class SampleAuto extends LinearOpMode {
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
         elevatorMotor = hardwareMap.get(DcMotor.class,"elavatorMotor");
-        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor");
+
         // To drive forwareversed, because the axles point in opposite directions.
         // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels. Gear Reduction or 90 Deg drives may require direction flips
@@ -108,41 +107,37 @@ public class SampleAuto extends LinearOpMode {
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
-        intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
 
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);    //
+
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
 
         waitForStart();
 
 
-      // elevatorMotor.setPower(1);
-       // elevatorMotor.setTargetPosition(Constants.highBucket);
-        //clawServo.setPosition(Constants.clawOpen);
-        // sleep(1000);
-        // clawServo.setPosition(Constants.clawclosed);
-        // elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       elevatorMotor.setPower(1);
+        elevatorMotor.setTargetPosition(Constants.HIGH_BUCKET);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+          // enter servo=============================================================================
+           sleep(6000);
+            Return();
+            sleep(8000);
+            shimmyRight(4000);
+            sleep(driveTime);
+            turnRight(500);
+            sleep(driveTime);
+            MoveRobotFoward(4000);
 
-         sleep(3000);
-           // Return();
-            sleep(3000);
-           shimmyLeft(1000);
-            sleep(driveTime);
-            turnLeft(800);
-            sleep(driveTime);
-            MoveRobotFoward(1200);
-            turnLeft(800);
-            MoveRobotFoward(500);
-            //turnRight(1000);
-            intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorDown);
-            sleep(1000);
-            // insert intake algerisem
-            intakeLiftMotor.setTargetPosition(Constants.intakeLiftMotorUp);
+
+
+
 
 
 
@@ -187,10 +182,10 @@ public class SampleAuto extends LinearOpMode {
 
     private void turnRight(int driveTime)
     {
-        frontRightMotor.setPower(0.5);
-        backRightMotor.setPower(0.5);
-        frontLeftMotor.setPower(-0.5);
-        backLeftMotor.setPower(-0.5);
+        frontRightMotor.setPower(-0.5);
+        backRightMotor.setPower(-0.5);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(0.5);
         sleep(driveTime);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
@@ -200,8 +195,8 @@ public class SampleAuto extends LinearOpMode {
 
   private void  shimmyRight (int driveTime)
   {
-      frontRightMotor.setPower(-0.5);
-      backRightMotor.setPower(0.5);
+      frontRightMotor.setPower(0.5);
+      backRightMotor.setPower(-0.5);
       frontLeftMotor.setPower(0.5);
       backLeftMotor.setPower(-0.5);
       sleep (driveTime);
@@ -215,8 +210,8 @@ public class SampleAuto extends LinearOpMode {
     {
         frontRightMotor.setPower(0.5);
         backRightMotor.setPower(-0.5);
-        frontLeftMotor.setPower(-0.5);
-        backLeftMotor.setPower(0.5);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(-0.5);
         sleep(driveTime);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
