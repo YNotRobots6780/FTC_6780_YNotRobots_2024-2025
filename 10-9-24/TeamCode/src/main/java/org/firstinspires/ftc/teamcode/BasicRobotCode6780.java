@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.core.Encoder;
+
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
  * The code is structured as an Iterative OpMode
@@ -74,6 +76,10 @@ public class BasicRobotCode6780 extends OpMode
 
 
     /* Declare OpMode members. */
+    private Encoder rightOdometer;
+    private Encoder leftOdometer;
+    private Encoder backOdometer;
+
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor backLeftMotor;
@@ -81,7 +87,7 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
-   // private Servo clawOpenAndClose; // +++ I would go with "clawServo"
+   // private Servo clawOpenAndClose;
     private ColorSensor frontIntakeColorSensor;
 
     /*
@@ -96,10 +102,16 @@ public class BasicRobotCode6780 extends OpMode
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // ex: 2
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
         elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
-        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
+        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
         //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
         frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
+
+        leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
+        rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
+        backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
+
         frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
+
 
 
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

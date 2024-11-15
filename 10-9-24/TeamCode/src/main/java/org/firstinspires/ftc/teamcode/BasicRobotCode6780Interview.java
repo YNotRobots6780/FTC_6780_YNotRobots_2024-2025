@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.core.Encoder;
+
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
  * The code is structured as an Iterative OpMode
@@ -74,6 +76,10 @@ public class BasicRobotCode6780Interview extends OpMode
 
 
     /* Declare OpMode members. */
+    private Encoder rightOdometer;
+    private Encoder leftOdometer;
+    private Encoder backOdometer;
+
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
@@ -91,6 +97,11 @@ public class BasicRobotCode6780Interview extends OpMode
         intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
         //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
         frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
+
+        leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
+        rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
+        backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
+
         frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
 
