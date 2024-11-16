@@ -21,9 +21,15 @@ public class IntakeHandler {
     private Action currentAction;
     private double currentActionTime;
 
-    public IntakeHandler(Constants.Team team)
+    private boolean sampleAddedLastFrame;
+
+    private ColorSensorEx colorSensor;
+
+
+    public IntakeHandler(Constants.Team team, ColorSensorEx colorSensor)
     {
         this.team = team;
+        this.colorSensor = colorSensor;
 
         if (this.team == Constants.Team.Red)
         {
@@ -37,9 +43,9 @@ public class IntakeHandler {
         }
     }
 
-    private Action Update(ColorSensorEx colorSensor, double deltatime)
+    public Action Update(double deltaTime)
     {
-        currentActionTime += deltatime;
+        currentActionTime += deltaTime;
 
         if (currentAction == Action.OutTake && currentActionTime < Constants.OUTTAKE_TIME)
         {
@@ -53,24 +59,36 @@ public class IntakeHandler {
             // Does not matter the color
             if (team == Constants.Team.Undetermined)
             {
-                sampleCount++;
+                if (!sampleAddedLastFrame)
+                {
+                    sampleCount++;
+                    currentActionTime = 0;
+                }
             }
             // The Color Does Matter
             else
             {
-                // Correct Color
-                boolean isInColorRange = colorSensor.hue < exclusiveHueRangeMin && colorSensor.hue > exclusiveHueRangeMax;
-                if (!isInColorRange)
+                if (!sampleAddedLastFrame)
                 {
-                    sampleCount++;
-                }
-                // Wrong Color
-                else
-                {
-                    SetAction(Action.OutTake);
-                    return Action.OutTake;
+                    sampleAddedLastFrame = true;
+                    // Correct Color
+                    boolean isInColorRange = colorSensor.hue < exclusiveHueRangeMin && colorSensor.hue > exclusiveHueRangeMax;
+                    if (!isInColorRange)
+                    {
+                        sampleCount++;
+                    }
+                    // Wrong Color
+                    else
+                    {
+                        SetAction(Action.OutTake);
+                        return Action.OutTake;
+                    }
                 }
             }
+        }
+        else
+        {
+            sampleAddedLastFrame = false;
         }
 
         // Determine Action
@@ -81,9 +99,18 @@ public class IntakeHandler {
         }
         else if (sampleCount == 1)
         {
-            SetAction(Action.ShutDown);
-            return Action.ShutDown;
+            if (currentActionTime > 0.5)
+            {
+                SetAction(Action.InTake);
+                return Action.InTake;
+            }
+            else
+            {
+                SetAction(Action.ShutDown);
+                return Action.ShutDown;
+            }
         }
+
         else if (sampleCount == 2)
         {
             SetAction(Action.OutTake);

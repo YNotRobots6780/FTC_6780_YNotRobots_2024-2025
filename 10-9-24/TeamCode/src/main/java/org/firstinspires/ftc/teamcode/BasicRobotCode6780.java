@@ -57,20 +57,28 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 public class BasicRobotCode6780 extends OpMode
 {
 
-    //=====================override control==========================================
+    // ========================================== Intake Toggle ==========================================
+
+    private IntakeHandler intakeHandler;
+    private long lastCycleTime; // nanoSeconds
+    private long currentCycleTime; // nanoSeconds
+    private double deltaTime; // Seconds
+
+    // ========================================== override control ==========================================
 
     private boolean isOnOverride = false;
     private boolean isCurrentlySwitchingOverride =false;
 
-    //====================Intake loop control==================================================================
+    // ========================================== Intake loop control ==========================================
 
     private boolean firstTimeIntake = false;
     private boolean shouldPowerIntake = false;
 
-    //==============Servo loop control========================================================================
+    // ========================================== Servo loop control ==========================================
 
     private boolean isClawOpen = false;
     private boolean servoFirstTime = false;
+
 
 
     /* Declare OpMode members. */
@@ -108,6 +116,8 @@ public class BasicRobotCode6780 extends OpMode
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
+
+        intakeHandler = new IntakeHandler(Constants.CURRENT_TEAM, frontIntakeColorSensor);
 
 
 
@@ -150,6 +160,12 @@ public class BasicRobotCode6780 extends OpMode
      */
     @Override
     public void loop() {
+        currentCycleTime = System.nanoTime();
+
+        if (!(currentCycleTime == 0 || lastCycleTime == 0))
+        {
+            deltaTime = (int)(currentCycleTime - lastCycleTime) / 1000000000f;
+        }
 
         // =============================================== Overide Toggle ===============================================
         if (gamepad2.back || gamepad1.back)
@@ -208,6 +224,8 @@ public class BasicRobotCode6780 extends OpMode
 
 
             // ======================================================= INTAKE =======================================================
+
+
 
             if(gamepad2.a)
             {
@@ -293,7 +311,21 @@ public class BasicRobotCode6780 extends OpMode
 
             if (shouldPowerIntake)
             {
-                intakeMotor.setPower(Constants.INTAKE_POWER);
+                IntakeHandler.Action intateAction = intakeHandler.Update(deltaTime);
+
+                if (intateAction == IntakeHandler.Action.InTake)
+                {
+                    intakeMotor.setPower(Constants.INTAKE_POWER);
+                }
+                else if (intateAction == IntakeHandler.Action.OutTake)
+                {
+                    intakeMotor.setPower(-Constants.INTAKE_POWER);
+                }
+                else if (intateAction == IntakeHandler.Action.ShutDown)
+                {
+                    intakeMotor.setPower(0);
+                    shouldPowerIntake = false;
+                }
             }
             else
             {
@@ -363,6 +395,7 @@ public class BasicRobotCode6780 extends OpMode
 
         }
 
+        lastCycleTime = currentCycleTime;
     }
 
 
