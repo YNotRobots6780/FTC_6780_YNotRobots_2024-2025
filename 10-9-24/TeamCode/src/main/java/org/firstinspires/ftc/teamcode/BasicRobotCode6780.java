@@ -34,7 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 
 /*
@@ -54,10 +56,6 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 @TeleOp(name="6780 New robot code!", group="Robot")
 public class BasicRobotCode6780 extends OpMode
 {
-
-    //=====================Color Sensor==========================================
-
-    private ColorSensorDetails frontIntakeColorSensorDetails;
 
     //=====================override control==========================================
 
@@ -87,8 +85,9 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
-   // private Servo clawOpenAndClose;
-    private ColorSensor frontIntakeColorSensor;
+
+    private Servo clawServo;
+    private ColorSensorEx frontIntakeColorSensor;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -103,14 +102,12 @@ public class BasicRobotCode6780 extends OpMode
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
         elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
         intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
-        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
+        clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
+        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
 
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
-
-        frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
 
 
@@ -252,7 +249,17 @@ public class BasicRobotCode6780 extends OpMode
             }
 
 
-            // ======================================================= Elevator =======================================================
+
+            // ======================================================= Claw =======================================================
+
+            if (isClawOpen)
+            {
+                clawServo.setPosition(Constants.CLAW_OPEN);
+            }
+            else // THen the claw has to be closed
+            {
+                clawServo.setPosition(Constants.CLAW_CLOSED);
+            }
         }
         else
         {
@@ -347,11 +354,11 @@ public class BasicRobotCode6780 extends OpMode
 
             if (isClawOpen)
             {
-                // clawOpenAndClose.setPosition(Constants.clawOpen);
+                clawServo.setPosition(Constants.CLAW_OPEN);
             }
             else // THen the claw has to be closed
             {
-               // clawOpenAndClose.setPosition(Constants.clawclosed);
+                clawServo.setPosition(Constants.CLAW_CLOSED);
             }
 
         }

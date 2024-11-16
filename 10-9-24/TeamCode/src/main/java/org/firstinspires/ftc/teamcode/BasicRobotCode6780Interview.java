@@ -34,7 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 
 /*
@@ -54,10 +56,6 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 @TeleOp(name="6780 New robot code Interview", group="Robot")
 public class BasicRobotCode6780Interview extends OpMode
 {
-
-    //=====================Color Sensor==========================================
-
-    private ColorSensorDetails frontIntakeColorSensorDetails;
 
     //=====================override control==========================================
 
@@ -83,8 +81,9 @@ public class BasicRobotCode6780Interview extends OpMode
     private DcMotor intakeMotor;
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
-    // private Servo clawOpenAndClose; // +++ I would go with "clawServo"
-    private ColorSensor frontIntakeColorSensor;
+
+    private Servo clawServo;
+    private ColorSensorEx frontIntakeColorSensor;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -94,15 +93,14 @@ public class BasicRobotCode6780Interview extends OpMode
         // Define and Initialize Motors
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
         elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
-        intakeLiftMotor= hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        //clawOpenAndClose = hardwareMap.get(Servo.class,"clawOpenAndClose"); // NONE
-        frontIntakeColorSensor = hardwareMap.get(ColorSensor.class, "frontColorSensor"); // EX: 12C 3
+        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
+        clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
+        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
 
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
 
-        frontIntakeColorSensorDetails = new ColorSensorDetails(frontIntakeColorSensor);
 
 
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,7 +108,6 @@ public class BasicRobotCode6780Interview extends OpMode
 
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 
 
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -216,7 +213,17 @@ public class BasicRobotCode6780Interview extends OpMode
             }
 
 
-            // ======================================================= Elevator =======================================================
+
+            // ======================================================= Claw =======================================================
+
+            if (isClawOpen)
+            {
+                clawServo.setPosition(Constants.CLAW_OPEN);
+            }
+            else // THen the claw has to be closed
+            {
+                clawServo.setPosition(Constants.CLAW_CLOSED);
+            }
         }
         else
         {
@@ -290,17 +297,16 @@ public class BasicRobotCode6780Interview extends OpMode
 
             if (isClawOpen)
             {
-                // clawOpenAndClose.setPosition(Constants.clawOpen);
+                clawServo.setPosition(Constants.CLAW_OPEN);
             }
             else // THen the claw has to be closed
             {
-                // clawOpenAndClose.setPosition(Constants.clawclosed);
+                clawServo.setPosition(Constants.CLAW_CLOSED);
             }
 
         }
 
     }
-
 
     public void ToggleLoops()
     {
@@ -350,7 +356,6 @@ public class BasicRobotCode6780Interview extends OpMode
         }
 
     }
-
 
     /*
      * Code to run ONCE after the driver hits STOP

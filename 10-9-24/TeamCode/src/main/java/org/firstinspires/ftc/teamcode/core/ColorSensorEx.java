@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.core;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-public class ColorSensorDetails {
+public class ColorSensorEx {
 
 
-    public ColorSensorDetails(ColorSensor colorSensor) {
+    public ColorSensorEx(ColorSensor colorSensor) {
+
         this.colorSensor = colorSensor;
 
         if (colorSensor != null) {
@@ -27,7 +28,7 @@ public class ColorSensorDetails {
     public byte brightness;
 
 
-    public  void UpdateColorValues()
+    public void UpdateColorValues()
     {
         red = (byte)colorSensor.red();
         green = (byte)colorSensor.red();
@@ -43,5 +44,10 @@ public class ColorSensorDetails {
         brightness = (byte)Math.round(hueSaturationBrightness[2] * 256);
     }
 
+
+    public void enableLED(boolean enableLED)
+    {
+        colorSensor.enableLed(enableLED);
+    }
 
 }

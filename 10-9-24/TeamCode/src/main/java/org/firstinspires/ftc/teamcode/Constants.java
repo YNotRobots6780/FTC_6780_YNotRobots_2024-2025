@@ -16,8 +16,8 @@ public class Constants
     public final static int LOW_SAMPLE = 980;
     public final static int HIGH_SAMPLE = 2640;
 
-    public final static int CLAW_CLOSED = 0;
-    public final static int CLAW_OPEN = 0;
+    public final static int CLAW_CLOSED = 2/30; // 2mm out of 30 total
+    public final static int CLAW_OPEN = 6/30; // 6mm out of 30 total
 
     public final static double INTAKE_LIFT_POWER = 0.5;
     public final static int INTAKE_LIFT_UP = 120;

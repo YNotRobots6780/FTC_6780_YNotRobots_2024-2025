@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
+
 public class IntakeHandler {
 
     public enum Action
@@ -35,7 +37,7 @@ public class IntakeHandler {
         }
     }
 
-    private Action Update(ColorSensorDetails colorSensorDetails, double deltatime)
+    private Action Update(ColorSensorEx colorSensor, double deltatime)
     {
         currentActionTime += deltatime;
 
@@ -46,7 +48,7 @@ public class IntakeHandler {
 
         // ============================================= Track new Samples =============================================
         // Sample Did come in
-        if (colorSensorDetails.brightness > 100)
+        if (colorSensor.brightness > 100)
         {
             // Does not matter the color
             if (team == Constants.Team.Undetermined)
@@ -57,7 +59,7 @@ public class IntakeHandler {
             else
             {
                 // Correct Color
-                boolean isInColorRange = colorSensorDetails.hue < exclusiveHueRangeMin && colorSensorDetails.hue > exclusiveHueRangeMax;
+                boolean isInColorRange = colorSensor.hue < exclusiveHueRangeMin && colorSensor.hue > exclusiveHueRangeMax;
                 if (!isInColorRange)
                 {
                     sampleCount++;
