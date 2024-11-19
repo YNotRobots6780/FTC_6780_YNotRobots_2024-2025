@@ -133,7 +133,7 @@ public class BasicRobotCode6780 extends OpMode
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 

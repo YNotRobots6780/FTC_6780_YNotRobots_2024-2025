@@ -110,7 +110,7 @@ public class BasicRobotCode6780Interview extends OpMode
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
