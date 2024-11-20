@@ -31,9 +31,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.exception.TargetPositionNotSetException;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
+
+import java.lang.annotation.Target;
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.
@@ -59,15 +65,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class SampleAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private ElapsedTime     runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
     public DcMotor frontLeftMotor = null;
     public DcMotor frontRightMotor = null;
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
 
     public DcMotor elevatorMotor = null;
-
-    
+    private DcMotor intakeMotor;
+    private DcMotor intakeLiftMotor;
+    private Servo intakeServo1;
+    private Servo intakeServo2;
     public Servo clawServo = null;
 
     public boolean firstStep = false;
@@ -77,16 +85,12 @@ public class SampleAuto extends LinearOpMode {
     public boolean StepFive = false;
     public boolean stepSix = false;
     public boolean stepSeven = false;
-
+    private ColorSensorEx frontIntakeColorSensor;
     int driveTime = 0;
-
-
-
 
 
     // Elevator
     public int targetElevatorPosition;
-    
 
 
     @Override
@@ -97,7 +101,13 @@ public class SampleAuto extends LinearOpMode {
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
-        elevatorMotor = hardwareMap.get(DcMotor.class,"elavatorMotor");
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // ex: 2
+        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // ex 3
+        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
+        intakeServo1 = hardwareMap.get(Servo.class, "intakeServo1");
+        intakeServo2 = hardwareMap.get(Servo.class, "intakeServo2");
+
 
         // To drive forwareversed, because the axles point in opposite directions.
         // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -113,6 +123,10 @@ public class SampleAuto extends LinearOpMode {
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeLiftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -121,11 +135,12 @@ public class SampleAuto extends LinearOpMode {
 
         waitForStart();
 
-
+    /*
        elevatorMotor.setPower(1);
         elevatorMotor.setTargetPosition(Constants.HIGH_BUCKET);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
           // enter servo=============================================================================
+
            sleep(6000);
             Return();
             sleep(8000);
@@ -135,27 +150,30 @@ public class SampleAuto extends LinearOpMode {
             sleep(driveTime);
             MoveRobotFoward(4000);
 
-
-
-
-
-
-
-
+        */
+        intakeLiftMotor.setPower(1);
+        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(2000);
+        Out(Constants.HIGH_BUCKET);
+        sleep(2000);
+        MoveRobotFoward(500);
+        MoveRobotBack(500);
+        Return();
+        sleep(2000);
+        shimmyLeft(100);
+        pickUp(4000,500, true);
 
     }
 
 
-    private void Return ()
-    {
+    private void Return() {
         elevatorMotor.setTargetPosition(0);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 
-
-    private void MoveRobotFoward (int driveTime)
-    {
+    private void MoveRobotFoward(int driveTime) {
         backLeftMotor.setPower(0.5);
         frontLeftMotor.setPower(0.5);
         backRightMotor.setPower(0.5);
@@ -167,21 +185,19 @@ public class SampleAuto extends LinearOpMode {
         frontRightMotor.setPower(0);
     }
 
-    private void turnLeft(int driveTime)
-    {
-    frontRightMotor.setPower(0.5);
-    backRightMotor.setPower(0.5);
-    frontLeftMotor.setPower(-0.5);
-    backLeftMotor.setPower(-0.5);
-    sleep(driveTime);
-    frontRightMotor.setPower(0);
-    backRightMotor.setPower(0);
-    frontLeftMotor.setPower(0);
-    backLeftMotor.setPower(0);
+    private void turnLeft(int driveTime) {
+        frontRightMotor.setPower(0.5);
+        backRightMotor.setPower(0.5);
+        frontLeftMotor.setPower(-0.5);
+        backLeftMotor.setPower(-0.5);
+        sleep(driveTime);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
     }
 
-    private void turnRight(int driveTime)
-    {
+    private void turnRight(int driveTime) {
         frontRightMotor.setPower(-0.5);
         backRightMotor.setPower(-0.5);
         frontLeftMotor.setPower(0.5);
@@ -193,21 +209,19 @@ public class SampleAuto extends LinearOpMode {
         backLeftMotor.setPower(0);
     }
 
-  private void  shimmyRight (int driveTime)
-  {
-      frontRightMotor.setPower(0.5);
-      backRightMotor.setPower(-0.5);
-      frontLeftMotor.setPower(0.5);
-      backLeftMotor.setPower(-0.5);
-      sleep (driveTime);
-      frontRightMotor.setPower(0);
-      backRightMotor.setPower(0);
-      frontLeftMotor.setPower(0);
-      backLeftMotor.setPower(0);
-  }
+    private void shimmyRight(int driveTime) {
+        frontRightMotor.setPower(0.5);
+        backRightMotor.setPower(-0.5);
+        frontLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(-0.5);
+        sleep(driveTime);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+    }
 
-    private void  shimmyLeft (int driveTime)
-    {
+    private void shimmyLeft(int driveTime) {
         frontRightMotor.setPower(0.5);
         backRightMotor.setPower(-0.5);
         frontLeftMotor.setPower(0.5);
@@ -220,11 +234,7 @@ public class SampleAuto extends LinearOpMode {
     }
 
 
-
-
-
-    public  void MoveRobot(double x, double z, double rotation)
-    {   // Denominator is the largest motor power (absolute value) or 1
+    public void MoveRobot(double x, double z, double rotation) {   // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
         // at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(rotation), 1);
@@ -237,6 +247,66 @@ public class SampleAuto extends LinearOpMode {
         frontRightMotor.setPower(frontRightPower);
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
+    }
+
+    private void MoveRobotBack(int driveTime) {
+        backLeftMotor.setPower(-0.5);
+        frontLeftMotor.setPower(-0.5);
+        backRightMotor.setPower(-0.5);
+        frontRightMotor.setPower(-0.5);
+        sleep(driveTime);
+        backLeftMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontRightMotor.setPower(0);
+    }
+
+    private void intake(int runTime) {
+        intakeMotor.setPower(Constants.INTAKE_POWER);
+        intakeServo1.setPosition(1);
+        intakeServo2.setPosition(1);
+        sleep(runTime);
+        intakeMotor.setPower(0);
+        intakeServo1.setPosition(0);
+        intakeServo2.setPosition(0);
+    }
+
+
+    private void Out(int targetPosition) {
+        elevatorMotor.setTargetPosition(targetPosition);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void pickUp(int driveTime, int driveDistece, boolean runing)
+    {
+        if (runing == true)
+        {
+        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_DOWN);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakeMotor.setPower(Constants.INTAKE_POWER);
+        intakeServo1.setPosition(1);
+        intakeServo2.setPosition(1);
+        sleep(driveTime);
+        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakeMotor.setPower(0);
+        intakeServo1.setPosition(0);
+        intakeServo2.setPosition(0);
+
+        }
+    if(runing == true)
+    {
+        backLeftMotor.setPower(0.5);
+        frontLeftMotor.setPower(0.5);
+        backRightMotor.setPower(0.5);
+        frontRightMotor.setPower(0.5);
+        sleep(driveDistece);
+        backLeftMotor.setPower(0);
+        frontLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+        frontRightMotor.setPower(0);
+    }
+
     }
 
 

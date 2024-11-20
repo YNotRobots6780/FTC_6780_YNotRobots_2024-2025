@@ -16,10 +16,10 @@ public class IntakeHandler {
     private short exclusiveHueRangeMax;
 
 
-    private byte sampleCount = 0;
+    public byte sampleCount = 0;
 
-    private Action currentAction;
-    private double currentActionTime;
+    public Action currentAction;
+    public double currentActionTime;
 
     private boolean sampleAddedLastFrame;
 
@@ -45,11 +45,16 @@ public class IntakeHandler {
 
     public Action Update(double deltaTime)
     {
+        colorSensor.UpdateColorValues();
         currentActionTime += deltaTime;
 
         if (currentAction == Action.OutTake && currentActionTime < Constants.OUTTAKE_TIME)
         {
             return Action.OutTake;
+        }
+        else if (sampleCount == 1 && currentAction == Action.InTake && currentActionTime > Constants.INTAKE_TIME)
+        {
+            return Action.ShutDown;
         }
 
         // ============================================= Track new Samples =============================================
@@ -76,6 +81,7 @@ public class IntakeHandler {
                     if (!isInColorRange)
                     {
                         sampleCount++;
+                        currentActionTime = 0;
                     }
                     // Wrong Color
                     else
@@ -99,7 +105,7 @@ public class IntakeHandler {
         }
         else if (sampleCount == 1)
         {
-            if (currentActionTime > 0.5)
+            if (currentActionTime < Constants.INTAKE_TIME)
             {
                 SetAction(Action.InTake);
                 return Action.InTake;
