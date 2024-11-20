@@ -82,9 +82,9 @@ public class BasicRobotCode6780 extends OpMode
 
 
     /* Declare OpMode members. */
-    private Encoder rightOdometer;
-    private Encoder leftOdometer;
-    private Encoder backOdometer;
+    // private Encoder rightOdometer;
+    // private Encoder leftOdometer;
+    // private Encoder backOdometer;
 
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
@@ -94,6 +94,8 @@ public class BasicRobotCode6780 extends OpMode
     private DcMotor intakeLiftMotor;
     private DcMotor elevatorMotor;
 
+    // private Servo intakeServo1;
+    private Servo intakeServo2;
     private Servo clawServo;
     private ColorSensorEx frontIntakeColorSensor;
 
@@ -103,19 +105,21 @@ public class BasicRobotCode6780 extends OpMode
     @Override
     public void init() {
         // Define and Initialize Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // 1
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // ex: 3
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // 0
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // ex: 2
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
-        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // ex: 1
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // 2
+        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // ex: 0
+        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // 3
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // ex: 2
+        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); // 1
+        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // ex 3
+        // clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
         frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
+        // intakeServo1 = hardwareMap.get(Servo.class,"intakeServo1");
+        intakeServo2 = hardwareMap.get(Servo.class,"intakeServo2");
 
-        leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
-        rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
-        backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
+        // leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
+        // rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_right"));
+        // backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
 
         intakeHandler = new IntakeHandler(Constants.CURRENT_TEAM, frontIntakeColorSensor);
 
@@ -129,9 +133,10 @@ public class BasicRobotCode6780 extends OpMode
 
 
 
+        // intakeServo1.setDirection(Servo.Direction.REVERSE);
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -203,23 +208,23 @@ public class BasicRobotCode6780 extends OpMode
             // ======================================================= Drive =======================================================
 
             // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
-            double z = -gamepad2.left_stick_y; // Remember, Y stick is reversed!
-            double x = gamepad2.left_stick_x * 1.1; // Counteract imperfect strafing
-            double ry = gamepad2.right_stick_x;
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
 
             // Denominator is the largest motor power (absolute value) or 1
-            // This ensures all the powers maintain the same ratio, but only when
-            // at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(ry), 1);
-            double frontLeftPower = (z + x + ry) / denominator;
-            double frontRightPower = (z - x - ry) / denominator;
-            double backLeftPower = (z - x + ry) / denominator;
-            double backRightPower = (z + x - ry) / denominator;
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower * Constants.MOVEMENT_SPEED);
-            frontRightMotor.setPower(frontRightPower * Constants.MOVEMENT_SPEED);
-            backLeftMotor.setPower(backLeftPower * Constants.MOVEMENT_SPEED);
-            backRightMotor.setPower(backRightPower * Constants.MOVEMENT_SPEED);
+            frontLeftMotor.setPower(frontLeftPower);
+            backLeftMotor.setPower(backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
 
 
 
@@ -230,9 +235,12 @@ public class BasicRobotCode6780 extends OpMode
             if(gamepad2.a)
             {
                 intakeMotor.setPower(Constants.INTAKE_POWER);
+                // intakeServo1.setPosition(1);
             }
-            else {
+            else
+            {
                 intakeMotor.setPower(0);
+                // intakeServo1.setPosition(0.5);
             }
 
 
@@ -272,11 +280,11 @@ public class BasicRobotCode6780 extends OpMode
 
             if (isClawOpen)
             {
-                clawServo.setPosition(Constants.CLAW_OPEN);
+                // clawServo.setPosition(Constants.CLAW_OPEN);
             }
             else // THen the claw has to be closed
             {
-                clawServo.setPosition(Constants.CLAW_CLOSED);
+                // clawServo.setPosition(Constants.CLAW_CLOSED);
             }
         }
         else
@@ -308,7 +316,7 @@ public class BasicRobotCode6780 extends OpMode
 
 
             // ======================================================= Intake =======================================================
-
+/*
             if (shouldPowerIntake)
             {
                 IntakeHandler.Action intateAction = intakeHandler.Update(deltaTime);
@@ -330,7 +338,21 @@ public class BasicRobotCode6780 extends OpMode
             else
             {
                 intakeMotor.setPower(0);
+            }*/
+
+            if(gamepad1.a)
+            {
+                intakeMotor.setPower(Constants.INTAKE_POWER);
+//                intakeServo1.setPosition(Constants.INTAKE_SERVO_POWER_FORWARD);
+                intakeServo2.setPosition(Constants.INTAKE_SERVO_POWER_FORWARD);
             }
+            else
+            {
+                intakeMotor.setPower(0);
+//                intakeServo1.setPosition(Constants.INTAKE_SERVO_POWER_OFF);
+                intakeServo2.setPosition(Constants.INTAKE_SERVO_POWER_OFF);
+            }
+
 
             if(gamepad1.b)
             {
@@ -386,16 +408,21 @@ public class BasicRobotCode6780 extends OpMode
 
             if (isClawOpen)
             {
-                clawServo.setPosition(Constants.CLAW_OPEN);
+                // clawServo.setPosition(Constants.CLAW_OPEN);
             }
             else // THen the claw has to be closed
             {
-                clawServo.setPosition(Constants.CLAW_CLOSED);
+                // clawServo.setPosition(Constants.CLAW_CLOSED);
             }
 
         }
 
         lastCycleTime = currentCycleTime;
+
+
+
+        telemetry.addData(">", "Lift Encoder: " + intakeLiftMotor.getCurrentPosition());    //
+        telemetry.update();
     }
 
 

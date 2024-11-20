@@ -94,7 +94,7 @@ public class BasicRobotCode6780Interview extends OpMode
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
         elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
         intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
+        // clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
         frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
 
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
