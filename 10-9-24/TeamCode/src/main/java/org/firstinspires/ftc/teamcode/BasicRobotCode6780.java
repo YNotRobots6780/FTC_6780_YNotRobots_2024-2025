@@ -265,10 +265,6 @@ public class BasicRobotCode6780 extends OpMode
 
 
 
-
-
-
-
             if (gamepad2.b)
             {
                 intakeLiftMotor.setPower(Constants.INTAKE_LIFT_POWER);
@@ -341,7 +337,7 @@ public class BasicRobotCode6780 extends OpMode
 
 
             // ======================================================= Intake =======================================================
-
+/*
             if (shouldPowerIntake)
             {
                 IntakeHandler.Action intateAction = intakeHandler.Update(deltaTime);
@@ -375,7 +371,9 @@ public class BasicRobotCode6780 extends OpMode
                 intakeServo1.setPosition(Constants.INTAKE_SERVO_POWER_OFF);
                 intakeServo2.setPosition(Constants.INTAKE_SERVO_POWER_OFF);
             }
-/*
+            */
+
+
             if(gamepad1.a)
             {
                 intakeMotor.setPower(Constants.INTAKE_POWER);
@@ -389,7 +387,7 @@ public class BasicRobotCode6780 extends OpMode
                 intakeServo2.setPosition(Constants.INTAKE_SERVO_POWER_OFF);
             }
 
-*/
+
             if(gamepad1.b)
             {
                 intakeLiftMotor.setPower(Constants.INTAKE_LIFT_POWER);
