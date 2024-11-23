@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
+import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 
 import java.lang.annotation.Target;
 
@@ -91,51 +92,13 @@ public class SampleAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Define and Inited, most robots need the motor on one side to be ralize Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right");
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left");
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor");
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // ex: 2
-        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // ex 3
-        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
-        intakeServo1 = hardwareMap.get(Servo.class, "intakeServo1");
-        intakeServo2 = hardwareMap.get(Servo.class, "intakeServo2");
-        clawServo = hardwareMap.get(Servo.class,"claw");
-
-        // To drive forwareversed, because the axles point in opposite directions.
-        // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels. Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
+        Constants.CURRENT_TEAM = Constants.Team.Red;
 
 
-        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLiftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        HardwareModule.GetHardware(this);
 
 
-        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
-        telemetry.update();
+        telemetry.addData(">", "Ready to Run");
 
 
         waitForStart();

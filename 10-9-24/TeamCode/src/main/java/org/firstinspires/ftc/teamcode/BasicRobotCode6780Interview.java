@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
+import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 
 /*
  * This OpMode executes a Mechinum Drive control TeleOp a direct drive robot
@@ -90,32 +91,13 @@ public class BasicRobotCode6780Interview extends OpMode
      */
     @Override
     public void init() {
-        // Define and Initialize Motors
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // 2
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); //ex 1
-        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // 3
-        // clawServo = hardwareMap.get(Servo.class,"claw"); // NONE
-        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
-
-        leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
-        rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
-        backOdometer = new Encoder(hardwareMap.get(DcMotor.class, "back_left"));
+        Constants.CURRENT_TEAM = Constants.Team.Red;
 
 
-
-        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        HardwareModule.GetHardware(this);
 
 
-        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
-        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData(">", "Robot Ready.  Press Play.");    //
+        telemetry.addData(">", "Robot Ready.  Press Play.");
     }
 
     /*
