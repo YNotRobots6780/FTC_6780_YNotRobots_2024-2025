@@ -11,14 +11,14 @@ public class Constants
 
     public final static double ELEVATOR_POWER = 1;
     public final static int ELEVATOR_RETRACTED = 0;
-    public final static int HIGH_BUCKET = 5440;
-    public final static int LOW_BUCKET = 2680;
+    public final static int HIGH_BUCKET = 5440 + 75;
+    public final static int LOW_BUCKET = 2780;
     public final static int LOW_SAMPLE = 980;
     public final static int HIGH_SAMPLE = 2640;
 
-    public final static double CLAW_CLOSED = 2f/30; // 2mm out of 30 total
+    public final static double CLAW_CLOSED = 6f/30; // 2mm out of 30 total
     public final static double CLAW_OPEN = 16f/30; // 6mm out of 30 total
-    public final static double CLAW_GRAB = 6f/30; // 6mm out of 30 total
+    public final static double CLAW_GRAB = 10f/30; // 6mm out of 30 total
 
     public final static double INTAKE_LIFT_POWER = 1;
     public final static int INTAKE_LIFT_UP = 1300;

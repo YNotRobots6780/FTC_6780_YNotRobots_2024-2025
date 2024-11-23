@@ -76,7 +76,7 @@ public class BasicRobotCode6780 extends OpMode
 
     // ========================================== Servo loop control ==========================================
 
-    private boolean isClawOpen = false;
+    private boolean isClawOpen = true;
     private boolean servoFirstTime = false;
 
 
@@ -116,6 +116,7 @@ public class BasicRobotCode6780 extends OpMode
         frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
         intakeServo1 = hardwareMap.get(Servo.class,"intakeServo1");
         intakeServo2 = hardwareMap.get(Servo.class,"intakeServo2");
+
 
         // leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
         // rightOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_right"));
@@ -166,6 +167,22 @@ public class BasicRobotCode6780 extends OpMode
      */
     @Override
     public void loop() {
+
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("FrontRight", frontRightMotor.getCurrentPosition());
+        telemetry.addData("FrontLeft", frontLeftMotor.getCurrentPosition());
+        telemetry.addData("Back", intakeMotor.getCurrentPosition());
+
+
+
         currentCycleTime = System.nanoTime();
 
         if (!(currentCycleTime == 0 || lastCycleTime == 0))
@@ -234,7 +251,7 @@ public class BasicRobotCode6780 extends OpMode
 
 
 
-            if(gamepad2.a)
+            if(gamepad2.dpad_left)
             {
                 intakeMotor.setPower(Constants.INTAKE_POWER);
                 intakeServo1.setPosition(1);

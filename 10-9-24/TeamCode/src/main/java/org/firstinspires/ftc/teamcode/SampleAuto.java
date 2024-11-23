@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.TargetPositionNotSetException;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -78,13 +79,7 @@ public class SampleAuto extends LinearOpMode {
     private Servo intakeServo2;
     public Servo clawServo = null;
 
-    public boolean firstStep = false;
-    public boolean secondStep = false;
-    public boolean stepThree = false;
-    public boolean stepFour = false;
-    public boolean StepFive = false;
-    public boolean stepSix = false;
-    public boolean stepSeven = false;
+
     private ColorSensorEx frontIntakeColorSensor;
     int driveTime = 0;
 
@@ -107,7 +102,7 @@ public class SampleAuto extends LinearOpMode {
         frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
         intakeServo1 = hardwareMap.get(Servo.class, "intakeServo1");
         intakeServo2 = hardwareMap.get(Servo.class, "intakeServo2");
-
+        clawServo = hardwareMap.get(Servo.class,"claw");
 
         // To drive forwareversed, because the axles point in opposite directions.
         // Pushing the left and right sticks forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -126,6 +121,16 @@ public class SampleAuto extends LinearOpMode {
         intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeLiftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // Send telemetry message to signify robot waiting;
@@ -151,23 +156,48 @@ public class SampleAuto extends LinearOpMode {
             MoveRobotFoward(4000);
 
         */
-        intakeLiftMotor.setPower(1);
+      /*  intakeLiftMotor.setPower(1);
         intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(2000);
+        MoveRobotFoward(500);
+        sleep(1000);
         Out(Constants.HIGH_BUCKET);
         sleep(2000);
-        MoveRobotFoward(500);
-        MoveRobotBack(500);
+       clawServo.setPosition(Constants.CLAW_OPEN);
+       sleep(5000);
+       clawServo.setPosition(Constants.CLAW_CLOSED);
+       MoveRobotBack(500);
         Return();
         sleep(2000);
         shimmyLeft(100);
         pickUp(4000,500, true);
+*/
+        //pathFiding();
+        //sleep(30000);
+
+
+        intakeLiftMotor.setPower(1);
+        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
+        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+     sleep(4000);
+    Out(Constants.HIGH_BUCKET);
+    sleep(6000);
+    clawServo.setPosition(Constants.CLAW_OPEN);
+    sleep(2000);
+    clawServo.setPosition(Constants.CLAW_CLOSED);
+    sleep(1000);
+    Return();
+    intakeLiftMotor.setPower(1);
+    intakeLiftMotor.setTargetPosition(0);
+    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
     }
 
 
-    private void Return() {
+    private void Return()
+    {
         elevatorMotor.setTargetPosition(0);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -224,8 +254,8 @@ public class SampleAuto extends LinearOpMode {
     private void shimmyLeft(int driveTime) {
         frontRightMotor.setPower(0.5);
         backRightMotor.setPower(-0.5);
-        frontLeftMotor.setPower(0.5);
-        backLeftMotor.setPower(-0.5);
+        frontLeftMotor.setPower(-0.5);
+        backLeftMotor.setPower(0.5);
         sleep(driveTime);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
@@ -273,39 +303,102 @@ public class SampleAuto extends LinearOpMode {
 
 
     private void Out(int targetPosition) {
+        elevatorMotor.setPower(Constants.ELEVATOR_POWER);
         elevatorMotor.setTargetPosition(targetPosition);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    private void pickUp(int driveTime, int driveDistece, boolean runing)
-    {
-        if (runing == true)
-        {
-        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_DOWN);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intakeMotor.setPower(Constants.INTAKE_POWER);
-        intakeServo1.setPosition(1);
-        intakeServo2.setPosition(1);
-        sleep(driveTime);
-        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intakeMotor.setPower(0);
-        intakeServo1.setPosition(0);
-        intakeServo2.setPosition(0);
+    private void pickUp(int driveTime, int driveDistece, boolean runing) {
+        if (runing == true) {
+            intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_DOWN);
+            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeMotor.setPower(Constants.INTAKE_POWER);
+            intakeServo1.setPosition(1);
+            intakeServo2.setPosition(1);
+            sleep(driveTime);
+            intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
+            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeMotor.setPower(0);
+            intakeServo1.setPosition(0);
+            intakeServo2.setPosition(0);
 
         }
-    if(runing == true)
-    {
-        backLeftMotor.setPower(0.5);
-        frontLeftMotor.setPower(0.5);
-        backRightMotor.setPower(0.5);
-        frontRightMotor.setPower(0.5);
-        sleep(driveDistece);
-        backLeftMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        frontRightMotor.setPower(0);
+        if (runing == true) {
+            backLeftMotor.setPower(0.5);
+            frontLeftMotor.setPower(0.5);
+            backRightMotor.setPower(0.5);
+            frontRightMotor.setPower(0.5);
+            sleep(driveDistece);
+            backLeftMotor.setPower(0);
+            frontLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+            frontRightMotor.setPower(0);
+        }
+
     }
+//
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public void pathFiding() {
+
+        int frontRight = frontRightMotor.getCurrentPosition();
+        int frontLeft = frontLeftMotor.getCurrentPosition();
+        int back = intakeMotor.getCurrentPosition();
+        int F_B = frontRight + frontLeft / 2;
+        int L_R = back;
+        int targetPoshion_F_B = 1000;
+        int targetPoshion_L_R = 1000;
+
+        if (L_R > targetPoshion_L_R) {
+            // Shimmy Right
+            frontRightMotor.setPower(0.5);
+            backRightMotor.setPower(-0.5);
+            frontLeftMotor.setPower(0.5);
+            backLeftMotor.setPower(-0.5);
+        }
+
+        sleep(1000);
+
+        if (L_R < targetPoshion_L_R) {
+            //shimmy Left
+            frontRightMotor.setPower(0.5);
+            backRightMotor.setPower(-0.5);
+            frontLeftMotor.setPower(0.5);
+            backLeftMotor.setPower(-0.5);
+        }
+
+
+        sleep(1000);
+
+        if (L_R == targetPoshion_L_R) {
+            frontRightMotor.setPower(0);
+            backRightMotor.setPower(0);
+            frontLeftMotor.setPower(0);
+            backLeftMotor.setPower(0);
+        }
+
+        sleep(1000);
+
+        if (F_B > targetPoshion_F_B) {
+            backLeftMotor.setPower(-0.5);
+            frontLeftMotor.setPower(-0.5);
+            backRightMotor.setPower(-0.5);
+            frontRightMotor.setPower(-0.5);
+        }
+
+        sleep(1000);
+
+        if (F_B < targetPoshion_F_B) {
+            backLeftMotor.setPower(0.5);
+            frontLeftMotor.setPower(0.5);
+            backRightMotor.setPower(0.5);
+            frontRightMotor.setPower(0.5);
+        }
+
 
     }
 
