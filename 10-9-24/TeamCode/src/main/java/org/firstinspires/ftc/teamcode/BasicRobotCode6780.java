@@ -261,8 +261,8 @@ public class BasicRobotCode6780 extends OpMode
         }
         else
         {
-            // ======================================================= Drive =======================================================
 
+            /*
             // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
             double z = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -281,7 +281,7 @@ public class BasicRobotCode6780 extends OpMode
             HardwareModule.frontRightMotor.setPower(frontRightPower * Constants.MOVEMENT_SPEED);
             HardwareModule.backLeftMotor.setPower(backLeftPower * Constants.MOVEMENT_SPEED);
             HardwareModule.backRightMotor.setPower(backRightPower * Constants.MOVEMENT_SPEED);
-
+            */
             // a = intake; b = intake up; y = intake down;
 
             ToggleLoops();
