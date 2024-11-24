@@ -98,6 +98,9 @@ public class HardwareModule {
 
         // Servos
         intakeServo1.setDirection(Servo.Direction.REVERSE);
+
+
+        elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 }

@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
+import org.firstinspires.ftc.teamcode.modules.DriveModule;
 import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 
 /*
@@ -59,6 +60,7 @@ import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 public class BasicRobotCode6780 extends OpMode
 {
 
+    private DriveModule driveModule;
 
     // ========================================== Intake Toggle ==========================================
 
@@ -93,7 +95,12 @@ public class BasicRobotCode6780 extends OpMode
         HardwareModule.GetHardware(this);
 
 
-        telemetry.addData(">", "Robot Ready.  Press Play.");
+        driveModule = new DriveModule(this);
+        driveModule.SetPathFindingBehavior(DriveModule.PathFindingBehavior.None);
+        driveModule.SetControlBehavior(DriveModule.ControlBehavior.FirstController);
+
+
+        telemetry.addData(">", "Robot Ready.  Press Play.");    //
     }
 
     @Override
@@ -106,21 +113,6 @@ public class BasicRobotCode6780 extends OpMode
 
     @Override
     public void loop() {
-
-        HardwareModule.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        HardwareModule.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        HardwareModule.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        HardwareModule.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        HardwareModule.intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        HardwareModule.intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        telemetry.addData("FrontRight", HardwareModule.frontRightMotor.getCurrentPosition());
-        telemetry.addData("FrontLeft", HardwareModule.frontLeftMotor.getCurrentPosition());
-        telemetry.addData("Back", HardwareModule.intakeMotor.getCurrentPosition());
-
-
 
         currentCycleTime = System.nanoTime();
 
@@ -144,12 +136,14 @@ public class BasicRobotCode6780 extends OpMode
                     HardwareModule.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     HardwareModule.intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     intakeHandler.Reset();
+                    driveModule.SetControlBehavior(DriveModule.ControlBehavior.FirstController);
                 }
                 else
                 {
                     isOnOverride = true;
                     HardwareModule.elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     HardwareModule.intakeLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    driveModule.SetControlBehavior(DriveModule.ControlBehavior.SecondController);
                 }
             }
 
@@ -163,6 +157,7 @@ public class BasicRobotCode6780 extends OpMode
 
         if (isOnOverride)
         {
+            /*
             // ======================================================= Drive =======================================================
 
             // Run wheels in tank mode (note: The joystick goes negative when pushed forward, so negate it)
@@ -183,6 +178,7 @@ public class BasicRobotCode6780 extends OpMode
             HardwareModule.backLeftMotor.setPower(backLeftPower);
             HardwareModule.frontRightMotor.setPower(frontRightPower);
             HardwareModule.backRightMotor.setPower(backRightPower);
+            */
 
 
 
@@ -258,7 +254,7 @@ public class BasicRobotCode6780 extends OpMode
             {
                 HardwareModule.clawServo.setPosition(Constants.CLAW_OPEN);
             }
-            else // THen the claw has to be closed
+            else // Then the claw has to be closed
             {
                 HardwareModule.clawServo.setPosition(Constants.CLAW_CLOSED);
             }
@@ -410,7 +406,7 @@ public class BasicRobotCode6780 extends OpMode
 
         lastCycleTime = currentCycleTime;
 
-        getRuntime();
+
 
         telemetry.update();
     }
