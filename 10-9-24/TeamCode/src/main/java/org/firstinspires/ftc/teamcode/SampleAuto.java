@@ -145,15 +145,7 @@ public class SampleAuto extends LinearOpMode {
         intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
      sleep(4000);
     Out(Constants.HIGH_BUCKET);
-    sleep(6000);
-    clawServo.setPosition(Constants.CLAW_OPEN);
-    sleep(2000);
-    clawServo.setPosition(Constants.CLAW_CLOSED);
-    sleep(1000);
-    Return();
-    intakeLiftMotor.setPower(1);
-    intakeLiftMotor.setTargetPosition(0);
-    intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    sleep(30000);
 
 
     }

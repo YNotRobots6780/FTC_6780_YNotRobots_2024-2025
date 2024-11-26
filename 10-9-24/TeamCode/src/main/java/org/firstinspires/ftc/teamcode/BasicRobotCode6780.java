@@ -192,15 +192,7 @@ public class BasicRobotCode6780 extends OpMode
                 HardwareModule.intakeServo1.setPosition(1);
                 HardwareModule.intakeServo2.setPosition(1);
             }
-            else
-            {
-                HardwareModule.intakeMotor.setPower(0);
-                HardwareModule.intakeServo1.setPosition(0.5);
-                HardwareModule.intakeServo2.setPosition(0.5);
-            }
-
-
-            if(gamepad2.dpad_down)
+            else if(gamepad2.dpad_down)
             {
                 HardwareModule.intakeMotor.setPower(-1);
                 HardwareModule.intakeServo1.setPosition(-1);
