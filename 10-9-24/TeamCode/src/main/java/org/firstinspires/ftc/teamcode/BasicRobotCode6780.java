@@ -60,6 +60,23 @@ import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 public class BasicRobotCode6780 extends OpMode
 {
 
+   
+    
+    
+        public DcMotor frontLeftMotor = null;
+    public DcMotor frontRightMotor = null;
+    public DcMotor backLeftMotor = null;
+    public DcMotor backRightMotor = null;
+
+    public DcMotor elevatorMotor = null;
+    private DcMotor intakeMotor;
+    private DcMotor intakeLiftMotor;
+    private Servo intakeServo1;
+    private Servo intakeServo2;
+    public Servo clawServo = null;
+
+    
+    
     private DriveModule driveModule;
 
     // ========================================== Intake Toggle ==========================================
