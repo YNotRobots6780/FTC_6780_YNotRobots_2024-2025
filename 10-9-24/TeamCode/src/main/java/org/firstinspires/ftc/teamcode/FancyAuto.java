@@ -64,7 +64,7 @@ import java.lang.annotation.Target;
 
 @Autonomous(name="Sample Auto", group="Robot")
 // @Disabled
-public class SampleAuto extends LinearOpMode {
+public class FancyAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,20 +73,11 @@ public class SampleAuto extends LinearOpMode {
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
 
-    public DcMotor elevatorMotor = null;
-    private DcMotor intakeMotor;
-    private DcMotor intakeLiftMotor;
-    private Servo intakeServo1;
-    private Servo intakeServo2;
-    public Servo clawServo = null;
 
 
-    private ColorSensorEx frontIntakeColorSensor;
     int driveTime = 0;
 
 
-    // Elevator
-    public int targetElevatorPosition;
 
 
     @Override
@@ -103,14 +94,14 @@ public class SampleAuto extends LinearOpMode {
 
         waitForStart();
 
-
+    }
                
       
     public void pathFiding() {
 
         int frontRight = frontRightMotor.getCurrentPosition();
         int frontLeft = frontLeftMotor.getCurrentPosition();
-        int back = intakeMotor.getCurrentPosition();
+        int back = backRightMotor.getCurrentPosition();
         int F_B = frontRight + frontLeft / 2;
         int L_R = back;
         int targetPoshion_F_B = 1000;

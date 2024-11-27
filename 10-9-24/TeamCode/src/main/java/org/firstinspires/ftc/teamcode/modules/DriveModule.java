@@ -162,7 +162,7 @@ public class DriveModule extends Thread {
             isFollowingPath = false;
         }
     }
-    public void MoveForMilliseconds(double x, double z, double rotation, double seconds)
+    public void MoveForSeconds(double x, double z, double rotation, double seconds)
     {
         movement.x = x;
         movement.z = z;
