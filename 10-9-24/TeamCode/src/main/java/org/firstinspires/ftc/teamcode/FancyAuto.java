@@ -1,20 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+O ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
  * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -62,9 +46,10 @@ import java.lang.annotation.Target;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Sample Auto", group="Robot")
+@Autonomous(name="Odomatry Auto", group="Robot")
 // @Disabled
-public class FancyAuto extends LinearOpMode {
+public class SampleAuto extends LinearOpMode 
+{
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,11 +58,20 @@ public class FancyAuto extends LinearOpMode {
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
 
+    public DcMotor elevatorMotor = null;
+    private DcMotor intakeMotor;
+    private DcMotor intakeLiftMotor;
+    private Servo intakeServo1;
+    private Servo intakeServo2;
+    public Servo clawServo = null;
 
 
+    private ColorSensorEx frontIntakeColorSensor;
     int driveTime = 0;
 
 
+    // Elevator
+    public int targetElevatorPosition;
 
 
     @Override
@@ -94,67 +88,143 @@ public class FancyAuto extends LinearOpMode {
 
         waitForStart();
 
-    }
+
                
       
-    public void pathFiding() {
+    public void pathFindeing()
+     {
 
         int frontRight = frontRightMotor.getCurrentPosition();
         int frontLeft = frontLeftMotor.getCurrentPosition();
-        int back = backRightMotor.getCurrentPosition();
-        int F_B = frontRight + frontLeft / 2;
-        int L_R = back;
+        int back = intakeMotor.getCurrentPosition();
         int targetPoshion_F_B = 1000;
         int targetPoshion_L_R = 1000;
-
-        if (L_R > targetPoshion_L_R) {
+        int rotashion = Constants.R;
+         
+        
+        else if (Constants.L_R > targetPoshion_L_R) 
+        {
             // Shimmy Right
-            frontRightMotor.setPower(0.5);
-            backRightMotor.setPower(-0.5);
-            frontLeftMotor.setPower(0.5);
-            backLeftMotor.setPower(-0.5);
+            frontRightMotor.setPower(x + 0.5);
+            backRightMotor.setPower(x + -0.5);
+            frontLeftMotor.setPower(x + -0.5);
+            backLeftMotor.setPower(x + -0.5);
         }
 
         sleep(1000);
 
-        if (L_R < targetPoshion_L_R) {
+        else if (Constants.L_R < targetPoshion_L_R) 
+        {
             //shimmy Left
-            frontRightMotor.setPower(0.5);
-            backRightMotor.setPower(-0.5);
-            frontLeftMotor.setPower(0.5);
-            backLeftMotor.setPower(-0.5);
+            frontRightMotor.setPower(x + 0.5);
+            backRightMotor.setPower(X + -0.5);
+            frontLeftMotor.setPower(x + 0.5);
+            backLeftMotor.setPower(x + -0.5);
         }
 
 
         sleep(1000);
 
-        if (L_R == targetPoshion_L_R) {
+       else if (Constants.L_R == targetPoshion_L_R) 
+        {
             frontRightMotor.setPower(0);
             backRightMotor.setPower(0);
             frontLeftMotor.setPower(0);
             backLeftMotor.setPower(0);
         }
 
+        else if (Constants.F_B == targetPoshion_F_B) 
+        {
+            frontRightMotor.setPower(0);
+            backRightMotor.setPower(0);
+            frontLeftMotor.setPower(0);
+            backLeftMotor.setPower(0);
+        
         sleep(1000);
-
-        if (F_B > targetPoshion_F_B) {
-            backLeftMotor.setPower(-0.5);
-            frontLeftMotor.setPower(-0.5);
-            backRightMotor.setPower(-0.5);
-            frontRightMotor.setPower(-0.5);
+        }
+       
+       else if (Constants.F_B > targetPoshion_F_B)
+        {
+            backLeftMotor.setPower(x + -0.5);
+            frontLeftMotor.setPower(x + -0.5);
+            backRightMotor.setPower(x + -0.5);
+            frontRightMotor.setPower(x + -0.5);
         }
 
         sleep(1000);
 
-        if (F_B < targetPoshion_F_B) {
-            backLeftMotor.setPower(0.5);
-            frontLeftMotor.setPower(0.5);
-            backRightMotor.setPower(0.5);
-            frontRightMotor.setPower(0.5);
+        else (Constants.F_B < targetPoshion_F_B) 
+        {
+            backLeftMotor.setPower(X + 0.5);
+            frontLeftMotor.setPower(x + 0.5);
+            backRightMotor.setPower(x + 0.5);
+            frontRightMotor.setPower(x + 0.5);
         }
 
 
     }
 
 
+
+
+        public void x ()
+        {
+          
+          if else (Constants.R == 180) 
+          {
+            char x = "-"
+          } 
+        
+          
+            if (Constants.R == 0)
+           {
+            char x = "0"
+           } 
+        
+        
+        }
+
+
+
+            public void rotate (string deirection;) 
+            {
+                if else (deirection == IR )
+                {
+                    backLeftMotor.setPower( 0.5);
+                    frontLeftMotor.setPower( 0.5);
+                    backRightMotor.setPower(- 0.5);
+                    frontRightMotor.setPower(- 0.5);
+                 }
+           
+           
+                if( F_B = Constants.RR )
+                {
+                 backLeftMotor.setPower(0);
+                frontLeftMotor.setPower( 0);
+                backRightMotor.setPower(0);
+                frontRightMotor.setPower(0);
+                }
+            
+                if else (deirection == L )
+                {
+                    backLeftMotor.setPower( 0.5);
+                    frontLeftMotor.setPower( 0.5);
+                    backRightMotor.setPower(- 0.5);
+                    frontRightMotor.setPower(- 0.5);
+                 }
+           
+                if( F_B = Constants.LR )
+                {
+                 backLeftMotor.setPower(0);
+                frontLeftMotor.setPower( 0);
+                backRightMotor.setPower(0);
+                frontRightMotor.setPower(0);
+                }
+
+            }
+
+
+
+
+    }
 }
