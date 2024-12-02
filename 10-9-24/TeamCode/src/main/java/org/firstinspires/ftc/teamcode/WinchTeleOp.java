@@ -50,7 +50,7 @@ public class WinchTeleOp extends OpMode
     @Override
     public void init() {
 
-        Constants.CURRENT_TEAM = Constants.Team.Red;
+        // Constants.CURRENT_TEAM = Constants.Team.Red;
 
 
         HardwareModule.GetHardware(this);
