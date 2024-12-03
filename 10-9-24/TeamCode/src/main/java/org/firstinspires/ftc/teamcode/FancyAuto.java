@@ -31,17 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.exception.TargetPositionNotSetException;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.modules.HardwareModule;
-
-import java.lang.annotation.Target;
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.
@@ -69,17 +62,7 @@ public class FancyAuto extends LinearOpMode
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    public DcMotor frontLeftMotor = null;
-    public DcMotor frontRightMotor = null;
-    public DcMotor backLeftMotor = null;
-    public DcMotor backRightMotor = null;
 
-    public DcMotor elevatorMotor = null;
-    private DcMotor intakeMotor;
-    private DcMotor intakeLiftMotor;
-    private Servo intakeServo1;
-    private Servo intakeServo2;
-    public Servo clawServo = null;
 
 
     private ColorSensorEx frontIntakeColorSensor;
@@ -89,26 +72,26 @@ public class FancyAuto extends LinearOpMode
     // Elevator
     public int targetElevatorPosition;
     public Boolean inLine = false;
-
-
-
+    public int frontRight = HardwareModule.frontRightMotor.getCurrentPosition();
+    public int frontLeft = HardwareModule.frontLeftMotor.getCurrentPosition();
+    public int back = HardwareModule.intakeMotor.getCurrentPosition();
 
     public int F_B = frontRight + frontLeft / 2;
     public int L_R = back;
 
-    public double sub1 = 0.0;
-    public double sub2 = 0.0;
-    public double sample1 = 0.0;
-    public double sample2 = 0.0;
-    public int RR = 0 ;
-    public int LR = 0 ;
-    // public final static int currentPoshion = F_B,L_R;
-    public int sa1 = 0;
-    public int sa2 = 0;
-    public int su1 = 0;
-    public int su2 = 0;
-
-
+     int sub1 = 0;
+    int sub2 = 0;
+     int sample1 = 0;
+     int sample2 = 0;
+     int RR = 0 ;
+     int LR = 0 ;
+     int currentPoshion = F_B + L_R;
+     int sa1 = 0;
+     int sa2 = 0;
+     int su1 = 0;
+     int su2 = 0;
+     int rotashionPart1 = 0;
+    boolean isRotating = false;
     @Override
     public void runOpMode() {
 
@@ -126,58 +109,68 @@ public class FancyAuto extends LinearOpMode
       
     public void pathFindeing() {
 
+         int F_B = frontRight + frontLeft / 2;
+         int L_R = back;
+
         telemetry.addData(">", F_B);
         telemetry.addData(">", L_R);
 
 
-        int frontRight = frontRightMotor.getCurrentPosition();
-        int frontLeft = frontLeftMotor.getCurrentPosition();
-        int back = intakeMotor.getCurrentPosition();
+        int frontRight = HardwareModule.frontRightMotor.getCurrentPosition();
+        int frontLeft = HardwareModule.frontLeftMotor.getCurrentPosition();
+        int back = HardwareModule.intakeMotor.getCurrentPosition();
         int targetPoshion_F_B = 1000;
         int targetPoshion_L_R = 1000;
-        boolean isRotating = false;
+        int rotashion = 0;
         int slowingMathLR = targetPoshion_L_R - L_R;
         int slowingMathFB = targetPoshion_F_B - F_B;
         int slowingMathNegativeLR = targetPoshion_L_R + L_R;
         int slowingMathNegativeFB = targetPoshion_F_B + F_B;
 
-        if (L_R > targetPoshion_L_R) {
+
+
+
+
+
+
+        if (L_R > targetPoshion_L_R)
+        {
             // Shimmy Right
-            frontRightMotor.setPower(x + 0.5);
-            backRightMotor.setPower(x + -0.5);
-            frontLeftMotor.setPower(x + -0.5);
-            backLeftMotor.setPower(x + -0.5);
+         HardwareModule.frontRightMotor.setPower( + 0.5);
+            HardwareModule.backRightMotor.setPower( + -0.5);
+            HardwareModule.frontLeftMotor.setPower( + -0.5);
+            HardwareModule. backLeftMotor.setPower( + -0.5);
         }
         else if (L_R < targetPoshion_L_R) {
             //shimmy Left
-            frontRightMotor.setPower(x + 0.5);
-            backRightMotor.setPower(X + -0.5);
-            frontLeftMotor.setPower(x + 0.5);
-            backLeftMotor.setPower(x + -0.5);
+            HardwareModule.frontRightMotor.setPower(0.5);
+            HardwareModule.backRightMotor.setPower(-0.5);
+            HardwareModule.frontLeftMotor.setPower(0.5);
+            HardwareModule.backLeftMotor.setPower(-0.5);
         }
         else if (L_R == targetPoshion_L_R) {
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
+            HardwareModule.frontRightMotor.setPower(0);
+            HardwareModule.backRightMotor.setPower(0);
+            HardwareModule.frontLeftMotor.setPower(0);
+            HardwareModule.backLeftMotor.setPower(0);
         }
         else if (F_B == targetPoshion_F_B) {
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
+            HardwareModule.frontRightMotor.setPower(0);
+            HardwareModule.backRightMotor.setPower(0);
+            HardwareModule.frontLeftMotor.setPower(0);
+            HardwareModule.backLeftMotor.setPower(0);
         }
         else if (F_B > targetPoshion_F_B) {
-            backLeftMotor.setPower(x + -0.5);
-            frontLeftMotor.setPower(x + -0.5);
-            backRightMotor.setPower(x + -0.5);
-            frontRightMotor.setPower(x + -0.5);
+            HardwareModule.backLeftMotor.setPower(  -0.5);
+            HardwareModule.frontLeftMotor.setPower( -0.5);
+            HardwareModule.backRightMotor.setPower( -0.5);
+            HardwareModule.frontRightMotor.setPower( -0.5);
         }
         else if (F_B < targetPoshion_F_B) {
-            backLeftMotor.setPower(X + 0.5);
-            frontLeftMotor.setPower(x + 0.5);
-            backRightMotor.setPower(x + 0.5);
-            frontRightMotor.setPower(x + 0.5);
+            HardwareModule.backLeftMotor.setPower( 0.5);
+            HardwareModule.frontLeftMotor.setPower( 0.5);
+            HardwareModule.backRightMotor.setPower( 0.5);
+            HardwareModule.frontRightMotor.setPower( 0.5);
         }
     }
     
@@ -185,40 +178,35 @@ public class FancyAuto extends LinearOpMode
 
 
 
-    public void x ()
-    {
-
-        if (Constants.R == 180)
-        {
-            char x = "-"
-        }
-        else if (Constants.R == 0)
-        {
-            char x = "0"
-        }
 
 
-    }
+
+
+
+
 
 
 
     public void rotate (String deirection)
     {
-        if (Constants.currentPoshion == Constants.sample1)
+
+
+        int rotashion = L_R - rotashionPart1;
+        if (currentPoshion == sample1)
         {
             if (rotashion > sa1)
             {
-                backLeftMotor.setPower( 0.5);
-                frontLeftMotor.setPower( 0.5);
-                backRightMotor.setPower(- 0.5);
-                frontRightMotor.setPower(- 0.5);
+                HardwareModule.backLeftMotor.setPower( 0.5);
+                HardwareModule.frontLeftMotor.setPower( 0.5);
+                HardwareModule.backRightMotor.setPower(- 0.5);
+                HardwareModule.frontRightMotor.setPower(- 0.5);
             }
             else if (rotashion < sa1)
             {
-                backLeftMotor.setPower( -0.5);
-                frontLeftMotor.setPower( -0.5);
-                backRightMotor.setPower( 0.5);
-                frontRightMotor.setPower( 0.5);
+                HardwareModule.backLeftMotor.setPower( -0.5);
+                HardwareModule.frontLeftMotor.setPower( -0.5);
+                HardwareModule.backRightMotor.setPower( 0.5);
+                HardwareModule.frontRightMotor.setPower( 0.5);
             }
             else
             {
@@ -226,30 +214,30 @@ public class FancyAuto extends LinearOpMode
             }
 
         }
-        else if( Constants.sample2 == Constants.currentPoshion)
+        else if( sample2 == currentPoshion)
         {
 
             //pick up sample
-            backLeftMotor.setPower(0);
-            frontLeftMotor.setPower( 0);
-            backRightMotor.setPower(0);
-            frontRightMotor.setPower(0);
+            HardwareModule.backLeftMotor.setPower(0);
+            HardwareModule.frontLeftMotor.setPower( 0);
+            HardwareModule.backRightMotor.setPower(0);
+            HardwareModule.frontRightMotor.setPower(0);
         }
-        else if ( Constants.sub1 == Constants.currentPoshion)
+        else if (sub1 == currentPoshion)
         {
-            if(rotashion > su1)
+            if( rotashion > su1)
             {
-                backLeftMotor.setPower( 0.5);
-                frontLeftMotor.setPower( 0.5);
-                backRightMotor.setPower(- 0.5);
-                frontRightMotor.setPower(- 0.5);
+                HardwareModule.backLeftMotor.setPower( 0.5);
+                HardwareModule.frontLeftMotor.setPower( 0.5);
+                HardwareModule.backRightMotor.setPower(- 0.5);
+                HardwareModule.frontRightMotor.setPower(- 0.5);
             }
             else if (rotashion < su1)
             {
-                backLeftMotor.setPower( -0.5);
-                frontLeftMotor.setPower( -0.5);
-                backRightMotor.setPower( 0.5);
-                frontRightMotor.setPower( 0.5);
+                HardwareModule.backLeftMotor.setPower( -0.5);
+                HardwareModule.frontLeftMotor.setPower( -0.5);
+                HardwareModule.backRightMotor.setPower( 0.5);
+                HardwareModule.frontRightMotor.setPower( 0.5);
             }
             else
             {
@@ -258,31 +246,26 @@ public class FancyAuto extends LinearOpMode
 
 
         }
-        else if( Constants.sub2 == Constants.currentPoshion )
+        else if( sub2 == currentPoshion )
         {
-            backLeftMotor.setPower(0);
-            frontLeftMotor.setPower(0);
-            backRightMotor.setPower(0);
-            frontRightMotor.setPower(0);
+            HardwareModule.backLeftMotor.setPower(0);
+            HardwareModule.frontLeftMotor.setPower(0);
+            HardwareModule.backRightMotor.setPower(0);
+            HardwareModule.frontRightMotor.setPower(0);
         }
 
-    }
 
 
-
-    public void rotashion ()
-    {
-        int isRotating = Constants.L_R - rotashionPart1;
 
         if (isRotating == false)
         {
-            int rotashionPart1 = F_B;
+            rotashionPart1 = F_B;
         }
-        else if (Constants.currentPoshion == Constants.sample1)
+        else if (currentPoshion == sample1)
         {
             isRotating = true;
         }
-        else if (Constants.currentPoshion == Constants.sub1)
+        else if (currentPoshion == sub1)
         {
             isRotating = false;
         }
@@ -290,8 +273,17 @@ public class FancyAuto extends LinearOpMode
         {
             isRotating = false;
         }
+
+
     }
-    
+
+
+
+
+
+
+
+
 
 
 }

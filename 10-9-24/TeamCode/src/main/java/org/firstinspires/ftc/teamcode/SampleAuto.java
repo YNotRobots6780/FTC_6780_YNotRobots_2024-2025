@@ -92,7 +92,7 @@ public class SampleAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Constants.CURRENT_TEAM = Constants.Team.Red;
+
 
 
         HardwareModule.GetHardware(this);
@@ -140,12 +140,6 @@ public class SampleAuto extends LinearOpMode {
         //sleep(30000);
 
 
-        intakeLiftMotor.setPower(1);
-        intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-     sleep(4000);
-    Out(Constants.HIGH_BUCKET);
-    sleep(30000);
 
 
     }
@@ -247,35 +241,17 @@ public class SampleAuto extends LinearOpMode {
     }
 
     private void intake(int runTime) {
-        intakeMotor.setPower(Constants.INTAKE_POWER);
-        intakeServo1.setPosition(1);
-        intakeServo2.setPosition(1);
-        sleep(runTime);
-        intakeMotor.setPower(0);
-        intakeServo1.setPosition(0);
-        intakeServo2.setPosition(0);
+
     }
 
 
     private void Out(int targetPosition) {
-        elevatorMotor.setPower(Constants.ELEVATOR_POWER);
-        elevatorMotor.setTargetPosition(targetPosition);
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     private void pickUp(int driveTime, int driveDistece, boolean runing) {
         if (runing == true) {
-            intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_DOWN);
-            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeMotor.setPower(Constants.INTAKE_POWER);
-            intakeServo1.setPosition(1);
-            intakeServo2.setPosition(1);
-            sleep(driveTime);
-            intakeLiftMotor.setTargetPosition(Constants.INTAKE_LIFT_UP);
-            intakeLiftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intakeMotor.setPower(0);
-            intakeServo1.setPosition(0);
-            intakeServo2.setPosition(0);
+
 
         }
         if (runing == true) {

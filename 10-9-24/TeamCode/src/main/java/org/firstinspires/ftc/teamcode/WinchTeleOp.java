@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.modules.DriveModule;
 import org.firstinspires.ftc.teamcode.modules.HardwareModule;
@@ -45,8 +46,8 @@ public class WinchTeleOp extends OpMode
 
     private boolean isOnOverride = false;
     private boolean isCurrentlySwitchingOverride =false;
-
-
+    boolean isOpen = false;
+    Boolean isClosed = false;
     @Override
     public void init() {
 
@@ -75,6 +76,10 @@ public class WinchTeleOp extends OpMode
 
     @Override
     public void loop() {
+        int slidePoshion = HardwareModule.elavatorMotorRight.getCurrentPosition();
+        int winchPoshion = HardwareModule.winchMotorRight.getCurrentPosition();
+
+
 
 
         // =============================================== Override Toggle ===============================================
@@ -109,13 +114,143 @@ public class WinchTeleOp extends OpMode
         if (isOnOverride)
         {
             Normall();
+
+           if(slidePoshion < Constants.slideMin)
+           {
+               if(gamepad1.right_trigger>0.5)
+               {
+                   HardwareModule.winchMotorRight.setTargetPosition(Constants.winchUp);
+                   HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchUp);
+                   HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                   HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               }
+           }
+
+            if (slidePoshion == Constants.elavatorDown)
+            {
+                if(gamepad1.right_bumper)
+                {
+                    HardwareModule.winchMotorRight.setTargetPosition(Constants.winchDown);
+                    HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchDown);
+                    HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+            }
+
+
+            if( winchPoshion == Constants.winchUp || winchPoshion == Constants.winchDown)
+            {
+                if (gamepad1.dpad_down) {
+                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.HIGH_BUCKET);
+                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.HIGH_BUCKET);
+                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+                if (gamepad1.dpad_right) {
+                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.LOW_BUCKET);
+                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.LOW_BUCKET);
+                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+
+                if (gamepad1.dpad_up) {
+                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.HIGH_SAMPLE);
+                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.HIGH_SAMPLE);
+                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+
+                if (gamepad1.dpad_left) {
+                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.LOW_SAMPLE);
+                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.LOW_SAMPLE);
+                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+                if (gamepad1.left_bumper) {
+                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.elavatorDown);
+                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.elavatorDown);
+                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+            }
+
+
+            if (gamepad1.a)
+            {
+
+                if (!isOpen)
+                {
+                    isOpen = true;
+                    if (isClosed)
+                    {
+                        isClosed = false;
+
+                    }
+                    else
+                    {
+                        isClosed = true;
+
+
+                    }
+                }
+
+            }
+            else
+            {
+                isOpen = false;
+            }
+            if(isOpen == true)
+            {
+                HardwareModule.clawGrabbingservo.setPosition(Constants.clawOpen);
+            }
+           else
+           {
+               HardwareModule.clawGrabbingservo.setPosition(Constants.clawClosed);
+           }
+
+           if(slidePoshion == Constants.HIGH_BUCKET || slidePoshion == Constants.LOW_BUCKET)
+           {
+               HardwareModule.clawServoY1.setPosition(Constants.clawBucket);
+               HardwareModule.clawServoY2.setPosition(Constants.clawBucket);
+           }
+
+            else if(slidePoshion == Constants.HIGH_SAMPLE || slidePoshion == Constants.LOW_SAMPLE)
+            {
+                HardwareModule.clawServoY1.setPosition(Constants.clawSample);
+                HardwareModule.clawServoY2.setPosition(Constants.clawSample);
+            }
+
+            else if (slidePoshion == Constants.elavatorDown)
+            {
+                HardwareModule.clawServoY1.setPosition(Constants.clawPickUp);
+                HardwareModule.clawServoY2.setPosition(Constants.clawPickUp);
+                sevoX();
+            }
+
         }
         else
         {
             Overrride();
+
+
+
+
+
+
+
+
         }
 
         telemetry.update();
+
+
+
     }
 
     @Override
@@ -133,5 +268,13 @@ public class WinchTeleOp extends OpMode
     {
         // Drive Module powers the drive Code
     }
+
+    public void sevoX()
+    {
+        double servoPoshion = gamepad1.left_trigger;
+        HardwareModule.clawServox.setPosition(servoPoshion);
+    }
+
+
 
 }
