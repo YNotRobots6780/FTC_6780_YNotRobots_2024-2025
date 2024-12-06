@@ -80,8 +80,6 @@ public class WinchTeleOp extends OpMode
         int winchPoshion = HardwareModule.winchMotorRight.getCurrentPosition();
 
 
-
-
         // =============================================== Override Toggle ===============================================
         if (gamepad2.back || gamepad1.back)
         {
