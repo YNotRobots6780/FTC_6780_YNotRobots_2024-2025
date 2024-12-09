@@ -9,41 +9,38 @@ public class Constants
         Blue
     }
 
-    public final static double ELEVATOR_POWER = 1;
-    public final static int ELEVATOR_RETRACTED = 0;
     public final static int HIGH_BUCKET = 5440 + 75;
     public final static int LOW_BUCKET = 2780;
     public final static int LOW_SAMPLE = 980;
     public final static int HIGH_SAMPLE = 2640;
-
-    public final static double CLAW_CLOSED = 6f/30; // 2mm out of 30 total
-    public final static double CLAW_OPEN = 16f/30; // 6mm out of 30 total
-    public final static double CLAW_GRAB = 10f/30; // 6mm out of 30 total
-
-    public final static double INTAKE_LIFT_POWER = 1;
-    public final static int INTAKE_LIFT_UP = 1300;
-    public final static int INTAKE_LIFT_DOWN = 4870;
-
-    public final static double INTAKE_POWER = 1;
-    public final static double INTAKE_SERVO_POWER_FORWARD = 1;
-    public final static double INTAKE_SERVO_POWER_BACKWARD = 0;
-    public final static double INTAKE_SERVO_POWER_OFF = 0.5;
-    public final static double OUTTAKE_POWER = 1;
+    public final static int winchUp = 0;
+    public final static int winchDown = 0;
+    public final static int elavatorDown = 0;
+    public final static int slideMin = 0;
+    public final static int clawOpen = 0;
+    public final static int clawClosed = 0;
+    public final static int clawBucket = 0;
+    public final static int clawSample = 0;
+    public final static int clawPickUp = 0;
+    public final static int clawgrab = 0;
 
 
-    public static final double MOVEMENT_SPEED = 1;
+    public static class DriveConstants
+    {
+        public final static float DEAD_WHEEL_DIAMETER = 1; // All units are in mm
+        public final static float ODOMETER_TICKS_PER_ROTATION = 104; // All units are in mm
+        public final static float X_DISTANCE_FROM_CENTER = 104; // All units are in mm
+        public final static float Y_DISTANCE_FROM_CENTER = 104; // All units are in mm
 
 
-    public static Team CURRENT_TEAM = Team.Undetermined;
+        public final static float WHEEL_DIAMETER = 104; // All units are in mm
 
-    // =================================== INTAKE ALGORITHM ===================================
-    public final static short RED_RANGE_MIN = 0;
-    public final static short RED_RANGE_MAX = 20;
 
-    public final static short BLUE_RANGE_MIN = 170;
-    public final static short BLUE_RANGE_MAX = 270;
 
-    public final static double INTAKE_TIME = 1;
-    public final static double OUTTAKE_TIME = 0.5;
 
+
+        // ======================================================== DO NOT EDIT ========================================================
+        public final static float ODOMETER_DISTANCE_PER_TICK = (1 / ODOMETER_TICKS_PER_ROTATION) * DEAD_WHEEL_DIAMETER; // All units are in mm
+
+    }
 }

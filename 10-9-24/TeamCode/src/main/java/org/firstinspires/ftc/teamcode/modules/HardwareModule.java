@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.IntakeHandler;
-import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 
 public class HardwareModule {
@@ -25,16 +21,18 @@ public class HardwareModule {
     public static DcMotor frontRightMotor;
     public static DcMotor backLeftMotor;
     public static DcMotor backRightMotor;
+    public static DcMotor elavatorMotorRight;
+    public static DcMotor elavatorMotorLeft;
+    public static DcMotor winchMotorRight;
+    public static DcMotor WinchMotorLeft;
     public static DcMotor intakeMotor;
-    public static DcMotor intakeLiftMotor;
-    public static DcMotor elevatorMotor;
-
-    public static Servo intakeServo1;
-    public static Servo intakeServo2;
-    public static Servo clawServo;
-    public static ColorSensorEx frontIntakeColorSensor;
-
+    public static Servo clawGrabbingservo;
+    public static Servo clawServoY1;
+    public static Servo clawServoY2;
+    public static Servo clawServox;
     public static void GetHardware(OpMode opMode)
+
+
     {
         if (hasGottenHardware)
         {
@@ -55,19 +53,15 @@ public class HardwareModule {
         frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // 2
         backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // ex: 0
         backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // 3
-
-        // Motors
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor"); // ex: 2
-        elevatorMotor = hardwareMap.get(DcMotor.class, "elavatorMotor"); // 1
-        intakeLiftMotor = hardwareMap.get(DcMotor.class, "intakeLiftMotor"); // ex 3
-
-        // Servos
-        clawServo = hardwareMap.get(Servo.class,"claw"); // 3
-        intakeServo1 = hardwareMap.get(Servo.class,"intakeServo1");
-        intakeServo2 = hardwareMap.get(Servo.class,"intakeServo2");
-
-        // Custom Color Sensor Module
-        frontIntakeColorSensor = new ColorSensorEx(hardwareMap.get(ColorSensor.class, "frontColorSensor")); // EX: 12C 3
+        elavatorMotorRight = hardwareMap.get(DcMotor.class,"elavatorMotorRight");
+        elavatorMotorLeft = hardwareMap.get(DcMotor.class,"elavatorMotorLeft");
+        winchMotorRight =  hardwareMap.get(DcMotor.class,"winchMotorRight");
+        WinchMotorLeft  =  hardwareMap.get(DcMotor.class,"getWinchMotorLeft");
+        intakeMotor = hardwareMap.get(DcMotor.class,"justForCodeingPerposes");
+        clawServoY1 = hardwareMap.get(Servo.class,"servox1");
+        clawServoY2 = hardwareMap.get(Servo.class,"sevox2");
+        clawGrabbingservo = hardwareMap.get(Servo.class,"sevoGrab");
+        clawServox = hardwareMap.get(Servo.class,"servoY");
 
         // Custom Encoder Module
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
@@ -78,29 +72,20 @@ public class HardwareModule {
 
     private static void Configure()
     {
-        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeLiftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         // Drive Motors
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        // Motors
-        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
-        elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeLiftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        // Servos
-        intakeServo1.setDirection(Servo.Direction.REVERSE);
+        elavatorMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        elavatorMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        winchMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        WinchMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-        elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
     }
 
 }

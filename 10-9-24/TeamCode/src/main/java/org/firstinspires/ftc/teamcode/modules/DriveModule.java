@@ -25,15 +25,16 @@ public class DriveModule extends Thread {
         None,
     }
 
+    // Module
     private final OpMode opMode;
     private boolean stopRequested;
 
-
+    // Settings
     private PathFindingBehavior pathFindingBehavior;
     private ControlBehavior controlBehavior;
     private double speed;
 
-
+    // Movement
     private Vector3 inputs;
 
     private Vector3 movement;
@@ -162,7 +163,7 @@ public class DriveModule extends Thread {
             isFollowingPath = false;
         }
     }
-    public void MoveForMilliseconds(double x, double z, double rotation, double seconds)
+    public void MoveForSeconds(double x, double z, double rotation, double seconds)
     {
         movement.x = x;
         movement.z = z;
@@ -261,5 +262,7 @@ public class DriveModule extends Thread {
         targetPosition.rotation = -1;
         isFollowingPath = false;
     }
+
+
 
 }
