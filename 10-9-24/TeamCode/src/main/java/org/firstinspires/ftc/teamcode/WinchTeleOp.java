@@ -113,16 +113,16 @@ public class WinchTeleOp extends OpMode
         {
             Normall();
 
-            if(slidePoshion < Constants.slideMin)
-            {
-                if(gamepad1.right_trigger>0.5)
-                {
-                    HardwareModule.winchMotorRight.setTargetPosition(Constants.winchUp);
-                    HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchUp);
-                    HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-            }
+           if(slidePoshion < Constants.slideMin)
+           {
+               if(gamepad1.right_trigger>0.5)
+               {
+                   HardwareModule.winchMotorRight.setTargetPosition(Constants.winchUp);
+                   HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchUp);
+                   HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                   HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               }
+           }
 
             if (slidePoshion == Constants.elavatorDown)
             {
@@ -207,16 +207,16 @@ public class WinchTeleOp extends OpMode
             {
                 HardwareModule.clawGrabbingservo.setPosition(Constants.clawOpen);
             }
-            else
-            {
-                HardwareModule.clawGrabbingservo.setPosition(Constants.clawClosed);
-            }
+           else
+           {
+               HardwareModule.clawGrabbingservo.setPosition(Constants.clawClosed);
+           }
 
-            if(slidePoshion == Constants.HIGH_BUCKET || slidePoshion == Constants.LOW_BUCKET)
-            {
-                HardwareModule.clawServoY1.setPosition(Constants.clawBucket);
-                HardwareModule.clawServoY2.setPosition(Constants.clawBucket);
-            }
+           if(slidePoshion == Constants.HIGH_BUCKET || slidePoshion == Constants.LOW_BUCKET)
+           {
+               HardwareModule.clawServoY1.setPosition(Constants.clawBucket);
+               HardwareModule.clawServoY2.setPosition(Constants.clawBucket);
+           }
 
             else if(slidePoshion == Constants.HIGH_SAMPLE || slidePoshion == Constants.LOW_SAMPLE)
             {
@@ -270,7 +270,6 @@ public class WinchTeleOp extends OpMode
     public void sevoX()
     {
         double servoPoshion = gamepad1.left_trigger;
-        HardwareModule.clawServo.setPosition(servoPoshion);
     }
 
 

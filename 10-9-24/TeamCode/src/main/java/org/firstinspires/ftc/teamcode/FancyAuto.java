@@ -79,18 +79,18 @@ public class FancyAuto extends LinearOpMode
     public int F_B = frontRight + frontLeft / 2;
     public int L_R = back;
 
-    int sub1 = 0;
+     int sub1 = 0;
     int sub2 = 0;
-    int sample1 = 0;
-    int sample2 = 0;
-    int RR = 0 ;
-    int LR = 0 ;
-    int currentPoshion = F_B + L_R;
-    int sa1 = 0;
-    int sa2 = 0;
-    int su1 = 0;
-    int su2 = 0;
-    int rotashionPart1 = 0;
+     int sample1 = 0;
+     int sample2 = 0;
+     int RR = 0 ;
+     int LR = 0 ;
+     int currentPoshion = F_B + L_R;
+     int sa1 = 0;
+     int sa2 = 0;
+     int su1 = 0;
+     int su2 = 0;
+     int rotashionPart1 = 0;
     boolean isRotating = false;
     @Override
     public void runOpMode() {
@@ -109,8 +109,8 @@ public class FancyAuto extends LinearOpMode
 
     public void pathFindeing() {
 
-        int F_B = frontRight + frontLeft / 2;
-        int L_R = back;
+         int F_B = frontRight + frontLeft / 2;
+         int L_R = back;
 
         telemetry.addData(">", F_B);
         telemetry.addData(">", L_R);
@@ -136,7 +136,7 @@ public class FancyAuto extends LinearOpMode
         if (L_R > targetPoshion_L_R)
         {
             // Shimmy Right
-            HardwareModule.frontRightMotor.setPower( + 0.5);
+         HardwareModule.frontRightMotor.setPower( + 0.5);
             HardwareModule.backRightMotor.setPower( + -0.5);
             HardwareModule.frontLeftMotor.setPower( + -0.5);
             HardwareModule. backLeftMotor.setPower( + -0.5);
@@ -276,6 +276,11 @@ public class FancyAuto extends LinearOpMode
 
 
     }
+
+
+
+
+
 
 
 
