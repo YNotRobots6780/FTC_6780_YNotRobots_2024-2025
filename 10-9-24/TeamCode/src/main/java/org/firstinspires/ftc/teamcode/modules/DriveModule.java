@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules;
 
+import org.firstinspires.ftc.teamcode.core.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class DriveModule extends Thread {
@@ -41,6 +42,8 @@ public class DriveModule extends Thread {
     private boolean isMoving;
     private double targetMovementTime = 0;
     private double startMovementTime = 0;
+    private Timer timer;
+
 
     private Vector3 targetPosition;
     private boolean isFollowingPath;
@@ -57,6 +60,8 @@ public class DriveModule extends Thread {
 
     public void run()
     {
+        timer.Update();
+
         while (!stopRequested)
         {
             opMode.telemetry.addData("<", "Drive Module Running");
@@ -92,7 +97,7 @@ public class DriveModule extends Thread {
                         isMoving = false;
                     }
                     //        Gets the Elapsed Movement Time
-                    else if ((startMovementTime - opMode.getRuntime()) < targetMovementTime)
+                    else if ((startMovementTime - timer.timeSinceStart) < targetMovementTime)
                     {
                         finialMovement.x = movement.x;
                         finialMovement.z = movement.z;
@@ -169,7 +174,7 @@ public class DriveModule extends Thread {
         movement.z = z;
         movement.rotation = rotation;
         targetMovementTime = seconds;
-        startMovementTime = opMode.getRuntime();
+        startMovementTime =  timer.timeSinceStart;
         isMoving = true;
 
         if (isFollowingPath)
