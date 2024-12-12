@@ -66,8 +66,13 @@ public class Constants
         public final static double ENCODER_TICKS_PER_ROTATION = 384.5; // mm
         public final static double OUTPUT_PER_ROTATION = 17.825; // mm
         public final static double MILI_METERS_PER_ENCODER_TICK = OUTPUT_PER_ROTATION / ENCODER_TICKS_PER_ROTATION; // mm
+    }
 
-
-
+    public static class WinchConstants
+    {
+        public final static double ANGLE_OFFSET = 50; // mm
+        public final static double ENCODER_TICKS_PER_ROTATION = 537.7; // mm
+        public final static double OUTPUT_PER_ROTATION = 57; // mm
+        public final static double MILI_METERS_PER_ENCODER_TICK = OUTPUT_PER_ROTATION / ENCODER_TICKS_PER_ROTATION; // mm
     }
 }
