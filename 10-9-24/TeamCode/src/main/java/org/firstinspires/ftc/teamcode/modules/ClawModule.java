@@ -21,13 +21,11 @@ public class ClawModule extends Thread
     private double targetArmDegrees = 0;
 
 
+
     public ClawModule(OpMode opMode)
     {
         this.opMode = opMode;
     }
-
-
-
 
     public void run()
     {
