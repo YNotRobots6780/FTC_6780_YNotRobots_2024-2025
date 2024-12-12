@@ -39,9 +39,9 @@ public class ColorSensorEx {
 
         Color.RGBToHSV(red, green, blue, hueSaturationBrightness);
 
-        hue = (byte)Math.round(hueSaturationBrightness[0] * 360);
-        saturation = (byte)Math.round(hueSaturationBrightness[1] * 256);
-        brightness = (byte)Math.round(hueSaturationBrightness[2] * 256);
+        hue = (byte) Math.round(hueSaturationBrightness[0] * 360);
+        saturation = (byte) Math.round(hueSaturationBrightness[1] * 256);
+        brightness = (byte) Math.round(hueSaturationBrightness[2] * 256);
     }
 
 

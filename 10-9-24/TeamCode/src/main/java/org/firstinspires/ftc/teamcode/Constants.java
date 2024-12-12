@@ -30,7 +30,7 @@ public class Constants
         public final static float DEAD_WHEEL_DIAMETER = 1; // All units are in mm
         public final static float ODOMETER_TICKS_PER_ROTATION = 104; // All units are in mm
         public final static float X_DISTANCE_FROM_CENTER = 104; // All units are in mm
-        public final static float Y_DISTANCE_FROM_CENTER = 104; // All units are in mm
+        public final static float Z_DISTANCE_FROM_CENTER = 104; // All units are in mm
 
 
         public final static float WHEEL_DIAMETER = 104; // All units are in mm
@@ -41,6 +41,22 @@ public class Constants
 
         // ======================================================== DO NOT EDIT ========================================================
         public final static float ODOMETER_DISTANCE_PER_TICK = (1 / ODOMETER_TICKS_PER_ROTATION) * DEAD_WHEEL_DIAMETER; // All units are in mm
+
+    }
+
+    public static class ClawConstants
+    {
+        public final static double ARM_SERVO_ROTATION_AMOUNT = 360 * 5;
+        public final static double WRIST_SERVO_ROTATION_AMOUNT = 300;
+        public final static double CLAW_SERVO_ROTATION_AMOUNT = 300;
+
+
+
+        public final static double CLAW_CLOSE_DEGREES = 0;
+        public final static double CLAW_OPEN_DEGREES = 55;
+
+
+        public final static double WRIST_DEGREES_PER_SECOND = 115 / 60.0; // 115 RPM / 60 Seconds
 
     }
 }

@@ -21,18 +21,17 @@ public class HardwareModule {
     public static DcMotor frontRightMotor;
     public static DcMotor backLeftMotor;
     public static DcMotor backRightMotor;
-    public static DcMotor elavatorMotorRight;
-    public static DcMotor elavatorMotorLeft;
+    public static DcMotor elevatorMotorRight;
+    public static DcMotor elevatorMotorLeft;
     public static DcMotor winchMotorRight;
-    public static DcMotor WinchMotorLeft;
-    public static DcMotor intakeMotor;
-    public static Servo clawGrabbingservo;
-    public static Servo clawServoY1;
-    public static Servo clawServoY2;
-    public static Servo clawServox;
+    public static DcMotor winchMotorLeft;
+    public static Servo clawServo;
+    public static Servo armServoRight;
+    public static Servo armServoLeft;
+    public static Servo wristServo;
+
+
     public static void GetHardware(OpMode opMode)
-
-
     {
         if (hasGottenHardware)
         {
@@ -49,19 +48,21 @@ public class HardwareModule {
     private static void GetFromHardwareMap(HardwareMap hardwareMap)
     {
         // Drive Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // ex: 1
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // 2
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // ex: 0
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // 3
-        elavatorMotorRight = hardwareMap.get(DcMotor.class,"elavatorMotorRight");
-        elavatorMotorLeft = hardwareMap.get(DcMotor.class,"elavatorMotorLeft");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); //
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); //
+        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); //
+        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); //
+
+        elevatorMotorRight = hardwareMap.get(DcMotor.class,"elevatorMotorRight");
+        elevatorMotorLeft = hardwareMap.get(DcMotor.class,"elevatorMotorLeft");
+
         winchMotorRight =  hardwareMap.get(DcMotor.class,"winchMotorRight");
-        WinchMotorLeft  =  hardwareMap.get(DcMotor.class,"getWinchMotorLeft");
-        intakeMotor = hardwareMap.get(DcMotor.class,"justForCodeingPerposes");
-        clawServoY1 = hardwareMap.get(Servo.class,"servox1");
-        clawServoY2 = hardwareMap.get(Servo.class,"sevox2");
-        clawGrabbingservo = hardwareMap.get(Servo.class,"sevoGrab");
-        clawServox = hardwareMap.get(Servo.class,"servoY");
+        winchMotorLeft =  hardwareMap.get(DcMotor.class,"winchMotorLeft");
+
+        armServoRight = hardwareMap.get(Servo.class,"armServoRight");
+        armServoLeft = hardwareMap.get(Servo.class,"armServoLeft");
+        clawServo = hardwareMap.get(Servo.class,"clawServo");
+        wristServo = hardwareMap.get(Servo.class,"wristServo");
 
         // Custom Encoder Module
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
@@ -74,14 +75,18 @@ public class HardwareModule {
     {
 
         // Drive Motors
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        elavatorMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        elavatorMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        winchMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        WinchMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        elevatorMotorRight.setDirection(DcMotor.Direction.FORWARD);
+        elevatorMotorLeft.setDirection(DcMotor.Direction.REVERSE);
+        winchMotorRight.setDirection(DcMotor.Direction.REVERSE);
+        winchMotorLeft.setDirection(DcMotor.Direction.FORWARD);
+
+
+        armServoLeft.setDirection(Servo.Direction.REVERSE);
 
 
 

@@ -76,7 +76,7 @@ public class WinchTeleOp extends OpMode
 
     @Override
     public void loop() {
-        int slidePoshion = HardwareModule.elavatorMotorRight.getCurrentPosition();
+        int slidePoshion = HardwareModule.elevatorMotorRight.getCurrentPosition();
         int winchPoshion = HardwareModule.winchMotorRight.getCurrentPosition();
 
 
@@ -118,8 +118,8 @@ public class WinchTeleOp extends OpMode
                 if(gamepad1.right_trigger>0.5)
                 {
                     HardwareModule.winchMotorRight.setTargetPosition(Constants.winchUp);
-                    HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchUp);
-                    HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.winchMotorLeft.setTargetPosition(Constants.winchUp);
+                    HardwareModule.winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
             }
@@ -129,8 +129,8 @@ public class WinchTeleOp extends OpMode
                 if(gamepad1.right_bumper)
                 {
                     HardwareModule.winchMotorRight.setTargetPosition(Constants.winchDown);
-                    HardwareModule.WinchMotorLeft.setTargetPosition(Constants.winchDown);
-                    HardwareModule.WinchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.winchMotorLeft.setTargetPosition(Constants.winchDown);
+                    HardwareModule.winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     HardwareModule.winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
@@ -140,40 +140,40 @@ public class WinchTeleOp extends OpMode
             if( winchPoshion == Constants.winchUp || winchPoshion == Constants.winchDown)
             {
                 if (gamepad1.dpad_down) {
-                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.HIGH_BUCKET);
-                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.HIGH_BUCKET);
-                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorRight.setTargetPosition(Constants.HIGH_BUCKET);
+                    HardwareModule.elevatorMotorLeft.setTargetPosition(Constants.HIGH_BUCKET);
+                    HardwareModule.elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
                 if (gamepad1.dpad_right) {
-                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.LOW_BUCKET);
-                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.LOW_BUCKET);
-                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorRight.setTargetPosition(Constants.LOW_BUCKET);
+                    HardwareModule.elevatorMotorLeft.setTargetPosition(Constants.LOW_BUCKET);
+                    HardwareModule.elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
 
                 if (gamepad1.dpad_up) {
-                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.HIGH_SAMPLE);
-                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.HIGH_SAMPLE);
-                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorRight.setTargetPosition(Constants.HIGH_SAMPLE);
+                    HardwareModule.elevatorMotorLeft.setTargetPosition(Constants.HIGH_SAMPLE);
+                    HardwareModule.elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
 
                 if (gamepad1.dpad_left) {
-                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.LOW_SAMPLE);
-                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.LOW_SAMPLE);
-                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorRight.setTargetPosition(Constants.LOW_SAMPLE);
+                    HardwareModule.elevatorMotorLeft.setTargetPosition(Constants.LOW_SAMPLE);
+                    HardwareModule.elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
                 if (gamepad1.left_bumper) {
-                    HardwareModule.elavatorMotorRight.setTargetPosition(Constants.elavatorDown);
-                    HardwareModule.elavatorMotorLeft.setTargetPosition(Constants.elavatorDown);
-                    HardwareModule.elavatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    HardwareModule.elavatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorRight.setTargetPosition(Constants.elavatorDown);
+                    HardwareModule.elevatorMotorLeft.setTargetPosition(Constants.elavatorDown);
+                    HardwareModule.elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    HardwareModule.elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
             }
@@ -205,29 +205,29 @@ public class WinchTeleOp extends OpMode
             }
             if(isOpen == true)
             {
-                HardwareModule.clawGrabbingservo.setPosition(Constants.clawOpen);
+                HardwareModule.clawServo.setPosition(Constants.clawOpen);
             }
             else
             {
-                HardwareModule.clawGrabbingservo.setPosition(Constants.clawClosed);
+                HardwareModule.clawServo.setPosition(Constants.clawClosed);
             }
 
             if(slidePoshion == Constants.HIGH_BUCKET || slidePoshion == Constants.LOW_BUCKET)
             {
-                HardwareModule.clawServoY1.setPosition(Constants.clawBucket);
-                HardwareModule.clawServoY2.setPosition(Constants.clawBucket);
+                HardwareModule.armServoRight.setPosition(Constants.clawBucket);
+                HardwareModule.armServoLeft.setPosition(Constants.clawBucket);
             }
 
             else if(slidePoshion == Constants.HIGH_SAMPLE || slidePoshion == Constants.LOW_SAMPLE)
             {
-                HardwareModule.clawServoY1.setPosition(Constants.clawSample);
-                HardwareModule.clawServoY2.setPosition(Constants.clawSample);
+                HardwareModule.armServoRight.setPosition(Constants.clawSample);
+                HardwareModule.armServoLeft.setPosition(Constants.clawSample);
             }
 
             else if (slidePoshion == Constants.elavatorDown)
             {
-                HardwareModule.clawServoY1.setPosition(Constants.clawPickUp);
-                HardwareModule.clawServoY2.setPosition(Constants.clawPickUp);
+                HardwareModule.armServoRight.setPosition(Constants.clawPickUp);
+                HardwareModule.armServoLeft.setPosition(Constants.clawPickUp);
                 sevoX();
             }
 
