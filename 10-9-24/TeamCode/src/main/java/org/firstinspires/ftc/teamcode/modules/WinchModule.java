@@ -16,7 +16,7 @@ public class WinchModule {
 
 
 
-
+/*
 
     public void SetDegrees(double degrees)
     {
@@ -37,5 +37,5 @@ public class WinchModule {
     {
 
     }
-
+*/
 }

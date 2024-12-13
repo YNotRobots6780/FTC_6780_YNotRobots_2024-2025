@@ -74,7 +74,7 @@ public class FancyAuto extends LinearOpMode
     public Boolean inLine = false;
     public int frontRight = HardwareModule.frontRightMotor.getCurrentPosition();
     public int frontLeft = HardwareModule.frontLeftMotor.getCurrentPosition();
-    public int back = HardwareModule.intakeMotor.getCurrentPosition();
+    public int back = HardwareModule.backLeftMotor.getCurrentPosition();
 
     public int F_B = frontRight + frontLeft / 2;
     public int L_R = back;
@@ -118,7 +118,7 @@ public class FancyAuto extends LinearOpMode
 
         int frontRight = HardwareModule.frontRightMotor.getCurrentPosition();
         int frontLeft = HardwareModule.frontLeftMotor.getCurrentPosition();
-        int back = HardwareModule.intakeMotor.getCurrentPosition();
+        int back = HardwareModule.backLeftMotor.getCurrentPosition();
         int targetPoshion_F_B = 1000;
         int targetPoshion_L_R = 1000;
         int rotashion = 0;

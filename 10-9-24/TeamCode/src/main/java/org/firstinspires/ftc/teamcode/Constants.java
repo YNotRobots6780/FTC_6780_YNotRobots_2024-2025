@@ -9,21 +9,18 @@ public class Constants
         Blue
     }
 
-    public final static int HIGH_BUCKET = 5440 + 75;
-    public final static int LOW_BUCKET = 2780;
-    public final static int LOW_SAMPLE = 980;
-    public final static int HIGH_SAMPLE = 2640;
-    public final static int winchUp = 0;
-    public final static int winchDown = 0;
-    public final static int elavatorDown = 0;
-    public final static int slideMin = 0;
-    public final static int clawOpen = 0;
-    public final static int clawClosed = 0;
-    public final static int clawBucket = 0;
-    public final static int clawSample = 0;
-    public final static int clawPickUp = 0;
-    public final static int clawgrab = 0;
+    public final static double DRIVE_SPEED = 1;
 
+    public final static int ELEVATOR_HIGH_CHAMBER = 870;
+    public final static int ELEVATOR_LOW_CHAMBER = 375;
+    public final static int ELEVATOR_HIGH_BASKET = 2750;
+    public final static int ELEVATOR_LOW_BASKET = 2750;
+    public final static int WINCH_HIGH_CHAMBER = 800;
+    public final static int WINCH_LOW_CHAMBER = 275;
+    public final static int WINCH_HIGH_BASKET = 760;
+    public final static int WINCH_LOW_BASKET = 350;
+    public final  static double clawBaskit = 0;
+    public final  static double clawChaber = 0;
 
     public static class DriveConstants
     {
