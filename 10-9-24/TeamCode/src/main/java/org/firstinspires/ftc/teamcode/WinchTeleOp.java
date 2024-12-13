@@ -35,8 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.core.Encoder;
-import org.firstinspires.ftc.teamcode.modules.HardwareModule;
-import org.firstinspires.ftc.teamcode.modules.SlideModule;
+import org.firstinspires.ftc.teamcode.core.Timer;
 
 
 @TeleOp(name="6780 Winch Teleop", group="Robot")
@@ -50,16 +49,27 @@ public class WinchTeleOp extends OpMode
         LowChamber,
         NOT_SCORING,
     }
+
+
+    private Timer timer;
+
     // ========================================== override control ==========================================
 
     private boolean isOnOverride = false;
-    private boolean isCurrentlySwitchingOverride =false;
+    private boolean isCurrentlySwitchingOverride = false;
 
-    // ========================================== override control ==========================================
+    // ========================================== Score Positions ==========================================
 
     private ScorePosition scorePosition;
     private boolean isWinchShootingHigh;
     private boolean isWinchScoringSamples;
+    private boolean isDPadPressed;
+
+    // ========================================== Claw ==========================================
+    private boolean isClawPressed;
+    private boolean isClawOpen;
+
+
 
 
 
@@ -92,6 +102,7 @@ public class WinchTeleOp extends OpMode
         Configure();
 
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
+
     }
 
     @Override
@@ -100,12 +111,12 @@ public class WinchTeleOp extends OpMode
 
     @Override
     public void start()  {
-
+        timer = new Timer();
     }
 
     @Override
     public void loop() {
-
+        timer.Update();
 
         // =============================================== Override Toggle ===============================================
         if (gamepad2.back || gamepad1.back)
@@ -148,15 +159,6 @@ public class WinchTeleOp extends OpMode
 
     private void Normall()
     {
-        telemetry.addData(">", elevatorMotorRight.getCurrentPosition());
-        telemetry.addData(">", winchMotorRight.getCurrentPosition());
-        telemetry.addData(">", elevatorMotorRight.getTargetPosition());
-        telemetry.addData(">", winchMotorRight.getTargetPosition());
-        telemetry.update();
-        telemetry.addData("clawServo", (clawServo.getPortNumber()));
-        telemetry.addData("arm right", (armServoLeft.getPortNumber()));
-        telemetry.addData("arm left", (armServoRight.getPortNumber()));
-        telemetry.addData("wrist", (wristServo.getPortNumber()));
 
         PowerDriveMotors(-gamepad1.left_stick_x, gamepad1.left_stick_y * 1.1, -gamepad1.right_stick_x);
 
@@ -166,7 +168,6 @@ public class WinchTeleOp extends OpMode
             SetWinchPosition(100);
             SetElevatorPosition(50);
         }
-
         else if (gamepad1.dpad_left)
         {
             if (!isWinchScoringSamples)
@@ -175,15 +176,19 @@ public class WinchTeleOp extends OpMode
                 isWinchShootingHigh = false;
             }
 
-            if (isWinchShootingHigh)
+            if (!isDPadPressed)
             {
-                isWinchShootingHigh = false;
-                scorePosition = ScorePosition.LowBasket;
-            }
-            else
-            {
-                isWinchShootingHigh = true;
-                scorePosition = ScorePosition.HighBasket;
+                isDPadPressed = true;
+                if (isWinchShootingHigh)
+                {
+                    isWinchShootingHigh = false;
+                    scorePosition = ScorePosition.LowBasket;
+                }
+                else
+                {
+                    isWinchShootingHigh = true;
+                    scorePosition = ScorePosition.HighBasket;
+                }
             }
         }
         else if (gamepad1.dpad_right)
@@ -194,92 +199,147 @@ public class WinchTeleOp extends OpMode
                 isWinchShootingHigh = false;
             }
 
-            if (isWinchShootingHigh)
+            if (!isDPadPressed)
             {
-                isWinchShootingHigh = false;
-                scorePosition = ScorePosition.LowChamber;
+                isDPadPressed = true;
+                if (isWinchShootingHigh)
+                {
+                    isWinchShootingHigh = false;
+                    scorePosition = ScorePosition.LowChamber;
+                }
+                else
+                {
+                    isWinchShootingHigh = true;
+                    scorePosition = ScorePosition.HighChamber;
+                }
             }
-            else
-            {
-                isWinchShootingHigh = true;
-                scorePosition = ScorePosition.HighChamber;
-            }
         }
-
-       if(gamepad1.a)
-       {
-           clawServo.setPosition(1);
-       }
-        if(gamepad1.b)
+        else
         {
-            armServoRight.setPosition(0);
-        }
-        if(gamepad1.y)
-        {
-            armServoLeft.setPosition(0);
-        }
-        if(gamepad1.x)
-        {
-            wristServo.setPosition(0);
+            isDPadPressed = false;
         }
 
 
-           switch (scorePosition)
+
+
+        switch (scorePosition)
         {
             case NOT_SCORING:
-                if (gamepad1.right_bumper)
+                telemetry.addData("NOT SCORING", "");
+                if (gamepad1.left_bumper)
                 {
-                    SetElevatorPosition(elevatorMotorLeft.getCurrentPosition() - 5);
+                    telemetry.addData("LEFT BUMPER", "" + elevatorMotorLeft.getTargetPosition());
+                    telemetry.addData("LEFT BUMPER + 2", "" + (int)(1000 * timer.deltaTime));
+                    SetElevatorPosition(elevatorMotorLeft.getTargetPosition() - (int)(1000 * timer.deltaTime));
+                    SetWinchPosition(120 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
+                    SetWinchPower(0.5);
+                    SetElevatorPower(1);
                 }
-                else if (gamepad1.right_trigger > 0.25)
+                else if (gamepad1.left_trigger > 0.25)
                 {
-                    SetElevatorPosition(elevatorMotorLeft.getCurrentPosition() + 5);
-                }
-
-                if (gamepad1.right_bumper)
-                {
-                    SetElevatorPosition(elevatorMotorLeft.getCurrentPosition() - 5);
-                }
-                else if (gamepad1.right_trigger > 0.25)
-                {
-                    SetElevatorPosition(elevatorMotorLeft.getCurrentPosition() + 5);
+                    telemetry.addData("LEFT TRIGGER", "" + elevatorMotorLeft.getTargetPosition());
+                    telemetry.addData("LEFT TRIGGER 2", "" + (int)(1000 * timer.deltaTime));
+                    SetElevatorPosition(elevatorMotorLeft.getTargetPosition() + (int)(1000 * timer.deltaTime));
+                    SetWinchPosition(120 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
+                    SetWinchPower(0.5);
+                    SetElevatorPower(1);
                 }
                 break;
             case LowBasket:
                 SetWinchPosition(Constants.WINCH_LOW_BASKET);
                 SetWinchPower(0.5);
+              // if(winchMotorLeft.getCurrentPosition() < Constants.WINCH_LOW_BASKET /2 && winchMotorRight.getCurrentPosition() < Constants.WINCH_LOW_BASKET)
+              // {
                 SetElevatorPosition(Constants.ELEVATOR_LOW_BASKET);
                 SetElevatorPower(1);
-              //   armServoLeft.setPosition(Constants.clawBaskit);
-              //   armServoRight.setPosition(Constants.clawBaskit);
-                break;
+                //   armServoLeft.setPosition(Constants.clawBaskit);
+                //   armServoRight.setPosition(Constants.clawBaskit);
+              // }
+              break;
             case HighBasket:
                 SetWinchPosition(Constants.WINCH_HIGH_BASKET);
                 SetWinchPower(0.5);
                 SetElevatorPosition(Constants.ELEVATOR_HIGH_BASKET);
                 SetElevatorPower(1);
-              //  armServoLeft.setPosition(Constants.clawBaskit);
-              //  armServoRight.setPosition(Constants.clawBaskit);
+                //  armServoLeft.setPosition(Constants.clawBaskit);
+                //  armServoRight.setPosition(Constants.clawBaskit);
                 break;
             case LowChamber:
                 SetWinchPosition(Constants.WINCH_LOW_CHAMBER);
                 SetWinchPower(0.5);
                 SetElevatorPosition(Constants.ELEVATOR_LOW_CHAMBER);
                 SetElevatorPower(1);
-               // armServoLeft.setPosition(Constants.clawChaber);
-               // armServoRight.setPosition(Constants.clawChaber);
+                // armServoLeft.setPosition(Constants.clawChaber);
+                // armServoRight.setPosition(Constants.clawChaber);
                 break;
             case HighChamber:
                 SetWinchPosition(Constants.WINCH_HIGH_CHAMBER);
                 SetWinchPower(0.5);
                 SetElevatorPosition(Constants.ELEVATOR_HIGH_CHAMBER);
                 SetElevatorPower(1);
-               // armServoLeft.setPosition(Constants.clawChaber);
-              //  armServoRight.setPosition(Constants.clawChaber);
-
+                // armServoLeft.setPosition(Constants.clawChaber);
+                //  armServoRight.setPosition(Constants.clawChaber);
                 break;
         }
+
+        if(gamepad1.right_trigger > 0.1)
+        {
+            wristServo.setPosition(gamepad1.right_trigger * Constants.WRIST_MODIFIER);
+        }
+        else
+        {
+            wristServo.setPosition(Constants.WRIST_DEFAULT_POSITION);
+        }
+
+        if (gamepad1.a)
+        {
+            if (!isClawPressed)
+            {
+                isClawPressed = true;
+                isClawOpen = !isClawOpen;
+            }
+        }
+        else
+        {
+            isClawPressed = false;
+        }
+
+        telemetry.addData("<", "" + clawServo.getPosition());
+        if (isClawOpen)
+        {
+
+            clawServo.setPosition(1);
+        }
+        else
+        {
+
+            clawServo.setPosition(0);
+        }
+
+        if (gamepad1.x)
+        {
+            armServoLeft.setPosition(Constants.armUp);
+            armServoRight.setPosition(Constants.armUp);
+        }
+        if (gamepad1.y)
+        {
+            armServoLeft.setPosition(Constants.armMid);
+            armServoRight.setPosition(Constants.armMid);
+        }
+        if (gamepad1.b)
+        {
+            armServoLeft.setPosition(Constants.armPickUp);
+            armServoRight.setPosition(Constants.armPickUp);
+        }
+
+        if(gamepad1.left_bumper)
+        {
+
+        }
+
+
     }
+
     private void Overrride()
     {
         PowerDriveMotors(-gamepad2.left_stick_x, gamepad2.left_stick_y * 1.1, -gamepad2.right_stick_x);
@@ -368,7 +428,7 @@ public class WinchTeleOp extends OpMode
         winchMotorLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
-        // armServoLeft.setDirection(Servo.Direction.REVERSE);
+        armServoLeft.setDirection(Servo.Direction.REVERSE);
 
         elevatorMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

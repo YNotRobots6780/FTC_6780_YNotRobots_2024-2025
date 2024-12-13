@@ -37,6 +37,21 @@ public class TEST extends OpMode {
         winchMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
+        winchMotorLeft.setTargetPosition(120);
+        winchMotorRight.setTargetPosition(120);
+        winchMotorLeft.setPower(1);
+        winchMotorRight.setPower(1);
+        winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        elevatorMotorLeft.setTargetPosition(0);
+        elevatorMotorRight.setTargetPosition(0);
+        elevatorMotorLeft.setPower(1);
+        elevatorMotorRight.setPower(1);
+        elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     @Override
@@ -46,6 +61,25 @@ public class TEST extends OpMode {
         telemetry.addData("<", "Elevator Right: " + elevatorMotorRight.getCurrentPosition());
         telemetry.addData("<", "Winch: " + winchMotorLeft.getCurrentPosition());
         telemetry.addData("<", "Winch Right: " + winchMotorRight.getCurrentPosition());
+
+
+        if (gamepad1.left_trigger > 0.25)
+        {
+            elevatorMotorLeft.setTargetPosition(elevatorMotorLeft.getCurrentPosition() + 100);
+            elevatorMotorRight.setTargetPosition(elevatorMotorLeft.getCurrentPosition() + 100);
+        }
+        else if (gamepad1.left_bumper)
+        {
+            elevatorMotorLeft.setTargetPosition(elevatorMotorLeft.getCurrentPosition() + 100);
+            elevatorMotorRight.setTargetPosition(elevatorMotorLeft.getCurrentPosition() + 100);
+            elevatorMotorLeft.setPower(1);
+            elevatorMotorRight.setPower(1);
+            elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        winchMotorLeft.setTargetPosition(120 + (elevatorMotorLeft.getCurrentPosition() / 50));
+        winchMotorRight.setTargetPosition(120 + (elevatorMotorRight.getCurrentPosition() / 50));
 
     }
 }
