@@ -64,7 +64,7 @@ public class WinchTeleOpInterview extends OpMode
         // Constants.CURRENT_TEAM = Constants.Team.Red;
 
 
-        HardwareModule.GetHardware(this);
+        HardwareModule.GetHardware(hardwareMap);
 
 
         telemetry.addData(">", "Robot Ready.  Press Play.");    //

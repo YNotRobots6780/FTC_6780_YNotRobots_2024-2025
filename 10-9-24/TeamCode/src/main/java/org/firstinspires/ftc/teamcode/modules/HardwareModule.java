@@ -10,9 +10,8 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 
 public class HardwareModule {
 
-    private static boolean hasGottenHardware;
-
     /* Declare OpMode members. */
+
     public static Encoder rightOdometer;
     public static Encoder leftOdometer;
     public static Encoder backOdometer;
@@ -29,40 +28,34 @@ public class HardwareModule {
     public static Servo armServoRight;
     public static Servo armServoLeft;
     public static Servo wristServo;
+    public static Servo rightLight;
+    public static Servo leftLight;
 
-
-    public static void GetHardware(OpMode opMode)
+    public static void GetHardware(HardwareMap hardwareMap)
     {
-        if (hasGottenHardware)
-        {
-            return;
-        }
-
-        hasGottenHardware = true;
-
-        GetFromHardwareMap(opMode.hardwareMap);
-
-        Configure();
     }
 
     private static void GetFromHardwareMap(HardwareMap hardwareMap)
     {
         // Drive Motors
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); //
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); //
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); //
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); //
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // EX: 0
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // 0
+        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // EX: 1
+        backRightMotor = hardwareMap.get(DcMotor.class, "back_right"); // 1
 
-        elevatorMotorRight = hardwareMap.get(DcMotor.class,"elevatorMotorRight");
-        elevatorMotorLeft = hardwareMap.get(DcMotor.class,"elevatorMotorLeft");
+        elevatorMotorRight = hardwareMap.get(DcMotor.class,"elevatorMotorRight");  // 3
+        elevatorMotorLeft = hardwareMap.get(DcMotor.class,"elevatorMotorLeft"); // EX: 3
 
-        winchMotorRight =  hardwareMap.get(DcMotor.class,"winchMotorRight");
-        winchMotorLeft =  hardwareMap.get(DcMotor.class,"winchMotorLeft");
+        winchMotorRight =  hardwareMap.get(DcMotor.class,"winchMotorRight"); // 2
+        winchMotorLeft =  hardwareMap.get(DcMotor.class,"winchMotorLeft"); // EX: 2
 
         armServoRight = hardwareMap.get(Servo.class,"armServoRight");
         armServoLeft = hardwareMap.get(Servo.class,"armServoLeft");
         clawServo = hardwareMap.get(Servo.class,"clawServo");
         wristServo = hardwareMap.get(Servo.class,"wristServo");
+
+        leftLight = hardwareMap.get(Servo.class,"leftLight"); // 4, or 5
+        rightLight = hardwareMap.get(Servo.class,"rightLight"); // 4, or 5
 
         // Custom Encoder Module
         leftOdometer = new Encoder(hardwareMap.get(DcMotor.class, "front_left"));
@@ -87,10 +80,6 @@ public class HardwareModule {
 
 
         armServoLeft.setDirection(Servo.Direction.REVERSE);
-
-
-
-
     }
 
 }
