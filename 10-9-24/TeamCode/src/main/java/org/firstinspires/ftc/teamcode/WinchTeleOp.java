@@ -139,7 +139,7 @@ public class WinchTeleOp extends OpMode
 
 
 
-        if (isOnOverride)
+        if (!isOnOverride)
         {
             Normall();
         }

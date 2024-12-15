@@ -143,7 +143,7 @@ public class FancyAuto extends LinearOpMode
         // Constants.CURRENT_TEAM = Constants.Team.Red;
 
 
-        HardwareModule.GetHardware(this);
+        HardwareModule.GetHardware(hardwareMap);
 
 
         telemetry.addData(">", "Ready to Run");

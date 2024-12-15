@@ -3,13 +3,20 @@ package org.firstinspires.ftc.teamcode.modules;
 import org.firstinspires.ftc.teamcode.core.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-public class DriveModule extends Thread {
+public class DriveModule {
 
     private static class Vector3
     {
         private double x;
         private double z;
         private double rotation;
+
+        public Vector3()
+        {
+            x = 0;
+            z = 0;
+            rotation = 0;
+        }
     }
 
     public enum PathFindingBehavior
@@ -28,7 +35,6 @@ public class DriveModule extends Thread {
 
     // Module
     private final OpMode opMode;
-    private boolean stopRequested;
 
     // Settings
     private PathFindingBehavior pathFindingBehavior;
@@ -54,86 +60,63 @@ public class DriveModule extends Thread {
     public DriveModule(OpMode opMode)
     {
         this.opMode = opMode;
+        timer = new Timer();
+        inputs = new Vector3();
+        movement = new Vector3();
+        targetPosition = new Vector3();
+        finialMovement = new Vector3();
     }
 
 
 
-    public void run()
-    {
+    public void Update() {
         timer.Update();
 
-        while (!stopRequested)
-        {
-            opMode.telemetry.addData("<", "Drive Module Running");
+        opMode.telemetry.addData("<", "Drive Module Running");
 
-            GetInputs();
+        GetInputs();
 
-            if (inputs.x == 0 && inputs.z == 0 && inputs.rotation == 0)
-            {
-                if (isFollowingPath)
-                {
-                    if (pathFindingBehavior == PathFindingBehavior.ThreeWheelOdometerPods)
-                    {
-                        boolean test1 = true;
-                        boolean test2 = false;
-                    }
-                    else if (pathFindingBehavior == PathFindingBehavior.WheelEncoders)
-                    {
-                        boolean test1 = true;
-                        boolean test2 = false;
-                    }
-                    else
-                    {
-                        opMode.telemetry.addData("<", "Can not follow a path if there are not encoder Tracking.");
-                    }
+        if (inputs.x == 0 && inputs.z == 0 && inputs.rotation == 0) {
+            if (isFollowingPath) {
+                if (pathFindingBehavior == PathFindingBehavior.ThreeWheelOdometerPods) {
+                    boolean test1 = true;
+                    boolean test2 = false;
+                } else if (pathFindingBehavior == PathFindingBehavior.WheelEncoders) {
+                    boolean test1 = true;
+                    boolean test2 = false;
+                } else {
+                    opMode.telemetry.addData("<", "Can not follow a path if there are not encoder Tracking.");
                 }
-                else if (isMoving)
-                {
-                    if (targetMovementTime == -1)
-                    {
-                        finialMovement.x = movement.x;
-                        finialMovement.z = movement.z;
-                        finialMovement.rotation = movement.rotation;
-                        isMoving = false;
-                    }
-                    //        Gets the Elapsed Movement Time
-                    else if ((startMovementTime - timer.timeSinceStart) < targetMovementTime)
-                    {
-                        finialMovement.x = movement.x;
-                        finialMovement.z = movement.z;
-                        finialMovement.rotation = movement.rotation;
-                    }
-                    else
-                    {
-                        ResetMovement();
-                    }
+            } else if (isMoving) {
+                if (targetMovementTime == -1) {
+                    finialMovement.x = movement.x;
+                    finialMovement.z = movement.z;
+                    finialMovement.rotation = movement.rotation;
+                    isMoving = false;
                 }
-            }
-            else
-            {
-                if (isMoving)
-                {
+                //        Gets the Elapsed Movement Time
+                else if ((startMovementTime - timer.timeSinceStart) < targetMovementTime) {
+                    finialMovement.x = movement.x;
+                    finialMovement.z = movement.z;
+                    finialMovement.rotation = movement.rotation;
+                } else {
                     ResetMovement();
                 }
-                else if (isFollowingPath)
-                {
-                    ResetPath();
-                }
-
-                finialMovement.x = inputs.x;
-                finialMovement.z = inputs.z;
-                finialMovement.rotation = inputs.rotation;
+            }
+        } else {
+            if (isMoving) {
+                ResetMovement();
+            } else if (isFollowingPath) {
+                ResetPath();
             }
 
-            PowerMotors(finialMovement.x, finialMovement.z, finialMovement.rotation);
+            finialMovement.x = inputs.x;
+            finialMovement.z = inputs.z;
+            finialMovement.rotation = inputs.rotation;
         }
-    }
 
-    public void Stop()
-    {
-        stopRequested = true;
+        PowerMotors(finialMovement.x, finialMovement.z, finialMovement.rotation);
     }
-
 
 
     public void SetPathFindingBehavior(PathFindingBehavior pathFindingBehavior)
