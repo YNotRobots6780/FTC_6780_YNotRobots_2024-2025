@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
+import org.firstinspires.ftc.teamcode.core.Encoder;
 import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 
 import java.lang.annotation.Target;
@@ -66,19 +67,20 @@ import java.lang.annotation.Target;
 // @Disabled
 public class SampleAuto extends LinearOpMode {
 
-    /* Declare OpMode members. */
-    private ElapsedTime runtime = new ElapsedTime();
-    public DcMotor frontLeftMotor = null;
-    public DcMotor frontRightMotor = null;
-    public DcMotor backLeftMotor = null;
-    public DcMotor backRightMotor = null;
+    public static DcMotor frontLeftMotor;
+    public static DcMotor frontRightMotor;
+    public static DcMotor backLeftMotor;
+    public static DcMotor backRightMotor;
+    public static DcMotor elevatorMotorRight;
+    public static DcMotor elevatorMotorLeft;
+    public static DcMotor winchMotorRight;
+    public static DcMotor winchMotorLeft;
+    public static Servo clawServo;
+    public static Servo armServoRight;
+    public static Servo armServoLeft;
+    public static Servo wristServo;
 
-    public DcMotor elevatorMotor = null;
-    private DcMotor intakeMotor;
-    private DcMotor intakeLiftMotor;
-    private Servo intakeServo1;
-    private Servo intakeServo2;
-    public Servo clawServo = null;
+
 
 
     private ColorSensorEx frontIntakeColorSensor;
@@ -91,7 +93,21 @@ public class SampleAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left"); // EX: 0
+        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right"); // 3
+        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left"); // EX: 1
+        backRightMotor  = hardwareMap.get(DcMotor.class, "back_right"); // 2
 
+        elevatorMotorRight = hardwareMap.get(DcMotor.class,"elevatorMotorRight"); // 0
+        elevatorMotorLeft = hardwareMap.get(DcMotor.class,"elevatorMotorLeft"); // EX: 3
+
+        winchMotorRight =  hardwareMap.get(DcMotor.class,"winchMotorRight"); // 1
+        winchMotorLeft =  hardwareMap.get(DcMotor.class,"winchMotorLeft"); // EX: 2
+
+        armServoRight = hardwareMap.get(Servo.class,"armServoRight");//1
+        armServoLeft = hardwareMap.get(Servo.class,"armServoLeft");//2
+        clawServo = hardwareMap.get(Servo.class,"clawServo");//3
+        wristServo = hardwareMap.get(Servo.class,"wristServo");//0
 
 
 
@@ -139,16 +155,42 @@ public class SampleAuto extends LinearOpMode {
         //pathFiding();
         //sleep(30000);
 
+        armServoLeft.setPosition(Constants.armUp);
+        armServoRight.setPosition(Constants.armUp);
 
+        winchMotorRight.setTargetPosition(Constants.WINCH_HIGH_BASKET);
+        winchMotorLeft.setTargetPosition(Constants.WINCH_HIGH_BASKET);
+        winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       sleep(1000);
+        elevatorMotorLeft.setTargetPosition(Constants.ELEVATOR_HIGH_BASKET);
+        elevatorMotorRight.setTargetPosition(Constants.ELEVATOR_HIGH_BASKET);
+        elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(6000);
 
+        armServoLeft.setPosition(Constants.armMid);
+        armServoRight.setPosition(Constants.armMid);
+        clawServo.setPosition(0.2);
+        sleep(1000);
+        clawServo.setPosition(0);
+        sleep(1000);
+        elevatorMotorLeft.setTargetPosition(0);
+        elevatorMotorRight.setTargetPosition(0);
+        elevatorMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(6000);
+        winchMotorRight.setTargetPosition(0);
+        winchMotorLeft.setTargetPosition(0);
+        winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
 
     private void Return()
     {
-        elevatorMotor.setTargetPosition(0);
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
 
@@ -273,14 +315,13 @@ public class SampleAuto extends LinearOpMode {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
     public void pathFiding() {
 
         int frontRight = frontRightMotor.getCurrentPosition();
         int frontLeft = frontLeftMotor.getCurrentPosition();
-        int back = intakeMotor.getCurrentPosition();
         int F_B = frontRight + frontLeft / 2;
-        int L_R = back;
+
         int targetPoshion_F_B = 1000;
         int targetPoshion_L_R = 1000;
 
@@ -327,11 +368,10 @@ public class SampleAuto extends LinearOpMode {
             backLeftMotor.setPower(0.5);
             frontLeftMotor.setPower(0.5);
             backRightMotor.setPower(0.5);
-            frontRightMotor.setPower(0.5);
+ */
         }
 
 
-    }
 
 
-}
+

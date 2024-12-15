@@ -38,6 +38,10 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 import org.firstinspires.ftc.teamcode.core.Timer;
 
 
+/// adb connect 192.168.43.1:555
+
+
+
 @TeleOp(name="6780 Winch Teleop", group="Robot")
 public class WinchTeleOp extends OpMode
 {
@@ -55,7 +59,7 @@ public class WinchTeleOp extends OpMode
 
     // ========================================== override control ==========================================
 
-    private boolean isOnOverride = false;
+    private boolean isOnOverride = true;
     private boolean isCurrentlySwitchingOverride = false;
 
     // ========================================== Score Positions ==========================================
@@ -68,8 +72,8 @@ public class WinchTeleOp extends OpMode
     // ========================================== Claw ==========================================
     private boolean isClawPressed;
     private boolean isClawOpen;
-
-
+    private boolean slideControl = false;
+    private boolean isSafeToExtend = true;
 
 
 
@@ -164,12 +168,13 @@ public class WinchTeleOp extends OpMode
 
         if (gamepad1.dpad_down)
         {
+            slideControl = true;
             scorePosition = ScorePosition.NOT_SCORING;
-            SetWinchPosition(100);
-            SetElevatorPosition(50);
+            isSafeToExtend = false;
         }
         else if (gamepad1.dpad_left)
         {
+            isSafeToExtend = false;
             if (!isWinchScoringSamples)
             {
                 isWinchScoringSamples = true;
@@ -193,6 +198,7 @@ public class WinchTeleOp extends OpMode
         }
         else if (gamepad1.dpad_right)
         {
+            isSafeToExtend = false;
             if (isWinchScoringSamples)
             {
                 isWinchScoringSamples = false;
@@ -226,13 +232,23 @@ public class WinchTeleOp extends OpMode
         {
             case NOT_SCORING:
                 telemetry.addData("NOT SCORING", "");
+
+               if (slideControl)
+               {
+                   if (elevatorMotorLeft.getCurrentPosition() < 150 && elevatorMotorRight.getCurrentPosition() < 150)
+                   {
+                       SetWinchPosition(100);
+                       slideControl = false;
+                   }
+                   SetElevatorPosition(50);
+               }
+
                 if (gamepad1.left_bumper)
                 {
                     telemetry.addData("LEFT BUMPER", "" + elevatorMotorLeft.getTargetPosition());
                     telemetry.addData("LEFT BUMPER + 2", "" + (int)(1000 * timer.deltaTime));
                     SetElevatorPosition(elevatorMotorLeft.getTargetPosition() - (int)(1000 * timer.deltaTime));
-                    SetWinchPosition(120 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
-                    SetWinchPower(0.5);
+                    SetWinchPosition(100 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
                     SetElevatorPower(1);
                 }
                 else if (gamepad1.left_trigger > 0.25)
@@ -240,42 +256,40 @@ public class WinchTeleOp extends OpMode
                     telemetry.addData("LEFT TRIGGER", "" + elevatorMotorLeft.getTargetPosition());
                     telemetry.addData("LEFT TRIGGER 2", "" + (int)(1000 * timer.deltaTime));
                     SetElevatorPosition(elevatorMotorLeft.getTargetPosition() + (int)(1000 * timer.deltaTime));
-                    SetWinchPosition(120 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
-                    SetWinchPower(0.5);
+                    SetWinchPosition(100 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
                     SetElevatorPower(1);
                 }
                 break;
             case LowBasket:
-                SetWinchPosition(Constants.WINCH_LOW_BASKET);
-                SetWinchPower(0.5);
-              // if(winchMotorLeft.getCurrentPosition() < Constants.WINCH_LOW_BASKET /2 && winchMotorRight.getCurrentPosition() < Constants.WINCH_LOW_BASKET)
-              // {
-                SetElevatorPosition(Constants.ELEVATOR_LOW_BASKET);
+
+                MoveWinchAndElevator(Constants.WINCH_LOW_BASKET, Constants.ELEVATOR_LOW_BASKET);
+                // SetWinchPosition(Constants.WINCH_LOW_BASKET);
+                // SetElevatorPosition(Constants.ELEVATOR_LOW_BASKET);
                 SetElevatorPower(1);
                 //   armServoLeft.setPosition(Constants.clawBaskit);
                 //   armServoRight.setPosition(Constants.clawBaskit);
-              // }
-              break;
+                break;
             case HighBasket:
-                SetWinchPosition(Constants.WINCH_HIGH_BASKET);
-                SetWinchPower(0.5);
-                SetElevatorPosition(Constants.ELEVATOR_HIGH_BASKET);
+                MoveWinchAndElevator(Constants.WINCH_HIGH_BASKET, Constants.ELEVATOR_HIGH_BASKET);
+                // SetWinchPosition(Constants.WINCH_HIGH_BASKET);
+                // SetElevatorPosition(Constants.ELEVATOR_HIGH_BASKET);
                 SetElevatorPower(1);
                 //  armServoLeft.setPosition(Constants.clawBaskit);
                 //  armServoRight.setPosition(Constants.clawBaskit);
                 break;
             case LowChamber:
-                SetWinchPosition(Constants.WINCH_LOW_CHAMBER);
-                SetWinchPower(0.5);
-                SetElevatorPosition(Constants.ELEVATOR_LOW_CHAMBER);
+                MoveWinchAndElevator(Constants.WINCH_LOW_CHAMBER, Constants.ELEVATOR_LOW_CHAMBER);
+                // SetWinchPosition(Constants.WINCH_LOW_CHAMBER);
+                // SetElevatorPosition(Constants.ELEVATOR_LOW_CHAMBER);
                 SetElevatorPower(1);
                 // armServoLeft.setPosition(Constants.clawChaber);
                 // armServoRight.setPosition(Constants.clawChaber);
                 break;
             case HighChamber:
-                SetWinchPosition(Constants.WINCH_HIGH_CHAMBER);
-                SetWinchPower(0.5);
-                SetElevatorPosition(Constants.ELEVATOR_HIGH_CHAMBER);
+                MoveWinchAndElevator(Constants.WINCH_HIGH_CHAMBER, Constants.ELEVATOR_HIGH_CHAMBER);
+
+                // SetWinchPosition(Constants.WINCH_HIGH_CHAMBER);
+                // SetElevatorPosition(Constants.ELEVATOR_HIGH_CHAMBER);
                 SetElevatorPower(1);
                 // armServoLeft.setPosition(Constants.clawChaber);
                 //  armServoRight.setPosition(Constants.clawChaber);
@@ -307,12 +321,11 @@ public class WinchTeleOp extends OpMode
         telemetry.addData("<", "" + clawServo.getPosition());
         if (isClawOpen)
         {
-
-            clawServo.setPosition(1);
+            // SetWinchPosition(winchMotorLeft.getCurrentPosition() - 50);
+            clawServo.setPosition(0.2);
         }
         else
         {
-
             clawServo.setPosition(0);
         }
 
@@ -328,8 +341,16 @@ public class WinchTeleOp extends OpMode
         }
         if (gamepad1.b)
         {
-            armServoLeft.setPosition(Constants.armPickUp);
-            armServoRight.setPosition(Constants.armPickUp);
+            if ((scorePosition == ScorePosition.NOT_SCORING && elevatorMotorLeft.getCurrentPosition() > 200) || scorePosition == ScorePosition.HighChamber)
+            {
+                armServoLeft.setPosition(Constants.armStraightDown);
+                armServoRight.setPosition(Constants.armStraightDown);
+            }
+            else
+            {
+                armServoLeft.setPosition(Constants.armPickUp);
+                armServoRight.setPosition(Constants.armPickUp);
+            }
         }
 
         if(gamepad1.left_bumper)
@@ -343,6 +364,15 @@ public class WinchTeleOp extends OpMode
     private void Overrride()
     {
         PowerDriveMotors(-gamepad2.left_stick_x, gamepad2.left_stick_y * 1.1, -gamepad2.right_stick_x);
+
+        if (gamepad1.left_trigger > 0.25)
+        {
+            SetElevatorPower(1);
+        }
+        else if (gamepad1.left_bumper)
+        {
+
+        }
     }
 
 
@@ -357,11 +387,39 @@ public class WinchTeleOp extends OpMode
         backRightMotor.setPower(((z + x - rotation) / denominator) * Constants.DRIVE_SPEED);
     }
 
-    private void SetWinchPower(double power)
+
+    private void MoveWinchAndElevator(int winchPosition, int elevatorPosition)
     {
-        winchMotorLeft.setPower(power);
-        winchMotorRight.setPower(power);
+        if (!isSafeToExtend)
+        {
+            if (Math.abs(winchMotorLeft.getCurrentPosition() - winchPosition) > 100)
+            {
+                if (elevatorMotorLeft.getCurrentPosition() > 300)
+                {
+                    // Needs to move elevator in first
+                    SetElevatorPosition(200);
+                }
+                else
+                {
+                    isSafeToExtend = true;
+                    SetWinchPosition(winchPosition);
+                    SetElevatorPosition(elevatorPosition);
+                }
+            }
+            else
+            {
+                isSafeToExtend = true;
+                SetWinchPosition(winchPosition);
+                SetElevatorPosition(elevatorPosition);
+            }
+        }
+        else
+        {
+            SetWinchPosition(winchPosition);
+            SetElevatorPosition(elevatorPosition);
+        }
     }
+
 
     private void SetWinchPosition(int position)
     {
@@ -444,6 +502,11 @@ public class WinchTeleOp extends OpMode
         winchMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         winchMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        winchMotorLeft.setPower(Constants.WINCH_SPEED);
+        winchMotorRight.setPower(Constants.WINCH_SPEED);
+        winchMotorRight.setTargetPosition(0);
+        winchMotorLeft.setTargetPosition(0);
+        winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
