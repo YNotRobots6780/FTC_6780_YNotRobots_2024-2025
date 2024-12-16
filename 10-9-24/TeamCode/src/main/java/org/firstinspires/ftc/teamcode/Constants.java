@@ -10,6 +10,7 @@ public class Constants
     }
 
     public final static double DRIVE_SPEED = 1;
+    public final static double SLOW_DRIVE_SPEED = 0.25;
 
     public final static int ELEVATOR_HIGH_CHAMBER = 870;
     public final static int ELEVATOR_LOW_CHAMBER = 375;

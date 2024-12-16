@@ -75,6 +75,10 @@ public class WinchTeleOp extends OpMode
     private boolean slideControl = false;
     private boolean isSafeToExtend = true;
 
+    // ========================================== Drive ==========================================
+    private boolean isPressingSlowDrive;
+    private boolean isDrivingSlowly
+
 
 
 
@@ -164,7 +168,27 @@ public class WinchTeleOp extends OpMode
     private void Normall()
     {
 
-        PowerDriveMotors(-gamepad1.left_stick_x, gamepad1.left_stick_y * 1.1, -gamepad1.right_stick_x);
+        if (gamepad1.right_stick_button || gamepad1.left_stick_button)
+        {
+            if (!isPressingSlowDrive)
+            {
+                isPressingSlowDrive = true;
+                isDrivingSlowly = !isDrivingSlowly;
+            }
+        }
+        else
+        {
+            isPressingSlowDrive = false;
+        }
+
+        if (isDrivingSlowly)
+        {
+            PowerDriveMotors(-gamepad1.left_stick_x, gamepad1.left_stick_y * 1.1, -gamepad1.right_stick_x, Constants.SLOW_DRIVE_SPEED);
+        }
+        else
+        {
+            PowerDriveMotors(-gamepad1.left_stick_x, gamepad1.left_stick_y * 1.1, -gamepad1.right_stick_x, Constants.DRIVE_SPEED);
+        }
 
         if (gamepad1.dpad_down)
         {
@@ -352,20 +376,34 @@ public class WinchTeleOp extends OpMode
                 armServoRight.setPosition(Constants.armPickUp);
             }
         }
-
-        if(gamepad1.left_bumper)
-        {
-
-        }
-
-
     }
 
     private void Overrride()
     {
-        PowerDriveMotors(-gamepad2.left_stick_x, gamepad2.left_stick_y * 1.1, -gamepad2.right_stick_x);
+        if (gamepad2.right_stick_button || gamepad2.left_stick_button)
+        {
+            if (!isPressingSlowDrive)
+            {
+                isPressingSlowDrive = true;
+                isDrivingSlowly = !isDrivingSlowly;
+            }
+        }
+        else
+        {
+            isPressingSlowDrive = false;
+        }
 
-        if (gamepad1.left_trigger > 0.25)
+        if (isDrivingSlowly)
+        {
+            PowerDriveMotors(-gamepad2.left_stick_x, gamepad2.left_stick_y * 1.1, -gamepad2.right_stick_x, Constants.SLOW_DRIVE_SPEED);
+        }
+        else
+        {
+            PowerDriveMotors(-gamepad2.left_stick_x, gamepad2.left_stick_y * 1.1, -gamepad2.right_stick_x, Constants.DRIVE_SPEED);
+        }
+
+
+        if (gamepad2.left_trigger > 0.25)
         {
             SetElevatorPower(1);
         }
@@ -377,14 +415,14 @@ public class WinchTeleOp extends OpMode
 
 
 
-    private void PowerDriveMotors(double x, double z, double rotation)
+    private void PowerDriveMotors(double x, double z, double rotation, double speed)
     {
         double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(rotation), 1);
 
-        frontLeftMotor.setPower(((z + x + rotation) / denominator) * Constants.DRIVE_SPEED);
-        frontRightMotor.setPower(((z - x - rotation) / denominator) * Constants.DRIVE_SPEED);
-        backLeftMotor.setPower(((z - x + rotation) / denominator) * Constants.DRIVE_SPEED);
-        backRightMotor.setPower(((z + x - rotation) / denominator) * Constants.DRIVE_SPEED);
+        frontLeftMotor.setPower(((z + x + rotation) / denominator) * speed);
+        frontRightMotor.setPower(((z - x - rotation) / denominator) * speed);
+        backLeftMotor.setPower(((z - x + rotation) / denominator) * speed);
+        backRightMotor.setPower(((z + x - rotation) / denominator) * speed);
     }
 
 
