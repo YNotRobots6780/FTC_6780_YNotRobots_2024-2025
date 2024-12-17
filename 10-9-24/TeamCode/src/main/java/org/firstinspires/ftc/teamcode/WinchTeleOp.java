@@ -77,7 +77,7 @@ public class WinchTeleOp extends OpMode
 
     // ========================================== Drive ==========================================
     private boolean isPressingSlowDrive;
-    private boolean isDrivingSlowly
+    private boolean isDrivingSlowly;
 
 
 

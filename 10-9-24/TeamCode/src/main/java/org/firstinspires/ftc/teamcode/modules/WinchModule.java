@@ -16,13 +16,11 @@ public class WinchModule {
 
 
 
-<<<<<<< Updated upstream
-/*
-
-=======
 
 /*
->>>>>>> Stashed changes
+
+
+/*
     public void SetDegrees(double degrees)
     {
         

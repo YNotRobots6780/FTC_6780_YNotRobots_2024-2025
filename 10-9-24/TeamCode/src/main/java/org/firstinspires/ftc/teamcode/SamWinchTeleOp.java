@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 import org.firstinspires.ftc.teamcode.modules.DriveModule;
 import org.firstinspires.ftc.teamcode.modules.HardwareModule;
-
+/*
 
 @TeleOp(name="6780 Sam's Winch TeleOp", group="Robot")
 public class SamWinchTeleOp extends OpMode
@@ -354,3 +354,4 @@ public class SamWinchTeleOp extends OpMode
         // HardwareModule.armServoLeft.setDirection(Servo.Direction.REVERSE);
     }
 }
+*/
