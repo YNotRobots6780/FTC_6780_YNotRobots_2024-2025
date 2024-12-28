@@ -29,14 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.core.Encoder;
-import org.firstinspires.ftc.teamcode.modules.DriveModule;
-import org.firstinspires.ftc.teamcode.modules.HardwareModule;
 /*
 
 @TeleOp(name="6780 Sam's Winch TeleOp", group="Robot")

@@ -31,18 +31,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.exception.TargetPositionNotSetException;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
-import org.firstinspires.ftc.teamcode.core.Encoder;
-import org.firstinspires.ftc.teamcode.modules.HardwareModule;
-
-import java.lang.annotation.Target;
+import org.firstinspires.ftc.teamcode.Modules.HardwareModule;
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.

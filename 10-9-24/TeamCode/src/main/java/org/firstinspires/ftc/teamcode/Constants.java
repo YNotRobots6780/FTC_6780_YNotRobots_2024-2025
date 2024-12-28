@@ -35,20 +35,20 @@ public class Constants
 
     public static class DriveConstants
     {
-        public final static float DEAD_WHEEL_DIAMETER = 1; // All units are in mm
-        public final static float ODOMETER_TICKS_PER_ROTATION = 104; // All units are in mm
-        public final static float X_DISTANCE_FROM_CENTER = 104; // All units are in mm
-        public final static float Z_DISTANCE_FROM_CENTER = 104; // All units are in mm
+        public final static float DEAD_WHEEL_DIAMETER = 48; // All units are in mm
+        public final static float ODOMETER_TICKS_PER_ROTATION = 2000;
+        public final static float X_DISTANCE_FROM_CENTER = 182.5f; // All units are in mm
+        public final static float Z_DISTANCE_FROM_CENTER = 168; // All units are in mm
 
 
         public final static float WHEEL_DIAMETER = 104; // All units are in mm
 
 
-
-
-
         // ======================================================== DO NOT EDIT ========================================================
-        public final static float ODOMETER_DISTANCE_PER_TICK = (1 / ODOMETER_TICKS_PER_ROTATION) * DEAD_WHEEL_DIAMETER; // All units are in mm
+
+        public final static double ODOMETER_REVOLUTIONS_PER_TICK = (1 / ODOMETER_TICKS_PER_ROTATION);
+        public final static double DEAD_WHEEL_CIRCUMFERENCE = DEAD_WHEEL_DIAMETER * Math.PI;
+        public final static double ODOMETER_DISTANCE_PER_TICK = (ODOMETER_REVOLUTIONS_PER_TICK * DEAD_WHEEL_CIRCUMFERENCE); // All units are in mm
 
     }
 
