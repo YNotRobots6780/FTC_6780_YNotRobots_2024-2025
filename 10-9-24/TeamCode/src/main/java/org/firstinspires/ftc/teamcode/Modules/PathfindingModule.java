@@ -95,8 +95,8 @@ public class PathfindingModule implements Runnable {
 
             // Rotating the Movement from Robot-Centric to Field-Centric;
             double averageOrientation = Math.toDegrees(rotationInRadians + (rotationDelta / 2));
-            x += (xDelta * Math.sin(Math.toDegrees(averageOrientation)));
-            z += (zDelta * Math.cos(Math.toDegrees(averageOrientation)));
+            x += (xDelta * Math.sin(averageOrientation));
+            z += (zDelta * Math.cos(averageOrientation));
 
             rotationInRadians += rotationDelta;
 
