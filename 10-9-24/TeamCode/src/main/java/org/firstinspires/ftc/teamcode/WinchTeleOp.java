@@ -32,13 +32,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.core.Encoder;
 import org.firstinspires.ftc.teamcode.core.Timer;
 
 
-/// adb connect 192.168.43.1:555
+/// adb connect 192.168.43.1:5555
 
 
 
@@ -59,7 +60,7 @@ public class WinchTeleOp extends OpMode
 
     // ========================================== override control ==========================================
 
-    private boolean isOnOverride = true;
+    private boolean isOnOverride = false;
     private boolean isCurrentlySwitchingOverride = false;
 
     // ========================================== Score Positions ==========================================
@@ -110,6 +111,9 @@ public class WinchTeleOp extends OpMode
         Configure();
 
         telemetry.addData(">", "Robot Ready.  Press Play.");    //
+
+        armServoLeft.setPosition(Constants.armUp);
+        armServoRight.setPosition(Constants.armUp);
 
     }
 
@@ -269,16 +273,12 @@ public class WinchTeleOp extends OpMode
 
                 if (gamepad1.left_bumper)
                 {
-                    telemetry.addData("LEFT BUMPER", "" + elevatorMotorLeft.getTargetPosition());
-                    telemetry.addData("LEFT BUMPER + 2", "" + (int)(1000 * timer.deltaTime));
                     SetElevatorPosition(elevatorMotorLeft.getTargetPosition() - (int)(1000 * timer.deltaTime));
                     SetWinchPosition(100 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
                     SetElevatorPower(1);
                 }
                 else if (gamepad1.left_trigger > 0.25)
                 {
-                    telemetry.addData("LEFT TRIGGER", "" + elevatorMotorLeft.getTargetPosition());
-                    telemetry.addData("LEFT TRIGGER 2", "" + (int)(1000 * timer.deltaTime));
                     SetElevatorPosition(elevatorMotorLeft.getTargetPosition() + (int)(1000 * timer.deltaTime));
                     SetWinchPosition(100 + (int)(elevatorMotorLeft.getCurrentPosition() * Constants.GRAB_WINCH_TO_ELEVATOR_RATIO));
                     SetElevatorPower(1);
@@ -346,11 +346,11 @@ public class WinchTeleOp extends OpMode
         if (isClawOpen)
         {
             // SetWinchPosition(winchMotorLeft.getCurrentPosition() - 50);
-            clawServo.setPosition(0.2);
+            clawServo.setPosition(Constants.CLAW_OPEN_POSITION);
         }
         else
         {
-            clawServo.setPosition(0);
+            clawServo.setPosition(Constants.CLAW_CLOSE_POSITION);
         }
 
         if (gamepad1.x)
@@ -518,13 +518,13 @@ public class WinchTeleOp extends OpMode
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        elevatorMotorRight.setDirection(DcMotor.Direction.REVERSE);
+        elevatorMotorRight.setDirection(DcMotor.Direction.FORWARD);
         elevatorMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         winchMotorRight.setDirection(DcMotor.Direction.FORWARD);
         winchMotorLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
-        armServoLeft.setDirection(Servo.Direction.REVERSE);
+        armServoRight.setDirection(Servo.Direction.REVERSE);
 
         elevatorMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -18,14 +18,16 @@ public class TEST extends LinearOpMode {
         hardwareMap.get(DcMotor.class, "front_right");
 
         Robot robot = new Robot(hardwareMap);
-        Thread robotThread = new Thread(robot, "Robot Thread");
-        robotThread.start();
 
         waitForStart();
+
+        robot.Start();
 
         while (opModeIsActive())
         {
 
+
+            robot.Update();
         }
 
         robot.Stop();

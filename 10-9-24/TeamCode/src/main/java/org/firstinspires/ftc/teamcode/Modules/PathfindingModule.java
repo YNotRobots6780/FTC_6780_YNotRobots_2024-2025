@@ -84,19 +84,19 @@ public class PathfindingModule implements Runnable {
             if (rotationDelta == 0)
             {
                 xDelta = backDelta;
-                zDelta = rightDelta;
+                zDelta = (rightDelta + leftDelta) / 2;
             }
             else
             {
-                xDelta = 2 * Math.sin(rotationDelta / 2 * (backDelta / rotationDelta + Constants.DriveConstants.Z_DISTANCE_FROM_CENTER));
-                zDelta = rightDelta / rotationDelta + Constants.DriveConstants.X_DISTANCE_FROM_CENTER;
+                xDelta = backDelta - (Constants.DriveConstants.Z_DISTANCE_FROM_CENTER * Math.toDegrees(rotationDelta));
+                zDelta = (rightDelta + leftDelta) / 2;
             }
 
 
             // Rotating the Movement from Robot-Centric to Field-Centric;
             double averageOrientation = Math.toDegrees(rotationInRadians + (rotationDelta / 2));
-            x += (xDelta * Math.sin(averageOrientation));
-            z += (zDelta * Math.cos(averageOrientation));
+            x += xDelta;//(xDelta * Math.sin(averageOrientation));
+            z += zDelta;//(zDelta * Math.cos(averageOrientation));
 
             rotationInRadians += rotationDelta;
 

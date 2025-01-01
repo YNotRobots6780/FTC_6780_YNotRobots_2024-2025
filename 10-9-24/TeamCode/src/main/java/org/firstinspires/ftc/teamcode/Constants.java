@@ -16,21 +16,26 @@ public class Constants
     public final static int ELEVATOR_LOW_CHAMBER = 375;
     public final static int ELEVATOR_HIGH_BASKET = 2750;
     public final static int ELEVATOR_LOW_BASKET = 2750;
+
     public final static int WINCH_HIGH_CHAMBER = 800;
     public final static int WINCH_LOW_CHAMBER = 275;
     public final static int WINCH_HIGH_BASKET = 760;
     public final static int WINCH_LOW_BASKET = 350;
-    public final static double GRAB_WINCH_TO_ELEVATOR_RATIO = 1 / 60.0;
-    public final  static double clawBaskit = 0;
-    public final  static double clawChaber = 0;
+
+    public final static double GRAB_WINCH_TO_ELEVATOR_RATIO = 1 / 40.0;
+
+
     public final static double WRIST_MODIFIER = (0.3 - ((1 - 0.1) / 0.9 * 0.3));
-    public final static double WRIST_DEFAULT_POSITION = 0.3;
+    public final static double WRIST_DEFAULT_POSITION = 0.475;
+
     public final static double armUp = 0;
     public final static double armPickUp= 0.5;
-    public final static double armStraightDown = 0.65;
-    public final static double armMid= 0.3;
-    public final static double armBucket= 0;
-    public final static double armchaber = 0;
+    public final static double armStraightDown = 0.6;
+    public final static double armMid= 0.25;
+
+    public final static double CLAW_CLOSE_POSITION = 0.8;
+    public final static double CLAW_OPEN_POSITION = 1;
+
     public final static double WINCH_SPEED = 0.2;
 
     public static class DriveConstants
