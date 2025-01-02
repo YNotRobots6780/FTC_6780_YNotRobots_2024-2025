@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
-import org.firstinspires.ftc.teamcode.Modules.HardwareModule;
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.

@@ -1,92 +1,124 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.core.MathF;
-import org.firstinspires.ftc.teamcode.core.Timer;
+import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 
-public class ClawModule extends Thread
+public class ClawModule
 {
-    // Module
-    private final OpMode opMode;
-    private boolean stopRequested;
-    private Timer timer;
-
-    // Wrist
-    private boolean isWristRotationContinuous = false;
-    private double wristMovement = 0;
-
-    // Arm
-    private double targetArmDegrees = 0;
-
-
-
-    public ClawModule(OpMode opMode)
+    public enum ArmPosition
     {
-        this.opMode = opMode;
+        Up,
+        Out,
+        HalfDown,
+        Down,
     }
 
-    public void run()
+    // Module
+    private final Servo wristServo;
+    private final Servo leftArmServo;
+    private final Servo rightArmServo;
+    private final Servo clawServo;
+
+    private final ColorSensorEx topColorSensor;
+    private final ColorSensorEx bottomColorSensor;
+
+    // Claw
+    private boolean isClawOpen;
+    private boolean isClawMoving;
+
+    // Wrist
+    private double wristDegrees;
+    private boolean isWristArm = false;
+
+    // Arm
+    private ArmPosition targetArmPosition;
+    private boolean isMovingArm = false;
+
+
+
+    public ClawModule(Servo clawServo, Servo wristServo, Servo leftArmServo, Servo rightArmServo, ColorSensorEx topColorSensor, ColorSensorEx bottomColorSensor)
     {
-        while (!stopRequested)
+        this.clawServo = clawServo;
+        this.wristServo = wristServo;
+        this.leftArmServo = leftArmServo;
+        this.rightArmServo = rightArmServo;
+        this.rightArmServo.setDirection(Servo.Direction.REVERSE);
+
+        this.topColorSensor = topColorSensor;
+        this.bottomColorSensor = bottomColorSensor;
+    }
+
+    public void Update(double deltaTime)
+    {
+        System.out.println("ClawModuleRunning");
+
+        if (isWristArm)
         {
-            timer.Update();
-            opMode.telemetry.addData("<", "ClawModuleRunning");
+            isWristArm = false;
+            wristServo.setPosition((Constants.ClawConstants.WRIST_DEFAULT_POSITION_DEGREES + wristDegrees) / Constants.ClawConstants.WRIST_SERVO_ROTATION_AMOUNT);
+        }
 
-            if (isWristRotationContinuous)
+        if (isMovingArm)
+        {
+            isMovingArm = false;
+            double position = 0;
+            switch (targetArmPosition)
             {
-                // wristMovement Is Power
-                HardwareModule.wristServo.setPosition(MathF.Clamp(HardwareModule.wristServo.getPosition() +
-                        ((timer.deltaTime * Constants.ClawConstants.WRIST_DEGREES_PER_SECOND * MathF.Clamp(wristMovement, -1, 1))
-                        / Constants.ClawConstants.WRIST_SERVO_ROTATION_AMOUNT), 0, 1));
+                case Up:
+                    position = Constants.ClawConstants.ARM_STRAIGHT_UP_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
+                    break;
+                case Out:
+                    position = Constants.ClawConstants.ARM_STRAIGHT_OUT_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
+                    break;
+                case HalfDown:
+                    position = Constants.ClawConstants.ARM_HALF_DOWN_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
+                    break;
+                case Down:
+                    position = Constants.ClawConstants.ARM_STRAIGHT_DOWN_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
+                    break;
             }
-            else
-            {
-                // wristMovement is Degrees
-                HardwareModule.wristServo.setPosition(MathF.Clamp(wristMovement / Constants.ClawConstants.WRIST_SERVO_ROTATION_AMOUNT, 0, 1));
-            }
+            leftArmServo.setPosition(position);
+            rightArmServo.setPosition(position);
+        }
 
-            HardwareModule.wristServo.setPosition(MathF.Clamp(targetArmDegrees / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT, 0, 1));
-
+        if (isClawMoving)
+        {
+            clawServo.setPosition((isClawOpen ? Constants.ClawConstants.CLAW_OPEN_DEGREES : Constants.ClawConstants.CLAW_CLOSE_DEGREES)
+                    / Constants.ClawConstants.CLAW_SERVO_ROTATION_AMOUNT);
         }
     }
 
-    public void Stop()
+    public void SetWristDegrees(double degrees)
     {
-        stopRequested = true;
+        wristDegrees = degrees;
+        isWristArm = true;
     }
 
 
-    // Settings
-    public void SetWristRotationMode(boolean isContinuous)
-    {
-        isWristRotationContinuous = isContinuous;
-    }
-
-
-
-    // Commands
     public void CloseClaw()
     {
-        HardwareModule.clawServo.setPosition(Constants.ClawConstants.CLAW_CLOSE_DEGREES / Constants.ClawConstants.CLAW_SERVO_ROTATION_AMOUNT);
+        if (isClawOpen)
+        {
+            isClawMoving = true;
+            isClawOpen = false;
+        }
     }
 
     public void OpenClaw()
     {
-        HardwareModule.clawServo.setPosition(Constants.ClawConstants.CLAW_OPEN_DEGREES / Constants.ClawConstants.CLAW_SERVO_ROTATION_AMOUNT);
+        if (!isClawOpen)
+        {
+            isClawMoving = true;
+            isClawOpen = true;
+        }
     }
 
-    public void SetWristPosition(double degrees_power)
+    public void SetArmPosition(ArmPosition armPosition)
     {
-        wristMovement = degrees_power;
+        this.targetArmPosition = armPosition;
+        isMovingArm = true;
     }
-
-    public void SetArmPosition(double targetArmDegrees)
-    {
-        this.targetArmDegrees = targetArmDegrees;
-    }
-
-
 
 }

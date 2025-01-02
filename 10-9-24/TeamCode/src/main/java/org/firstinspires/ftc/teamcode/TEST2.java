@@ -115,11 +115,13 @@ public class TEST2 extends OpMode
     }
 
     @Override
-    public void init_loop() {
+    public void init_loop()
+    {
     }
 
     @Override
-    public void start()  {
+    public void start()
+    {
         timer = new Timer();
     }
 

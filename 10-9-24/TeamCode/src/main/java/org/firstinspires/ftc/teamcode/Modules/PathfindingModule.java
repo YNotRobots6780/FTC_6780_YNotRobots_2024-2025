@@ -7,12 +7,22 @@ import org.firstinspires.ftc.teamcode.core.Encoder;
 
 public class PathfindingModule implements Runnable {
 
+    private static PathfindingModule instance;
+    public static PathfindingModule Instance()
+    {
+        if (instance == null)
+        {
+            System.err.println("NO INSTANCE OF PATHFINDING MODULE YET CREATED!!!!!!!\n" + Thread.currentThread().getStackTrace());
+        }
+        return instance;
+    }
+
     public boolean isAlive;
 
 
-    private Encoder leftOdometer;
-    private Encoder rightOdometer;
-    private Encoder backOdometer;
+    private final Encoder leftOdometer;
+    private final Encoder rightOdometer;
+    private final Encoder backOdometer;
 
     private int lastLeftTick;
     private int lastRightTick;
@@ -25,8 +35,19 @@ public class PathfindingModule implements Runnable {
     private double rotationInRadians;
 
 
+
     public PathfindingModule(Encoder leftOdometer, Encoder rightOdometer, Encoder backOdometer)
     {
+        if (instance != null)
+        {
+            this.leftOdometer = null;
+            this.rightOdometer = null;
+            this.backOdometer = null;
+            System.err.println("TWO INSTANCES OF THE PATHFINDING MODULE!!!!\n" + Thread.currentThread().getStackTrace());
+            return;
+        }
+        instance = this;
+
         leftOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -34,11 +55,12 @@ public class PathfindingModule implements Runnable {
         rightOdometer.SetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backOdometer.SetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftOdometer.SetReverse(true);
+
+
         this.leftOdometer = leftOdometer;
         this.rightOdometer = rightOdometer;
         this.backOdometer = backOdometer;
     }
-
     public void ResetPosition()
     {
         lastLeftTick = leftOdometer.getCurrentTicks();
@@ -49,8 +71,6 @@ public class PathfindingModule implements Runnable {
         z = 0;
         rotation = 0;
     }
-
-
     public void SetPosition(float x, float z, float rotation)
     {
         this.x = x;
@@ -59,9 +79,11 @@ public class PathfindingModule implements Runnable {
     }
 
 
+
     @Override
     public void run() {
         isAlive = true;
+
         while (isAlive)
         {
             // Units = mm

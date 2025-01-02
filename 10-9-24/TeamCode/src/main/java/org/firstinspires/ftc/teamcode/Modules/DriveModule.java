@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import org.firstinspires.ftc.teamcode.core.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class DriveModule {
 
@@ -17,6 +18,17 @@ public class DriveModule {
             z = 0;
             rotation = 0;
         }
+        public Vector3(double x, double z, double rotation)
+        {
+            this.x = x;
+            this.z = z;
+            this.rotation = rotation;
+        }
+
+        public boolean IsEqual(Vector3 targetVector)
+        {
+            return targetVector.x == x && targetVector.z == z && targetVector.rotation == rotation;
+        }
     }
 
     public enum PathFindingBehavior
@@ -26,21 +38,29 @@ public class DriveModule {
         None,
     }
 
-    // Module
-    private final OpMode opMode;
+    public enum PathFindingMotorController
+    {
+        BangBang,
+        PID,
+        LinearInterpretation,
+    }
+
+
+    private DcMotor frontLeftMotor;
+    private DcMotor frontRightMotor;
+    private DcMotor backLeftMotor;
+    private DcMotor backRightMotor;
 
     // Settings
     private PathFindingBehavior pathFindingBehavior;
+    private PathFindingMotorController pathFindingMotorController;
     private double speed;
 
     // Movement
-    private Vector3 inputs;
-
     private Vector3 movement;
     private boolean isMoving;
     private double targetMovementTime = 0;
-    private double startMovementTime = 0;
-    private Timer timer;
+    private double movementTime = 0;
 
 
     private Vector3 targetPosition;
@@ -49,83 +69,79 @@ public class DriveModule {
     private Vector3 finialMovement;
 
 
-    public DriveModule(OpMode opMode)
+    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor)
     {
-        this.opMode = opMode;
-        timer = new Timer();
-        inputs = new Vector3();
+        this.frontLeftMotor = frontLeftMotor;
+        this.frontRightMotor = frontRightMotor;
+        this.backLeftMotor = backLeftMotor;
+        this.backRightMotor = backRightMotor;
+
+
+        this.frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        this.frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        this.backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        this.backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+
+
         movement = new Vector3();
         targetPosition = new Vector3();
         finialMovement = new Vector3();
     }
 
 
-
-    public void Update() {
-        timer.Update();
-
-        opMode.telemetry.addData("<", "Drive Module Running");
-
-        if (inputs.x == 0 && inputs.z == 0 && inputs.rotation == 0)
+    public void Update(double deltaTime)
+    {
+        if (isMoving)
         {
-            if (isFollowingPath)
+            if (targetMovementTime > 0)
             {
-                if (pathFindingBehavior == PathFindingBehavior.ThreeWheelOdometerPods)
+                // Timed Movement
+                if (movementTime == 0)
                 {
-                    boolean test1 = true;
-                    boolean test2 = false;
+                    // First Frame
+                    finialMovement = movement;
                 }
-                else if (pathFindingBehavior == PathFindingBehavior.WheelEncoders)
+                movementTime += deltaTime;
+
+                if (movementTime > targetMovementTime)
                 {
-                    boolean test1 = true;
-                    boolean test2 = false;
-                } else
-                {
-                    opMode.telemetry.addData("<", "Can not follow a path if there are not encoder Tracking.");
-                }
-            }
-            else if (isMoving)
-            {
-                if (targetMovementTime == -1)
-                {
-                    finialMovement.x = movement.x;
-                    finialMovement.z = movement.z;
-                    finialMovement.rotation = movement.rotation;
-                    isMoving = false;
-                }
-                //        Gets the Elapsed Movement Time
-                else if ((startMovementTime - timer.timeSinceStart) < targetMovementTime)
-                {
-                    finialMovement.x = movement.x;
-                    finialMovement.z = movement.z;
-                    finialMovement.rotation = movement.rotation;
-                }
-                else
-                {
+                    finialMovement = new Vector3();
                     ResetMovement();
                 }
             }
+            else
+            {
+                // Non Timed Movement
+                if (!finialMovement.IsEqual(movement))
+                {
+                    finialMovement = movement;
+                }
+            }
         }
-        else
+        else if (isFollowingPath)
         {
-            if (isMoving)
+            switch (pathFindingMotorController)
             {
-                ResetMovement();
+                case BangBang:
+                    // if ()
+                    break;
+                case PID:
+                    System.out.println("PID Has Not been Implemented, Please use one of the other Options");
+                    break;
+                case LinearInterpretation:
+                    System.out.println("LinearInterpretation Has Not been Implemented, Please use one of the other Options");
+                    break;
             }
-            else if (isFollowingPath)
-            {
-                ResetPath();
-            }
-
-            finialMovement.x = inputs.x;
-            finialMovement.z = inputs.z;
-            finialMovement.rotation = inputs.rotation;
         }
 
         PowerMotors(finialMovement.x, finialMovement.z, finialMovement.rotation);
     }
 
 
+    public void SetPathFindingMotorController(PathFindingMotorController pathFindingMotorController)
+    {
+        this.pathFindingMotorController = pathFindingMotorController;
+    }
     public void SetPathFindingBehavior(PathFindingBehavior pathFindingBehavior)
     {
         this.pathFindingBehavior = pathFindingBehavior;
@@ -143,7 +159,6 @@ public class DriveModule {
         movement.z = z;
         movement.rotation = rotation;
         targetMovementTime = -1;
-        startMovementTime = -1;
         isMoving = true;
 
         if (isFollowingPath)
@@ -158,7 +173,6 @@ public class DriveModule {
         movement.z = z;
         movement.rotation = rotation;
         targetMovementTime = seconds;
-        startMovementTime =  timer.timeSinceStart;
         isMoving = true;
 
         if (isFollowingPath)
@@ -179,13 +193,7 @@ public class DriveModule {
 
         if (isMoving)
         {
-            movement.x = 0;
-            movement.z = 0;
-            movement.rotation = 0;
-            targetMovementTime = -1;
-            startMovementTime = -1;
-
-            isMoving = false;
+            ResetMovement();
         }
     }
 
@@ -195,10 +203,10 @@ public class DriveModule {
     {
         double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(rotation), 1);
 
-        HardwareModule.frontLeftMotor.setPower(((z + x + rotation) / denominator) * speed);
-        HardwareModule.frontRightMotor.setPower(((z - x - rotation) / denominator) * speed);
-        HardwareModule.backLeftMotor.setPower(((z - x + rotation) / denominator) * speed);
-        HardwareModule.backRightMotor.setPower(((z + x - rotation) / denominator) * speed);
+        frontLeftMotor.setPower(((z + x + rotation) / denominator) * speed);
+        frontRightMotor.setPower(((z - x - rotation) / denominator) * speed);
+        backLeftMotor.setPower(((z - x + rotation) / denominator) * speed);
+        backRightMotor.setPower(((z + x - rotation) / denominator) * speed);
     }
 
     private void ResetMovement()
@@ -207,7 +215,6 @@ public class DriveModule {
         movement.z = 0;
         movement.rotation = 0;
         targetMovementTime = -1;
-        startMovementTime = -1;
     }
     private void ResetPath()
     {

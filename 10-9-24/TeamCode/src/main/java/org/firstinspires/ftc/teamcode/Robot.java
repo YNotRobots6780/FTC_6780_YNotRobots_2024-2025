@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Modules.Drive_Claw_Manager;
 import org.firstinspires.ftc.teamcode.Modules.PathfindingModule;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 
@@ -12,6 +13,9 @@ public class Robot
 
     private final PathfindingModule pathfindingModule;
     private final Thread pathfindingThread;
+
+    private final Drive_Claw_Manager driveClawManager;
+    private final Thread driveClawThread;
 
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
@@ -29,12 +33,20 @@ public class Robot
                 new Encoder(hardwareMap.get(DcMotor.class, "back_left")));
 
         pathfindingThread = new Thread(pathfindingModule, "pathfinding Thread");
+
+
+
+        driveClawManager = new Drive_Claw_Manager(hardwareMap);
+
+        driveClawThread = new Thread(driveClawManager, "Drive & Claw Thread");
     }
 
     public void Start()
     {
         pathfindingModule.ResetPosition();
         pathfindingThread.start();
+
+        driveClawThread.start();
     }
 
     public void Update()
@@ -45,5 +57,6 @@ public class Robot
     public void Stop()
     {
         pathfindingModule.Stop();
+        driveClawManager.Stop();
     }
 }

@@ -37,7 +37,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Encoder;
-import org.firstinspires.ftc.teamcode.Modules.HardwareModule;
 
 /*
  * This OpMode illustrates the concept of driving a path based on time.
@@ -141,9 +140,6 @@ public class FancyAuto extends LinearOpMode
     public void runOpMode() {
 
         // Constants.CURRENT_TEAM = Constants.Team.Red;
-
-
-        HardwareModule.GetHardware(hardwareMap);
 
 
         telemetry.addData(">", "Ready to Run");
