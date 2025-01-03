@@ -11,11 +11,11 @@ public class Robot
 {
 
 
-    private final PathfindingModule pathfindingModule;
-    private final Thread pathfindingThread;
+    private PathfindingModule pathfindingModule;
+    private Thread pathfindingThread;
 
-    private final Drive_Claw_Manager driveClawManager;
-    private final Thread driveClawThread;
+    // private final Drive_Claw_Manager driveClawManager;
+    // private final Thread driveClawThread;
 
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
@@ -36,9 +36,9 @@ public class Robot
 
 
 
-        driveClawManager = new Drive_Claw_Manager(hardwareMap);
+        // driveClawManager = new Drive_Claw_Manager(hardwareMap);
 
-        driveClawThread = new Thread(driveClawManager, "Drive & Claw Thread");
+        // driveClawThread = new Thread(driveClawManager, "Drive & Claw Thread");
     }
 
     public void Start()
@@ -46,7 +46,7 @@ public class Robot
         pathfindingModule.ResetPosition();
         pathfindingThread.start();
 
-        driveClawThread.start();
+        // driveClawThread.start();
     }
 
     public void Update()
@@ -57,6 +57,6 @@ public class Robot
     public void Stop()
     {
         pathfindingModule.Stop();
-        driveClawManager.Stop();
+        // driveClawManager.Stop();
     }
 }

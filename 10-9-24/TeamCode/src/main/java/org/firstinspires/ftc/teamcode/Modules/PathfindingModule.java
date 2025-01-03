@@ -20,9 +20,9 @@ public class PathfindingModule implements Runnable {
     public boolean isAlive;
 
 
-    private final Encoder leftOdometer;
-    private final Encoder rightOdometer;
-    private final Encoder backOdometer;
+    private Encoder leftOdometer;
+    private Encoder rightOdometer;
+    private Encoder backOdometer;
 
     private int lastLeftTick;
     private int lastRightTick;
@@ -38,6 +38,7 @@ public class PathfindingModule implements Runnable {
 
     public PathfindingModule(Encoder leftOdometer, Encoder rightOdometer, Encoder backOdometer)
     {
+        /*
         if (instance != null)
         {
             this.leftOdometer = null;
@@ -47,14 +48,16 @@ public class PathfindingModule implements Runnable {
             return;
         }
         instance = this;
-
+*/
         leftOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backOdometer.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftOdometer.SetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightOdometer.SetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backOdometer.SetMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         leftOdometer.SetReverse(true);
+        rightOdometer.SetReverse(true);
 
 
         this.leftOdometer = leftOdometer;
@@ -93,6 +96,8 @@ public class PathfindingModule implements Runnable {
             int leftEncoderValue = leftOdometer.getCurrentTicks();
             int backEncoderValue = backOdometer.getCurrentTicks();
 
+
+
             double leftDelta = (rightEncoderValue - lastLeftTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
             double rightDelta = (leftEncoderValue - lastRightTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
             double backDelta = (backEncoderValue - lastBackTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
@@ -110,15 +115,17 @@ public class PathfindingModule implements Runnable {
             }
             else
             {
-                xDelta = backDelta - (Constants.DriveConstants.Z_DISTANCE_FROM_CENTER * Math.toDegrees(rotationDelta));
+                // B - B  * roation
+                //      x
+                xDelta = backDelta - (Constants.DriveConstants.Z_DISTANCE_FROM_CENTER * rotationDelta);
                 zDelta = (rightDelta + leftDelta) / 2;
             }
 
 
             // Rotating the Movement from Robot-Centric to Field-Centric;
-            double averageOrientation = Math.toDegrees(rotationInRadians + (rotationDelta / 2));
-            x += xDelta;//(xDelta * Math.sin(averageOrientation));
-            z += zDelta;//(zDelta * Math.cos(averageOrientation));
+            double averageOrientation = (rotationInRadians + (rotationDelta / 2));
+            x += (xDelta * Math.cos(averageOrientation)) - (zDelta * Math.sin(averageOrientation));
+            z += (xDelta * Math.sin(averageOrientation)) + (zDelta * Math.cos(averageOrientation));
 
             rotationInRadians += rotationDelta;
 

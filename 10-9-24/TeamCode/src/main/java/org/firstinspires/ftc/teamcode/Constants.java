@@ -12,21 +12,21 @@ public class Constants
     public final static double DRIVE_SPEED = 1;
     public final static double SLOW_DRIVE_SPEED = 0.25;
 
-    public final static int ELEVATOR_HIGH_CHAMBER = 870;
-    public final static int ELEVATOR_LOW_CHAMBER = 375;
-    public final static int ELEVATOR_HIGH_BASKET = 2750;
-    public final static int ELEVATOR_LOW_BASKET = 2750;
+    public final static int ELEVATOR_HIGH_CHAMBER = 500;
+    public final static int ELEVATOR_LOW_CHAMBER = 0;
+    public final static int ELEVATOR_HIGH_BASKET = 1750;
+    public final static int ELEVATOR_LOW_BASKET = 650;
 
-    public final static int WINCH_HIGH_CHAMBER = 800;
-    public final static int WINCH_LOW_CHAMBER = 275;
-    public final static int WINCH_HIGH_BASKET = 760;
-    public final static int WINCH_LOW_BASKET = 350;
+    public final static int WINCH_HIGH_CHAMBER = 625;
+    public final static int WINCH_LOW_CHAMBER = 225;
+    public final static int WINCH_HIGH_BASKET = 675;
+    public final static int WINCH_LOW_BASKET = 600;
 
     public final static double GRAB_WINCH_TO_ELEVATOR_RATIO = 1 / 40.0;
 
 
     public final static double WRIST_MODIFIER = (0.3 - ((1 - 0.1) / 0.9 * 0.3));
-    public final static double WRIST_DEFAULT_POSITION = 0.475;
+    public final static double WRIST_DEFAULT_POSITION = 0;
 
     public final static double armUp = 0;
     public final static double armPickUp= 0.5;
@@ -35,6 +35,9 @@ public class Constants
 
     public final static double CLAW_CLOSE_POSITION = 0.8;
     public final static double CLAW_OPEN_POSITION = 1;
+
+
+    public final static double TARGET_PICKUP_TIME = 1; // second
 
     public final static double WINCH_SPEED = 0.2;
 
@@ -99,7 +102,8 @@ public class Constants
         public final static double CLAW_CLOSE_DEGREES = 240;
         public final static double CLAW_OPEN_DEGREES = 300;
 
-        public final static double WRIST_DEFAULT_POSITION_DEGREES = 145;
+        public final static double WRIST_DEFAULT_POSITION_DEGREES = 135;
+        public final static double WRIST_OFFSET_POSITION_DEGREES = 35;
 
         public final static double ARM_STRAIGHT_UP_POSITION_DEGREES = 0;
         public final static double ARM_STRAIGHT_OUT_POSITION_DEGREES = 90;

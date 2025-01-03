@@ -17,7 +17,7 @@ public class Drive_Claw_Manager implements Runnable
     private ClawModule clawModule;
     private DriveModule driveModule;
 
-    private final Timer timer;
+    private Timer timer;
 
 
     public Drive_Claw_Manager(HardwareMap hardwareMap)

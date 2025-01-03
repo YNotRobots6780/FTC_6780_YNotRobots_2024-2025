@@ -103,7 +103,7 @@ public class SampleAuto extends LinearOpMode {
 
 
 
-        HardwareModule.GetHardware(hardwareMap);
+        // HardwareModule.GetHardware(hardwareMap);
 
 
         telemetry.addData(">", "Ready to Run");

@@ -100,7 +100,10 @@ public class TEST2 extends OpMode
     public static Servo armServoLeft;
     public static Servo wristServo;
 
+    Servo servo;
 
+    private int elevatorPosition = 0;
+    private int winchPosition = 0;
 
     @Override
     public void init() {
@@ -108,10 +111,12 @@ public class TEST2 extends OpMode
         scorePosition = ScorePosition.NOT_SCORING;
         GetFromHardwareMap();
 
+        servo = hardwareMap.get(Servo.class, "leftLED");
+
         Configure();
 
-        telemetry.addData(">", "Robot Ready.  Press Play.");    //
 
+        wristServo.setPosition(0.1);
     }
 
     @Override
@@ -122,32 +127,20 @@ public class TEST2 extends OpMode
     @Override
     public void start()
     {
+        wristServo.setPosition(0.45);
         timer = new Timer();
     }
 
     @Override
     public void loop() {
-        frontLeftMotor.setPower(1);
-        frontRightMotor.setPower(1);
-        backLeftMotor.setPower(1);
-        backRightMotor.setPower(1);
+        timer.Update();
+        servo.setPosition((timer.timeSinceStart / 10.0) % 1);
     }
 
     @Override
     public void stop() {
 
     }
-
-    private void PowerDriveMotors(double x, double z, double rotation, double speed)
-    {
-        double denominator = Math.max(Math.abs(z) + Math.abs(x) + Math.abs(rotation), 1);
-
-        frontLeftMotor.setPower(((z + x + rotation) / denominator) * speed);
-        frontRightMotor.setPower(((z - x - rotation) / denominator) * speed);
-        backLeftMotor.setPower(((z - x + rotation) / denominator) * speed);
-        backRightMotor.setPower(((z + x - rotation) / denominator) * speed);
-    }
-
 
 
 
@@ -203,16 +196,5 @@ public class TEST2 extends OpMode
         winchMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         winchMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-/*
-        winchMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        winchMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        winchMotorLeft.setPower(Constants.WINCH_SPEED);
-        winchMotorRight.setPower(Constants.WINCH_SPEED);
-        winchMotorRight.setTargetPosition(0);
-        winchMotorLeft.setTargetPosition(0);
-        winchMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        winchMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-  */
     }
 }

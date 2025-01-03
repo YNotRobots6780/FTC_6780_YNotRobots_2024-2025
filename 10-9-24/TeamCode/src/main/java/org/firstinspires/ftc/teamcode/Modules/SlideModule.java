@@ -17,8 +17,8 @@ public class SlideModule{
     public void SetDistance(double millimeters)
     {
         int position = (int)Math.round((millimeters - distanceOffset) / Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK);
-        HardwareModule.winchMotorLeft.setTargetPosition(position);
-        HardwareModule.winchMotorRight.setTargetPosition(position);
+        // HardwareModule.winchMotorLeft.setTargetPosition(position);
+        // HardwareModule.winchMotorRight.setTargetPosition(position);
     }
 
     public void SetDistanceOffset(double millimeters)
@@ -32,23 +32,23 @@ public class SlideModule{
 
     public double GetTargetDistance()
     {
-        return HardwareModule.winchMotorLeft.getTargetPosition() * Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK * distanceOffset;
+         return 0;// HardwareModule.winchMotorLeft.getTargetPosition() * Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK * distanceOffset;
     }
 
     public double GetCurrentDistance()
     {
-        return HardwareModule.winchMotorLeft.getCurrentPosition() * Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK * distanceOffset;
+        return 0; // HardwareModule.winchMotorLeft.getCurrentPosition() * Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK * distanceOffset;
     }
 
     public void SetSpeed(double speed)
     {
-        HardwareModule.winchMotorLeft.setPower(speed);
-        HardwareModule.winchMotorRight.setPower(speed);
+        // HardwareModule.winchMotorLeft.setPower(speed);
+        // HardwareModule.winchMotorRight.setPower(speed);
     }
 
     public double GetSpeed()
     {
-        return HardwareModule.winchMotorLeft.getPower();
+        return 0;//HardwareModule.winchMotorLeft.getPower();
     }
 
 

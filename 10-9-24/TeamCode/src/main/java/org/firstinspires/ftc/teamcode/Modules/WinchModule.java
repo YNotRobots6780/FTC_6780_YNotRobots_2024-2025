@@ -1,26 +1,43 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.Constants;
 
 public class WinchModule {
 
 
+    private DcMotor leftElevatorMotor;
+    private DcMotor rightElevatorMotor;
 
-    private double angleOffset;
 
-
-    public WinchModule()
+    public WinchModule(DcMotor leftElevatorMotor, DcMotor rightElevatorMotor)
     {
-        angleOffset = Constants.WinchConstants.ANGLE_OFFSET;
+        this.leftElevatorMotor = leftElevatorMotor;
+        this.rightElevatorMotor = rightElevatorMotor;
+
+
+        this.leftElevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.rightElevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void Start()
+    {
+
+    }
+
+    public void Update(double deltaTime)
+    {
+
+    }
+
+    public void Stop()
+    {
+
     }
 
 
 
-
-/*
-
-
-/*
     public void SetDegrees(double degrees)
     {
         
@@ -28,7 +45,7 @@ public class WinchModule {
 
     public double GetDegrees()
     {
-
+        return 0;
     }
 
     public void SetAngleOffset(double degrees)
@@ -38,7 +55,7 @@ public class WinchModule {
 
     public double GetAngleOffset()
     {
-
+        return 0;
     }
-*/
+
 }
