@@ -131,9 +131,9 @@ public class PathfindingModule implements Runnable {
 
             rotation = -Math.toDegrees(rotationInRadians);
 
-            System.out.println("x: " + x);
-            System.out.println("z: " + z);
-            System.out.println("rotation: " + rotation);
+            // System.out.println("x: " + x);
+            // System.out.println("z: " + z);
+            // System.out.println("rotation: " + rotation);
         }
     }
 

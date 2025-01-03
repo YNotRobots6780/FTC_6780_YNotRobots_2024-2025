@@ -21,8 +21,8 @@ public class ClawModule
     private final Servo rightArmServo;
     private final Servo clawServo;
 
-    private final ColorSensorEx topColorSensor;
-    private final ColorSensorEx bottomColorSensor;
+    // private final ColorSensorEx topColorSensor;
+    // private final ColorSensorEx bottomColorSensor;
 
     // Claw
     private boolean isClawOpen;
@@ -38,7 +38,7 @@ public class ClawModule
 
 
 
-    public ClawModule(Servo clawServo, Servo wristServo, Servo leftArmServo, Servo rightArmServo, ColorSensorEx topColorSensor, ColorSensorEx bottomColorSensor)
+    public ClawModule(Servo clawServo, Servo wristServo, Servo leftArmServo, Servo rightArmServo/*, ColorSensorEx topColorSensor, ColorSensorEx bottomColorSensor*/)
     {
         this.clawServo = clawServo;
         this.wristServo = wristServo;
@@ -46,14 +46,12 @@ public class ClawModule
         this.rightArmServo = rightArmServo;
         this.rightArmServo.setDirection(Servo.Direction.REVERSE);
 
-        this.topColorSensor = topColorSensor;
-        this.bottomColorSensor = bottomColorSensor;
+        // this.topColorSensor = topColorSensor;
+        // this.bottomColorSensor = bottomColorSensor;
     }
 
     public void Update(double deltaTime)
     {
-        System.out.println("ClawModuleRunning");
-
         if (isWristArm)
         {
             isWristArm = false;
@@ -87,6 +85,7 @@ public class ClawModule
         {
             clawServo.setPosition((isClawOpen ? Constants.ClawConstants.CLAW_OPEN_DEGREES : Constants.ClawConstants.CLAW_CLOSE_DEGREES)
                     / Constants.ClawConstants.CLAW_SERVO_ROTATION_AMOUNT);
+            isClawMoving = false;
         }
     }
 

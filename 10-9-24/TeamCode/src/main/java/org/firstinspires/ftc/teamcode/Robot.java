@@ -5,17 +5,21 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Modules.Drive_Claw_Manager;
 import org.firstinspires.ftc.teamcode.Modules.PathfindingModule;
+import org.firstinspires.ftc.teamcode.Modules.Winch_Elevator_Manager;
 import org.firstinspires.ftc.teamcode.core.Encoder;
 
 public class Robot
 {
 
 
-    private PathfindingModule pathfindingModule;
+    public PathfindingModule pathfindingModule;
     private Thread pathfindingThread;
 
-    // private final Drive_Claw_Manager driveClawManager;
-    // private final Thread driveClawThread;
+    public Drive_Claw_Manager drive_claw_manager;
+    private Thread drive_claw_thread;
+
+    public Winch_Elevator_Manager winch_elevator_manager;
+    private Thread winch_elevator_thread;
 
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
@@ -36,9 +40,15 @@ public class Robot
 
 
 
-        // driveClawManager = new Drive_Claw_Manager(hardwareMap);
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
 
-        // driveClawThread = new Thread(driveClawManager, "Drive & Claw Thread");
+        drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
+
+
+
+        winch_elevator_manager = new Winch_Elevator_Manager(hardwareMap);
+
+        winch_elevator_thread = new Thread(winch_elevator_manager, "Winch & Elevator Thread");
     }
 
     public void Start()
@@ -46,7 +56,9 @@ public class Robot
         pathfindingModule.ResetPosition();
         pathfindingThread.start();
 
-        // driveClawThread.start();
+        drive_claw_thread.start();
+
+        winch_elevator_thread.start();
     }
 
     public void Update()
@@ -57,6 +69,7 @@ public class Robot
     public void Stop()
     {
         pathfindingModule.Stop();
-        // driveClawManager.Stop();
+        drive_claw_manager.Stop();
+        winch_elevator_manager.Stop();
     }
 }

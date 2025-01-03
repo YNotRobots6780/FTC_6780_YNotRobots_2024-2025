@@ -14,8 +14,8 @@ public class Drive_Claw_Manager implements Runnable
     private boolean isAlive;
 
     // Modules
-    private ClawModule clawModule;
-    private DriveModule driveModule;
+    public ClawModule clawModule;
+    public DriveModule driveModule;
 
     private Timer timer;
 
@@ -26,9 +26,9 @@ public class Drive_Claw_Manager implements Runnable
                 hardwareMap.get(Servo.class, Constants.HardwareConstants.CLAW_SERVO_NAME),
                 hardwareMap.get(Servo.class, Constants.HardwareConstants.WRIST_SERVO_NAME),
                 hardwareMap.get(Servo.class, Constants.HardwareConstants.LEFT_ARM_SERVO_NAME),
-                hardwareMap.get(Servo.class, Constants.HardwareConstants.RIGHT_ARM_SERVO_NAME),
+                hardwareMap.get(Servo.class, Constants.HardwareConstants.RIGHT_ARM_SERVO_NAME)/*,
                 new ColorSensorEx(hardwareMap.get(ColorSensor.class, Constants.HardwareConstants.TOP_COLOR_SENSOR)),
-                new ColorSensorEx(hardwareMap.get(ColorSensor.class, Constants.HardwareConstants.BOTTOM_COLOR_SENSOR)));
+                new ColorSensorEx(hardwareMap.get(ColorSensor.class, Constants.HardwareConstants.BOTTOM_COLOR_SENSOR))*/);
         driveModule = new DriveModule(
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.FRONT_LEFT_DRIVE_MOTOR_NAME),
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.FRONT_RIGHT_DRIVE_MOTOR_NAME),

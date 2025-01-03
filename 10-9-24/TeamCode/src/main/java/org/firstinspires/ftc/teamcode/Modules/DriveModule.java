@@ -54,7 +54,7 @@ public class DriveModule {
     // Settings
     private PathFindingBehavior pathFindingBehavior;
     private PathFindingMotorController pathFindingMotorController;
-    private double speed;
+    private double speed = 1;
 
     // Movement
     private Vector3 movement;
@@ -111,11 +111,7 @@ public class DriveModule {
             }
             else
             {
-                // Non Timed Movement
-                if (!finialMovement.IsEqual(movement))
-                {
-                    finialMovement = movement;
-                }
+                finialMovement = movement;
             }
         }
         else if (isFollowingPath)
