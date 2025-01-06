@@ -111,12 +111,19 @@ public class Constants
         public final static double ARM_HALF_DOWN_POSITION_DEGREES = 135;
     }
 
-    public static class SlideConstants
+    public static class ElevatorConstants
     {
-        public final static double DISTANCE_OFFSET = 50; // mm
-        public final static double ENCODER_TICKS_PER_ROTATION = 384.5; // mm
-        public final static double OUTPUT_PER_ROTATION = 17.825; // mm
-        public final static double MILI_METERS_PER_ENCODER_TICK = OUTPUT_PER_ROTATION / ENCODER_TICKS_PER_ROTATION; // mm
+        public final static double ENCODER_TICKS_PER_ROTATION = 384.5;
+        public final static double GEAR_RATIO = 35.0 / 25.0;
+        public final static double ENCODER_TICKS_PER_OUTPUT_SHAFT_ROTATION = ENCODER_TICKS_PER_ROTATION / GEAR_RATIO;
+
+        public final static double DISTANCE_PER_ROTATION = 17.825; // mm
+        public final static double DISTANCE_PER_ENCODER_TICK = DISTANCE_PER_ROTATION / ENCODER_TICKS_PER_OUTPUT_SHAFT_ROTATION;
+
+        public final static double MAX_EXTENSION = 976;
+        public final static double MIN_EXTENSION = 80;
+        public final static double EXTENSION_OFFSET = 80;
+
     }
 
     public static class WinchConstants

@@ -10,13 +10,13 @@ public class SlideModule{
 
     public SlideModule()
     {
-        distanceOffset = Constants.SlideConstants.DISTANCE_OFFSET;
+        distanceOffset = Constants.ElevatorConstants.DISTANCE_OFFSET;
     }
 
 
     public void SetDistance(double millimeters)
     {
-        int position = (int)Math.round((millimeters - distanceOffset) / Constants.SlideConstants.MILI_METERS_PER_ENCODER_TICK);
+        int position = (int)Math.round((millimeters - distanceOffset) / Constants.ElevatorConstants.MILI_METERS_PER_ENCODER_TICK);
         // HardwareModule.winchMotorLeft.setTargetPosition(position);
         // HardwareModule.winchMotorRight.setTargetPosition(position);
     }

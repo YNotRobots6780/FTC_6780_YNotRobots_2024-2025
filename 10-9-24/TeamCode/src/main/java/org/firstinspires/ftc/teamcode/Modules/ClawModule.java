@@ -50,6 +50,12 @@ public class ClawModule
         // this.bottomColorSensor = bottomColorSensor;
     }
 
+
+
+    public void Start()
+    {
+
+    }
     public void Update(double deltaTime)
     {
         if (isWristArm)
@@ -88,6 +94,12 @@ public class ClawModule
             isClawMoving = false;
         }
     }
+    public void Stop()
+    {
+
+    }
+
+
 
     public void SetWristDegrees(double degrees)
     {

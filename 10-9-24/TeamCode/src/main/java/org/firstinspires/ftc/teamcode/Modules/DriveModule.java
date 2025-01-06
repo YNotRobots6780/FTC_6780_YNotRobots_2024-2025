@@ -89,6 +89,10 @@ public class DriveModule {
     }
 
 
+    public void Start()
+    {
+
+    }
     public void Update(double deltaTime)
     {
         if (isMoving)
@@ -131,6 +135,10 @@ public class DriveModule {
         }
 
         PowerMotors(finialMovement.x, finialMovement.z, finialMovement.rotation);
+    }
+    public void Stop()
+    {
+
     }
 
 

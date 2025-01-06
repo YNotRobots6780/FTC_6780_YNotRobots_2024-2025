@@ -45,6 +45,8 @@ public class Drive_Claw_Manager implements Runnable
     {
         isAlive = true;
         timer.Reset();
+        clawModule.Start();
+        driveModule.Start();
 
         while (isAlive)
         {
@@ -53,6 +55,9 @@ public class Drive_Claw_Manager implements Runnable
             clawModule.Update(timer.deltaTime);
             driveModule.Update(timer.deltaTime);
         }
+
+        clawModule.Stop();
+        driveModule.Stop();
     }
 
 
