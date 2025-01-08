@@ -76,7 +76,7 @@ public class Constants
     {
         public final static float DEAD_WHEEL_DIAMETER = 48; // All units are in mm
         public final static float ODOMETER_TICKS_PER_ROTATION = 2000;
-        public final static float X_DISTANCE_FROM_CENTER = 182.5f; // All units are in mm
+        public final static float X_DISTANCE_FROM_CENTER = 368/2.0f; // All units are in mm
         public final static float Z_DISTANCE_FROM_CENTER = 168; // All units are in mm
 
 
@@ -100,8 +100,8 @@ public class Constants
         public final static double ARM_SERVO_ROTATION_AMOUNT = 300;
 
 
-        public final static double CLAW_CLOSE_DEGREES = 235;
-        public final static double CLAW_OPEN_DEGREES = 300;
+        public final static double CLAW_CLOSE_DEGREES = 85;
+        public final static double CLAW_OPEN_DEGREES = 150;
 
         public final static double WRIST_DEFAULT_POSITION_DEGREES = 135;
 
@@ -117,7 +117,7 @@ public class Constants
         public final static double GEAR_RATIO = 35.0 / 25.0;
         public final static double ENCODER_TICKS_PER_OUTPUT_SHAFT_ROTATION = ENCODER_TICKS_PER_ROTATION / GEAR_RATIO;
 
-        public final static double DISTANCE_PER_ROTATION = 17.825; // mm
+        public final static double DISTANCE_PER_ROTATION = 17.825 * 2 * Math.PI; // mm
         public final static double DISTANCE_PER_ENCODER_TICK = DISTANCE_PER_ROTATION / ENCODER_TICKS_PER_OUTPUT_SHAFT_ROTATION;
 
         public final static double MAX_EXTENSION = 976;
@@ -130,7 +130,7 @@ public class Constants
     {
         public final static double WINCH_OFFSET = -3.5;
 
-        public final static double ENCODER_TICKS_PER_ROTATION = 384.5;
+        public final static double ENCODER_TICKS_PER_ROTATION = 1425.1;
         public final static double MILIMETERS_PER_ROTATION = 157; // mm
 
         public final static double MILIMETERS_PER_ENCODER_TICKS = MILIMETERS_PER_ROTATION / ENCODER_TICKS_PER_ROTATION;

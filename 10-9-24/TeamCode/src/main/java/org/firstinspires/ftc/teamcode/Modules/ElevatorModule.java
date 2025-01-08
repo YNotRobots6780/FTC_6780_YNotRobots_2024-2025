@@ -11,10 +11,12 @@ public class ElevatorModule
     private DcMotor rightElevatorMotor;
 
     private int targetPosition;
-    private double power;
+    private double power = 1;
+    private DcMotor.RunMode runMode;
 
     private boolean shouldUpdatePosition;
     private boolean shouldUpdatePower;
+    private boolean shouldUpdateRunMode;
 
 
     public ElevatorModule(DcMotor leftElevatorMotor, DcMotor rightElevatorMotor)
@@ -32,6 +34,8 @@ public class ElevatorModule
         rightElevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftElevatorMotor.setPower(0);
         rightElevatorMotor.setPower(0);
+
+        shouldUpdatePower = true;
     }
 
     public void Update(double deltaTime)
@@ -48,6 +52,15 @@ public class ElevatorModule
             shouldUpdatePower = false;
             leftElevatorMotor.setPower(power);
             rightElevatorMotor.setPower(power);
+        }
+
+        if (shouldUpdateRunMode)
+        {
+            if (runMode != leftElevatorMotor.getMode())
+            {
+                leftElevatorMotor.setMode(runMode);
+                rightElevatorMotor.setMode(runMode);
+            }
         }
     }
 
@@ -83,6 +96,15 @@ public class ElevatorModule
         return power;
     }
 
+    public void SetMode(DcMotor.RunMode runMode)
+    {
+        shouldUpdateRunMode = true;
+        this.runMode = runMode;
+    }
+    public DcMotor.RunMode GetMode()
+    {
+        return runMode;
+    }
 
 
     private double ClampExtention(double value)

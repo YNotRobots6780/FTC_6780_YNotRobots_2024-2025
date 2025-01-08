@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Constants;
 
+import java.util.function.DoubleToIntFunction;
+
 public class WinchModule {
 
 
@@ -11,7 +13,7 @@ public class WinchModule {
     private boolean shouldUpdatePosition;
 
     private double power = 1;
-    private boolean shouldUpdatePower;
+    private boolean shouldUpdatePower = true;
 
 
     private DcMotor leftWinchMotor;
@@ -37,12 +39,16 @@ public class WinchModule {
 
         leftWinchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightWinchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        SetPower(power);
     }
 
     public void Update(double deltaTime)
     {
-        System.out.println("targetPosition: " + leftWinchMotor.getTargetPosition());
-        System.out.println("currentPosition: " + leftWinchMotor.getCurrentPosition());
+        System.out.println("target: " + targetPosition);
+        System.out.println("current: " + leftWinchMotor.getCurrentPosition());
+
+
         if (shouldUpdatePosition)
         {
             leftWinchMotor.setTargetPosition((int)Math.round(targetPosition));

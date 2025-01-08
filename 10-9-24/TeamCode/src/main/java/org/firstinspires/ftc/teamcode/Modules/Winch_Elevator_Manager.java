@@ -18,7 +18,10 @@ public class Winch_Elevator_Manager implements Runnable
 
     private Timer timer;
 
-
+    private double winchDegrees;
+    private double elevatorPosition;
+    private boolean isControllingMovement = false;
+    private boolean isFirstFrameContollingMovement = false;
 
     public Winch_Elevator_Manager(HardwareMap hardwareMap)
     {
@@ -46,6 +49,46 @@ public class Winch_Elevator_Manager implements Runnable
 
             winchModule.Update(timer.deltaTime);
             elevatorModule.Update(timer.deltaTime);
+
+            if (!isFirstFrameContollingMovement)
+            {
+                if (winchModule.GetTargetDegrees() != winchDegrees || elevatorModule.GetTargetPosition() != elevatorPosition)
+                {
+                    isControllingMovement = false;
+                }
+            }
+            if (isControllingMovement)
+            {
+                if (elevatorModule.GetPosition() < 100)
+                {
+                    winchModule.SetTargetDegrees(winchDegrees);
+                }
+                else if (winchModule.GetTargetDegrees() - winchModule.GetDegrees() < 5)
+                {
+                    winchModule.SetTargetDegrees(winchDegrees);
+                }
+                else
+                {
+                    elevatorModule.SetPosition(50);
+                }
+
+                if (winchModule.GetTargetDegrees() - winchModule.GetDegrees() < 5)
+                {
+                    elevatorModule.SetPosition(elevatorPosition);
+                }
+            }
+
+
+
+            if ((elevatorModule.GetTargetPosition() - elevatorModule.GetPosition()) < 0)
+            {
+                elevatorModule.SetPower(0.5);
+            }
+            else
+            {
+                elevatorModule.SetPower(1);
+            }
+
         }
 
         winchModule.Stop();
@@ -60,5 +103,14 @@ public class Winch_Elevator_Manager implements Runnable
         winchModule.Stop();
     }
 
+
+
+    public void MoveWinch_And_Elevator(double winchDegrees, double elevatorPosition)
+    {
+        isFirstFrameContollingMovement = true;
+        isControllingMovement = true;
+        this.winchDegrees = winchDegrees;
+        this.elevatorPosition = elevatorPosition;
+    }
 
 }
