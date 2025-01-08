@@ -41,6 +41,10 @@ public class New6780TeleOp extends LinearOpMode {
     private boolean isScoringHighChamber = true;
     private boolean isChamberPressed;
 
+    private boolean isScoring;
+    private boolean isScoringPressed;
+    private Timer scoringTimer;
+
 
 
     @Override
@@ -53,6 +57,7 @@ public class New6780TeleOp extends LinearOpMode {
 
         position = Position.Pickup;
         pickingUpTimer = new Timer();
+        scoringTimer = new Timer();
         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
         robot.drive_claw_manager.clawModule.SetWristDegrees(0);
 
@@ -62,6 +67,7 @@ public class New6780TeleOp extends LinearOpMode {
             robot.Update();
 
             pickingUpTimer.Update();
+            scoringTimer.Update();
 
             NormalDrive();
         }
@@ -75,52 +81,12 @@ public class New6780TeleOp extends LinearOpMode {
 
         robot.drive_claw_manager.clawModule.SetWristDegrees(gamepad1.left_trigger * 90);
 
-        if (gamepad1.x)
-        {
-            if (!isClawPressed)
-            {
-                isClawPressed = true;
-                isClawOpen = !isClawOpen;
-                if (isClawOpen)
-                {
-                    robot.drive_claw_manager.clawModule.OpenClaw();
-                }
-                else
-                {
-                    robot.drive_claw_manager.clawModule.CloseClaw();
-                }
-            }
-        }
-        else
-        {
-            isClawPressed = false;
-        }
-
-
-        if (gamepad1.y)
-        {
-            robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
-        }
-        else if (gamepad1.b)
-        {
-            robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
-        }
-        else if (gamepad1.a)
-        {
-            if (position == Position.Pickup)
-            {
-                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
-            }
-            else
-            {
-                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.HalfDown);
-            }
-        }
 
         if (gamepad1.dpad_down)
         {
             position = Position.Pickup;
             isCurrentlySwitching = true;
+            isScoring = false;
         }
         else if (gamepad1.dpad_left)
         {
@@ -128,6 +94,7 @@ public class New6780TeleOp extends LinearOpMode {
             if (!isBasketPressed)
             {
                 isCurrentlySwitching = true;
+                isScoring = false;
                 isBasketPressed = true;
                 isScoringHighBasket = !isScoringHighBasket;
                 if (isScoringHighBasket)
@@ -139,10 +106,6 @@ public class New6780TeleOp extends LinearOpMode {
                     position = Position.LowBasket;
                 }
             }
-            else
-            {
-                isBasketPressed = false;
-            }
         }
         else if (gamepad1.dpad_right)
         {
@@ -150,6 +113,7 @@ public class New6780TeleOp extends LinearOpMode {
             if (!isChamberPressed)
             {
                 isCurrentlySwitching = true;
+                isScoring = false;
                 isChamberPressed = true;
                 isScoringHighChamber = !isScoringHighChamber;
                 if (isScoringHighChamber)
@@ -161,93 +125,132 @@ public class New6780TeleOp extends LinearOpMode {
                     position = Position.LowChamber;
                 }
             }
-            else
-            {
-                isChamberPressed = false;
-            }
+        }
+        else
+        {
+            isBasketPressed = false;
+            isChamberPressed = false;
         }
 
         switch (position)
         {
             case Pickup:
             {
-                if (isCurrentlySwitching && (robot.winch_elevator_manager.elevatorModule.GetPosition() > 100 || robot.winch_elevator_manager.winchModule.GetDegrees() > 20))
+                if (isCurrentlySwitching)
                 {
-                    robot.winch_elevator_manager.MoveWinch_And_Elevator(15, 50);
-                    break;
-                }
-                else
-                {
-                    isCurrentlySwitching = false;
-                }
-
-                if (gamepad1.right_trigger > 0.25)
-                {
-                    robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.winch_elevator_manager.elevatorModule.SetPower(gamepad1.right_trigger);
-                    isClawPickingUp = false;
-                }
-                else if (gamepad1.right_bumper)
-                {
-                    robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    robot.winch_elevator_manager.elevatorModule.SetPower(-1);
-                    isClawPickingUp = false;
-                }
-                else
-                {
-                    robot.winch_elevator_manager.elevatorModule.SetPower(0);
-                }
-
-                if (gamepad1.x)
-                {
-                    if (!isClawPickingUpPressed)
+                    if (robot.winch_elevator_manager.elevatorModule.GetPosition() > 100 || robot.winch_elevator_manager.winchModule.GetDegrees() > 20)
                     {
-                        isClawPickingUpPressed = true;
-                        isClawPickingUp = !isClawPickingUp;
-                        pickingUpTimer.Reset();
+                        robot.winch_elevator_manager.MoveWinch_And_Elevator(15, 50);
+                        break;
+                    }
+                    else
+                    {
+                        isCurrentlySwitching = false;
                     }
                 }
                 else
                 {
-                    isClawPickingUpPressed = false;
-                }
+                    if (gamepad1.right_trigger > 0.25)
+                    {
+                        robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.winch_elevator_manager.elevatorModule.SetPower(gamepad1.right_trigger);
+                        isClawPickingUp = false;
+                    }
+                    else if (gamepad1.right_bumper)
+                    {
+                        robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        robot.winch_elevator_manager.elevatorModule.SetPower(-1);
+                        isClawPickingUp = false;
+                    }
+                    else
+                    {
+                        robot.winch_elevator_manager.elevatorModule.SetPower(0);
+                    }
 
-                if (isClawPickingUp)
-                {
-                    if (pickingUpTimer.timeSinceStart < 0.25)
+                    if (gamepad1.x)
                     {
-                        isClawOpen = true;
-                        robot.drive_claw_manager.clawModule.OpenClaw();
+                        if (!isClawPickingUpPressed)
+                        {
+                            isClawPickingUpPressed = true;
+                            isClawPickingUp = !isClawPickingUp;
+                            pickingUpTimer.Reset();
+                        }
                     }
-                    if (pickingUpTimer.timeSinceStart < 1.25)
+                    else
                     {
-                        robot.winch_elevator_manager.winchModule.SetTargetDegrees(4);
+                        isClawPickingUpPressed = false;
                     }
-                    else if (pickingUpTimer.timeSinceStart < 1.5)
+
+                    if (isClawPickingUp)
                     {
-                        isClawOpen = false;
-                        robot.drive_claw_manager.clawModule.CloseClaw();
+                        if (pickingUpTimer.timeSinceStart < 0.25)
+                        {
+                            isClawOpen = true;
+                            robot.drive_claw_manager.clawModule.OpenClaw();
+                        }
+                        if (pickingUpTimer.timeSinceStart < 1.25)
+                        {
+                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(4);
+                        }
+                        else if (pickingUpTimer.timeSinceStart < 1.5)
+                        {
+                            isClawOpen = false;
+                            robot.drive_claw_manager.clawModule.CloseClaw();
+                        }
+                        else if (pickingUpTimer.timeSinceStart > 1.5)
+                        {
+                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(15);
+
+                            robot.winch_elevator_manager.elevatorModule.SetPosition(15);
+                        }
                     }
-                    else if (pickingUpTimer.timeSinceStart > 1.5)
+                    else
                     {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
                         robot.winch_elevator_manager.winchModule.SetTargetDegrees(15);
-
-                        robot.winch_elevator_manager.elevatorModule.SetPosition(15);
                     }
                 }
-                else
-                {
-                    robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
-                    robot.winch_elevator_manager.winchModule.SetTargetDegrees(15);
-                }
-
                 break;
             }
             case HighBasket:
             {
-                robot.winch_elevator_manager.MoveWinch_And_Elevator(43, 1000);
+                robot.winch_elevator_manager.MoveWinch_And_Elevator(43, 860);
                 robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
+
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+
+                if (gamepad1.right_trigger > 0.25)
+                {
+                    if (!isChamberPressed) {
+                        isChamberPressed = true;
+                        isScoring = !isScoring;
+                        scoringTimer.Reset();
+                    }
+                }
+                else
+                {
+                    isChamberPressed = false;
+                }
+
+                if (isScoring)
+                {
+                    if (scoringTimer.timeSinceStart < 1)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                    }
+                    else if (scoringTimer.timeSinceStart < 1.5)
+                    {
+                        robot.drive_claw_manager.clawModule.OpenClaw();
+                    }
+                    else
+                    {
+                        position = Position.Pickup;
+                        isCurrentlySwitching = true;
+                        isScoring = false;
+                    }
+                }
+
                 break;
             }
             case LowBasket:
@@ -255,6 +258,40 @@ public class New6780TeleOp extends LinearOpMode {
                 robot.winch_elevator_manager.MoveWinch_And_Elevator(40, 350);
                 robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
+
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+
+                if (gamepad1.right_trigger > 0.25)
+                {
+                    if (!isChamberPressed) {
+                        isChamberPressed = true;
+                        isScoring = !isScoring;
+                        scoringTimer.Reset();
+                    }
+                }
+                else
+                {
+                    isChamberPressed = false;
+                }
+
+                if (isScoring)
+                {
+                    if (scoringTimer.timeSinceStart < 1)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                    }
+                    else if (scoringTimer.timeSinceStart < 1.5)
+                    {
+                        robot.drive_claw_manager.clawModule.OpenClaw();
+                    }
+                    else
+                    {
+                        position = Position.Pickup;
+                        isCurrentlySwitching = true;
+                        isScoring = false;
+                    }
+                }
+
                 break;
             }
             case HighChamber:
@@ -262,6 +299,46 @@ public class New6780TeleOp extends LinearOpMode {
                 robot.winch_elevator_manager.MoveWinch_And_Elevator(40, 200);
                 robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
+
+
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+
+                if (gamepad1.right_trigger > 0.25)
+                {
+                    if (!isChamberPressed) {
+                        isChamberPressed = true;
+                        isScoring = !isScoring;
+                        scoringTimer.Reset();
+                    }
+                }
+                else
+                {
+                    isChamberPressed = false;
+                }
+
+                if (isScoring)
+                {
+                    if (scoringTimer.timeSinceStart < 1)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                    }
+                    else if (scoringTimer.timeSinceStart < 1.5)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
+                    }
+                    else if (scoringTimer.timeSinceStart < 2)
+                    {
+                        robot.drive_claw_manager.clawModule.OpenClaw();
+                    }
+                    else
+                    {
+                        position = Position.Pickup;
+                        isCurrentlySwitching = true;
+                        isScoring = false;
+                    }
+                }
+
+
                 break;
             }
             case  LowChamber:
@@ -269,6 +346,45 @@ public class New6780TeleOp extends LinearOpMode {
                 robot.winch_elevator_manager.MoveWinch_And_Elevator(10, 50);
                 robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
+
+
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+
+                if (gamepad1.right_trigger > 0.25)
+                {
+                    if (!isChamberPressed) {
+                        isChamberPressed = true;
+                        isScoring = !isScoring;
+                        scoringTimer.Reset();
+                    }
+                }
+                else
+                {
+                    isChamberPressed = false;
+                }
+
+                if (isScoring)
+                {
+                    if (scoringTimer.timeSinceStart < 1)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                    }
+                    else if (scoringTimer.timeSinceStart < 1.5)
+                    {
+                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
+                    }
+                    else if (scoringTimer.timeSinceStart < 2)
+                    {
+                        robot.drive_claw_manager.clawModule.OpenClaw();
+                    }
+                    else
+                    {
+                        position = Position.Pickup;
+                        isCurrentlySwitching = true;
+                        isScoring = false;
+                    }
+                }
+                
                 break;
             }
         }
