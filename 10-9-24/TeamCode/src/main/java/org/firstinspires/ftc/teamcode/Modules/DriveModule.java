@@ -1,8 +1,17 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import org.firstinspires.ftc.teamcode.core.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.ImuParameters;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.core.PIDController;
 
 public class DriveModule {
 
@@ -29,6 +38,17 @@ public class DriveModule {
         {
             return targetVector.x == x && targetVector.z == z && targetVector.rotation == rotation;
         }
+
+        public String ToString()
+        {
+            return x + ", " + z + ", " + rotation;
+        }
+    }
+
+    public enum DriveMode
+    {
+        RobotCentric,
+        FieldCentric
     }
 
     public enum PathFindingBehavior
@@ -50,8 +70,10 @@ public class DriveModule {
     private DcMotor frontRightMotor;
     private DcMotor backLeftMotor;
     private DcMotor backRightMotor;
+    private IMU imu;
 
     // Settings
+    private DriveMode driveMode = DriveMode.RobotCentric;
     private PathFindingBehavior pathFindingBehavior;
     private PathFindingMotorController pathFindingMotorController;
     private double speed = 1;
@@ -61,6 +83,11 @@ public class DriveModule {
     private boolean isMoving;
     private double targetMovementTime = 0;
     private double movementTime = 0;
+    private double orientation;
+    private double startOrientation;
+    private PIDController turningPIDController;
+    private PIDController xPIDController;
+    private PIDController zPIDController;
 
 
     private Vector3 targetPosition;
@@ -68,33 +95,45 @@ public class DriveModule {
 
     private Vector3 finialMovement;
 
+    // TESTING!!!!
 
-    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor)
+    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu, Telemetry telemetry)
     {
         this.frontLeftMotor = frontLeftMotor;
         this.frontRightMotor = frontRightMotor;
         this.backLeftMotor = backLeftMotor;
         this.backRightMotor = backRightMotor;
-
+        this.imu = imu;
 
         this.frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         this.frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         this.backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         this.backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        IMU.Parameters imuParameters = new IMU.Parameters(Constants.IMUConstants.ROBOT_ORIENTATION);
+        imu.initialize(imuParameters);
+
 
         movement = new Vector3();
         targetPosition = new Vector3();
         finialMovement = new Vector3();
+
+        turningPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
+                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD, telemetry);
     }
 
 
     public void Start()
     {
-
+        startOrientation = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
     public void Update(double deltaTime)
     {
+        if (driveMode == DriveMode.FieldCentric)
+        {
+            orientation = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - startOrientation;
+        }
+
         if (isMoving)
         {
             if (targetMovementTime > 0)
@@ -134,6 +173,21 @@ public class DriveModule {
             }
         }
 
+        if (driveMode == DriveMode.FieldCentric)
+        {
+            // System.out.println("FIELD CENTRIC");
+
+            Vector3 oldMovement = finialMovement;
+
+            // System.out.println("orientation " + orientation);
+
+            double orientationRadians = Math.toRadians(orientation);
+
+            finialMovement.x = (oldMovement.x * Math.cos(orientationRadians)) - (oldMovement.z * Math.sin(orientationRadians));
+            finialMovement.z = (oldMovement.x * Math.sin(orientationRadians)) + (oldMovement.z * Math.cos(orientationRadians));
+            finialMovement.rotation = turningPIDController.Calculate(orientation, oldMovement.rotation, deltaTime);
+
+        }
         PowerMotors(finialMovement.x, finialMovement.z, finialMovement.rotation);
     }
     public void Stop()
@@ -150,6 +204,10 @@ public class DriveModule {
     {
         this.pathFindingBehavior = pathFindingBehavior;
     }
+    public void SetDriveMode(DriveMode driveMode)
+    {
+        this.driveMode = driveMode;
+    }
     public void SetSpeed(double speed)
     {
         this.speed = speed;
@@ -162,6 +220,19 @@ public class DriveModule {
         movement.x = x;
         movement.z = z;
         movement.rotation = rotation;
+        targetMovementTime = -1;
+        isMoving = true;
+
+        if (isFollowingPath)
+        {
+            ResetPath();
+        }
+    }
+    public void Move(double x, double z, double rotationX, double rotationY)
+    {
+        movement.x = x;
+        movement.z = z;
+        movement.rotation = AngleFromVector(rotationX, rotationY);
         targetMovementTime = -1;
         isMoving = true;
 
@@ -229,5 +300,13 @@ public class DriveModule {
     }
 
 
+    private static double AngleFromVector(double x, double y)
+    {
+        double angle = 0;
+        angle = Math.acos(y / (Math.sqrt(1) * Math.sqrt((x * x) + (y * y)))) * (180 / Math.PI);
+        if (x < 0)
+            return -angle;
+        return angle;
+    }
 
 }

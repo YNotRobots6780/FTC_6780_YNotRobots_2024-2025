@@ -45,10 +45,6 @@ public class WinchModule {
 
     public void Update(double deltaTime)
     {
-        System.out.println("target: " + targetPosition);
-        System.out.println("current: " + leftWinchMotor.getCurrentPosition());
-
-
         if (shouldUpdatePosition)
         {
             leftWinchMotor.setTargetPosition((int)Math.round(targetPosition));

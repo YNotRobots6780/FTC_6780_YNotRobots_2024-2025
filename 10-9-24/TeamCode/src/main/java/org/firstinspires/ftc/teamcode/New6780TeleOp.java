@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Modules.ClawModule;
+import org.firstinspires.ftc.teamcode.Modules.DriveModule;
 import org.firstinspires.ftc.teamcode.core.Timer;
 
 @TeleOp(name="New 6780 Teleop", group="Robot")
@@ -26,8 +29,7 @@ public class New6780TeleOp extends LinearOpMode {
     private boolean isCurrentlySwitching;
 
     // Claw
-    private boolean isClawOpen;
-    private boolean isClawPressed;
+    private boolean isOutPressed;
 
     private boolean isClawPickingUp;
     private boolean isClawPickingUpPressed;
@@ -45,11 +47,12 @@ public class New6780TeleOp extends LinearOpMode {
     private boolean isScoringPressed;
     private Timer scoringTimer;
 
-
-
     @Override
     public void runOpMode() {
-        robot = new Robot(hardwareMap);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
+
+        robot = new Robot(hardwareMap, dashboardTelemetry);
 
         waitForStart();
 
@@ -140,7 +143,7 @@ public class New6780TeleOp extends LinearOpMode {
                 {
                     if (robot.winch_elevator_manager.elevatorModule.GetPosition() > 100 || robot.winch_elevator_manager.winchModule.GetDegrees() > 20)
                     {
-                        robot.winch_elevator_manager.MoveWinch_And_Elevator(15, 50);
+                        robot.winch_elevator_manager.MoveWinch_And_Elevator(10, 50);
                         break;
                     }
                     else
@@ -167,6 +170,28 @@ public class New6780TeleOp extends LinearOpMode {
                         robot.winch_elevator_manager.elevatorModule.SetPower(0);
                     }
 
+                    if (gamepad1.left_bumper)
+                    {
+                        if (!isOutPressed)
+                        {
+                            isOutPressed = true;
+                            if (robot.drive_claw_manager.clawModule.GetArmPosition() != ClawModule.ArmPosition.Out)
+                            {
+                                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                            }
+                            else
+                            {
+                                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isOutPressed = false;
+                    }
+                    telemetry.addData("", isOutPressed);
+                    telemetry.update();
+
                     if (gamepad1.x)
                     {
                         if (!isClawPickingUpPressed)
@@ -183,38 +208,65 @@ public class New6780TeleOp extends LinearOpMode {
 
                     if (isClawPickingUp)
                     {
-                        if (pickingUpTimer.timeSinceStart < 0.25)
+                        if (isOutPressed)
                         {
-                            isClawOpen = true;
-                            robot.drive_claw_manager.clawModule.OpenClaw();
-                        }
-                        if (pickingUpTimer.timeSinceStart < 1.25)
-                        {
-                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(4);
-                        }
-                        else if (pickingUpTimer.timeSinceStart < 1.5)
-                        {
-                            isClawOpen = false;
-                            robot.drive_claw_manager.clawModule.CloseClaw();
-                        }
-                        else if (pickingUpTimer.timeSinceStart > 1.5)
-                        {
-                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(15);
+                            if (pickingUpTimer.timeSinceStart < 0.1)
+                            {
+                                robot.drive_claw_manager.clawModule.OpenClaw();
+                            }
+                            else if (pickingUpTimer.timeSinceStart < 0.2)
+                            {
+                                robot.drive_claw_manager.clawModule.CloseClaw();
+                            }
+                            else if (pickingUpTimer.timeSinceStart > 0.2)
+                            {
+                                robot.winch_elevator_manager.winchModule.SetTargetDegrees(0);
 
-                            robot.winch_elevator_manager.elevatorModule.SetPosition(15);
+                                robot.winch_elevator_manager.elevatorModule.SetPosition(15);
+                            }
+                        }
+                        else
+                        {
+                            if (pickingUpTimer.timeSinceStart < 0.1)
+                            {
+                                robot.drive_claw_manager.clawModule.OpenClaw();
+                            }
+                            if (pickingUpTimer.timeSinceStart < 0.35)
+                            {
+                                robot.winch_elevator_manager.winchModule.SetTargetDegrees(4 - (robot.winch_elevator_manager.elevatorModule.GetPosition() / 500));
+                            }
+                            else if (pickingUpTimer.timeSinceStart < 0.5)
+                            {
+                                robot.drive_claw_manager.clawModule.CloseClaw();
+                            }
+                            else if (pickingUpTimer.timeSinceStart > 0.5)
+                            {
+                                robot.winch_elevator_manager.winchModule.SetTargetDegrees(10);
+
+                                robot.winch_elevator_manager.elevatorModule.SetPosition(15);
+                            }
                         }
                     }
                     else
                     {
-                        robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
-                        robot.winch_elevator_manager.winchModule.SetTargetDegrees(15);
+                        if (robot.drive_claw_manager.clawModule.GetArmPosition() == ClawModule.ArmPosition.Out)
+                        {
+                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(5);
+                            robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
+                        }
+                        else
+                        {
+                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(10);
+                            robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
+                        }
+                        robot.drive_claw_manager.clawModule.OpenClaw();
                     }
                 }
                 break;
             }
             case HighBasket:
             {
-                robot.winch_elevator_manager.MoveWinch_And_Elevator(43, 860);
+                robot.winch_elevator_manager.MoveWinch_And_Elevator(42, 860);
                 robot.winch_elevator_manager.elevatorModule.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
 
@@ -235,11 +287,11 @@ public class New6780TeleOp extends LinearOpMode {
 
                 if (isScoring)
                 {
-                    if (scoringTimer.timeSinceStart < 1)
+                    if (scoringTimer.timeSinceStart < 0.5)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
                     }
-                    else if (scoringTimer.timeSinceStart < 1.5)
+                    else if (scoringTimer.timeSinceStart < 0.75)
                     {
                         robot.drive_claw_manager.clawModule.OpenClaw();
                     }
@@ -276,11 +328,11 @@ public class New6780TeleOp extends LinearOpMode {
 
                 if (isScoring)
                 {
-                    if (scoringTimer.timeSinceStart < 1)
+                    if (scoringTimer.timeSinceStart < 0.5)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
                     }
-                    else if (scoringTimer.timeSinceStart < 1.5)
+                    else if (scoringTimer.timeSinceStart < 0.75)
                     {
                         robot.drive_claw_manager.clawModule.OpenClaw();
                     }
@@ -318,15 +370,15 @@ public class New6780TeleOp extends LinearOpMode {
 
                 if (isScoring)
                 {
-                    if (scoringTimer.timeSinceStart < 1)
+                    if (scoringTimer.timeSinceStart < 0.5)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
                     }
-                    else if (scoringTimer.timeSinceStart < 1.5)
+                    else if (scoringTimer.timeSinceStart < 0.8)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
                     }
-                    else if (scoringTimer.timeSinceStart < 2)
+                    else if (scoringTimer.timeSinceStart < 1)
                     {
                         robot.drive_claw_manager.clawModule.OpenClaw();
                     }
@@ -365,15 +417,15 @@ public class New6780TeleOp extends LinearOpMode {
 
                 if (isScoring)
                 {
-                    if (scoringTimer.timeSinceStart < 1)
+                    if (scoringTimer.timeSinceStart < 0.5)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
                     }
-                    else if (scoringTimer.timeSinceStart < 1.5)
+                    else if (scoringTimer.timeSinceStart < 0.8)
                     {
                         robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Down);
                     }
-                    else if (scoringTimer.timeSinceStart < 2)
+                    else if (scoringTimer.timeSinceStart < 1)
                     {
                         robot.drive_claw_manager.clawModule.OpenClaw();
                     }

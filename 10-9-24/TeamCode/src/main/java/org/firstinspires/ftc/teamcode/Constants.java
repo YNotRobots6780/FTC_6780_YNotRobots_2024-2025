@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
+@Config
 public class Constants
 {
     public enum Team
@@ -70,9 +74,12 @@ public class Constants
         public final static String RIGHT_ODOMETER_NAME = "front_right"; // 3
         public final static String BACK_ODOMETER_NAME = "back_left"; // EX: 1
 
+        public final static String IMU_NAME = "imu";
+
     }
 
-    public static class DriveConstants
+    @Config
+    public static class PathfindingModule
     {
         public final static float DEAD_WHEEL_DIAMETER = 48; // All units are in mm
         public final static float ODOMETER_TICKS_PER_ROTATION = 2000;
@@ -80,19 +87,34 @@ public class Constants
         public final static float Z_DISTANCE_FROM_CENTER = 168; // All units are in mm
 
 
-        public final static float WHEEL_DIAMETER = 104; // All units are in mm
-
-
-        public final static float PATH_FINDING_CLOSE_ENOUGH_ZONE = 25.4f; // All units are in mm
-
         // ======================================================== DO NOT EDIT ========================================================
 
         public final static double ODOMETER_REVOLUTIONS_PER_TICK = (1 / ODOMETER_TICKS_PER_ROTATION);
         public final static double DEAD_WHEEL_CIRCUMFERENCE = DEAD_WHEEL_DIAMETER * Math.PI;
         public final static double ODOMETER_DISTANCE_PER_TICK = (ODOMETER_REVOLUTIONS_PER_TICK * DEAD_WHEEL_CIRCUMFERENCE); // All units are in mm
-
     }
 
+    @Config
+    public static class DriveConstants
+    {
+        public final static double TURNING_KP = 0.01;
+        public final static double TURNING_MAX_ERROR = 60;
+        public final static double TURNING_KI = 0.01;
+        public final static double TURNING_KI_ACTIVE_ZONE = 10;
+        public final static double TURNING_KD = 0.01;
+        public final static double TURNING_DEAD_ZONE = 2.5;
+    }
+
+    @Config
+    public static class IMUConstants
+    {
+        private static final RevHubOrientationOnRobot.LogoFacingDirection LOGO_DIRECTION = RevHubOrientationOnRobot.LogoFacingDirection.DOWN;
+        private static final RevHubOrientationOnRobot.UsbFacingDirection USB_DIRECTION = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+
+        public static final RevHubOrientationOnRobot ROBOT_ORIENTATION = new RevHubOrientationOnRobot(LOGO_DIRECTION, USB_DIRECTION);
+    }
+
+    @Config
     public static class ClawConstants
     {
         public final static double WRIST_SERVO_ROTATION_AMOUNT = 300;
@@ -108,9 +130,9 @@ public class Constants
         public final static double ARM_STRAIGHT_UP_POSITION_DEGREES = 0;
         public final static double ARM_STRAIGHT_OUT_POSITION_DEGREES = 90;
         public final static double ARM_STRAIGHT_DOWN_POSITION_DEGREES = 180;
-        public final static double ARM_HALF_DOWN_POSITION_DEGREES = 135;
     }
 
+    @Config
     public static class ElevatorConstants
     {
         public final static double ENCODER_TICKS_PER_ROTATION = 384.5;
@@ -126,6 +148,7 @@ public class Constants
 
     }
 
+    @Config
     public static class WinchConstants
     {
         public final static double WINCH_OFFSET = -3.5;

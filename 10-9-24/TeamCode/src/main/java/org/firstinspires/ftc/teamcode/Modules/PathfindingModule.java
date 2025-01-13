@@ -98,15 +98,15 @@ public class PathfindingModule implements Runnable {
 
 
 
-            double leftDelta = (rightEncoderValue - lastLeftTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
-            double rightDelta = (leftEncoderValue - lastRightTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
-            double backDelta = (backEncoderValue - lastBackTick) * Constants.DriveConstants.ODOMETER_DISTANCE_PER_TICK;
+            double leftDelta = (rightEncoderValue - lastLeftTick) * Constants.PathfindingModule.ODOMETER_DISTANCE_PER_TICK;
+            double rightDelta = (leftEncoderValue - lastRightTick) * Constants.PathfindingModule.ODOMETER_DISTANCE_PER_TICK;
+            double backDelta = (backEncoderValue - lastBackTick) * Constants.PathfindingModule.ODOMETER_DISTANCE_PER_TICK;
 
             lastLeftTick = rightEncoderValue;
             lastRightTick = leftEncoderValue;
             lastBackTick = backEncoderValue;
 
-            double rotationDelta = ((leftDelta - rightDelta) / (Constants.DriveConstants.X_DISTANCE_FROM_CENTER * 2));
+            double rotationDelta = ((leftDelta - rightDelta) / (Constants.PathfindingModule.X_DISTANCE_FROM_CENTER * 2));
 
             if (rotationDelta == 0)
             {
@@ -117,7 +117,7 @@ public class PathfindingModule implements Runnable {
             {
                 // B - B  * roation
                 //      x
-                xDelta = backDelta - (Constants.DriveConstants.Z_DISTANCE_FROM_CENTER * rotationDelta);
+                xDelta = backDelta - (Constants.PathfindingModule.Z_DISTANCE_FROM_CENTER * rotationDelta);
                 zDelta = (rightDelta + leftDelta) / 2;
             }
 

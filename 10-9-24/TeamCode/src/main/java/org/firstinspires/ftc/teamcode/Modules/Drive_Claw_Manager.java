@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.Modules;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.core.ColorSensorEx;
 import org.firstinspires.ftc.teamcode.core.Timer;
@@ -20,7 +22,7 @@ public class Drive_Claw_Manager implements Runnable
     private Timer timer;
 
 
-    public Drive_Claw_Manager(HardwareMap hardwareMap)
+    public Drive_Claw_Manager(HardwareMap hardwareMap, Telemetry telemetry)
     {
         clawModule = new ClawModule(
                 hardwareMap.get(Servo.class, Constants.HardwareConstants.CLAW_SERVO_NAME),
@@ -33,7 +35,8 @@ public class Drive_Claw_Manager implements Runnable
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.FRONT_LEFT_DRIVE_MOTOR_NAME),
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.FRONT_RIGHT_DRIVE_MOTOR_NAME),
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.BACK_LEFT_DRIVE_MOTOR_NAME),
-                hardwareMap.get(DcMotor.class, Constants.HardwareConstants.BACK_RIGHT_DRIVE_MOTOR_NAME));
+                hardwareMap.get(DcMotor.class, Constants.HardwareConstants.BACK_RIGHT_DRIVE_MOTOR_NAME),
+                hardwareMap.get(IMU.class, Constants.HardwareConstants.IMU_NAME), telemetry);
 
 
         timer = new Timer();

@@ -50,20 +50,21 @@ public class Winch_Elevator_Manager implements Runnable
             winchModule.Update(timer.deltaTime);
             elevatorModule.Update(timer.deltaTime);
 
-            if (!isFirstFrameContollingMovement)
-            {
-                if (winchModule.GetTargetDegrees() != winchDegrees || elevatorModule.GetTargetPosition() != elevatorPosition)
-                {
-                    isControllingMovement = false;
-                }
-            }
             if (isControllingMovement)
             {
+                if (!isFirstFrameContollingMovement)
+                {
+                    if (winchModule.GetTargetDegrees() != winchDegrees || elevatorModule.GetTargetPosition() != elevatorPosition)
+                    {
+                        isControllingMovement = false;
+                    }
+                }
+
                 if (elevatorModule.GetPosition() < 100)
                 {
                     winchModule.SetTargetDegrees(winchDegrees);
                 }
-                else if (winchModule.GetTargetDegrees() - winchModule.GetDegrees() < 5)
+                else if (Math.abs(winchDegrees - winchModule.GetDegrees()) < 5)
                 {
                     winchModule.SetTargetDegrees(winchDegrees);
                 }
@@ -73,7 +74,7 @@ public class Winch_Elevator_Manager implements Runnable
                     winchModule.SetTargetDegrees(winchModule.GetDegrees());
                 }
 
-                if (winchModule.GetTargetDegrees() - winchModule.GetDegrees() < 5)
+                if (Math.abs(winchDegrees - winchModule.GetDegrees()) < 5)
                 {
                     elevatorModule.SetPosition(elevatorPosition);
                 }

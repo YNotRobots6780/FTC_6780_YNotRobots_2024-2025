@@ -11,7 +11,6 @@ public class ClawModule
     {
         Up,
         Out,
-        HalfDown,
         Down,
     }
 
@@ -76,9 +75,6 @@ public class ClawModule
                 case Out:
                     position = Constants.ClawConstants.ARM_STRAIGHT_OUT_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
                     break;
-                case HalfDown:
-                    position = Constants.ClawConstants.ARM_HALF_DOWN_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
-                    break;
                 case Down:
                     position = Constants.ClawConstants.ARM_STRAIGHT_DOWN_POSITION_DEGREES / Constants.ClawConstants.ARM_SERVO_ROTATION_AMOUNT;
                     break;
@@ -130,6 +126,11 @@ public class ClawModule
     {
         this.targetArmPosition = armPosition;
         isMovingArm = true;
+    }
+
+    public ArmPosition GetArmPosition()
+    {
+        return targetArmPosition;
     }
 
 }

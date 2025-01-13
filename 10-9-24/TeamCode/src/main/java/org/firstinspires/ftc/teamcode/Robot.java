@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Modules.Drive_Claw_Manager;
 import org.firstinspires.ftc.teamcode.Modules.PathfindingModule;
 import org.firstinspires.ftc.teamcode.Modules.Winch_Elevator_Manager;
@@ -40,7 +42,30 @@ public class Robot
 
 
 
-        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, FtcDashboard.getInstance().getTelemetry());
+
+        drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
+
+
+
+        winch_elevator_manager = new Winch_Elevator_Manager(hardwareMap);
+
+        winch_elevator_thread = new Thread(winch_elevator_manager, "Winch & Elevator Thread");
+    }
+    public Robot(HardwareMap hardwareMap, Telemetry telemetry)
+    {
+        System.out.println("Hello, World!");
+
+        pathfindingModule = new PathfindingModule(
+                new Encoder(hardwareMap.get(DcMotor.class, "front_left")),
+                new Encoder(hardwareMap.get(DcMotor.class, "front_right")),
+                new Encoder(hardwareMap.get(DcMotor.class, "back_left")));
+
+        pathfindingThread = new Thread(pathfindingModule, "pathfinding Thread");
+
+
+
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, telemetry);
 
         drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
 
@@ -71,5 +96,17 @@ public class Robot
         pathfindingModule.Stop();
         drive_claw_manager.Stop();
         winch_elevator_manager.Stop();
+    }
+
+
+
+    public void ScoreSample()
+    {
+
+    }
+
+    public void ScoreSpecimen()
+    {
+
     }
 }
