@@ -248,7 +248,7 @@ public class New6780TeleOp extends LinearOpMode {
                     {
                         if (robot.drive_claw_manager.clawModule.GetArmPosition() == ClawModule.ArmPosition.Out)
                         {
-                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(5);
+                            robot.winch_elevator_manager.winchModule.SetTargetDegrees(7);
                             robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
                         }
                         else

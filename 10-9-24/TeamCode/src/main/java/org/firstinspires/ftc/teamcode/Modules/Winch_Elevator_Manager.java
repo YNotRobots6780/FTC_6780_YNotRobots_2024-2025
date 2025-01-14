@@ -71,7 +71,14 @@ public class Winch_Elevator_Manager implements Runnable
                 else
                 {
                     elevatorModule.SetPosition(50);
-                    winchModule.SetTargetDegrees(winchModule.GetDegrees());
+                    if (winchModule.GetDegrees() > 40)
+                    {
+                        winchModule.SetTargetDegrees(37);
+                    }
+                    else
+                    {
+                        winchModule.SetTargetDegrees(winchModule.GetDegrees());
+                    }
                 }
 
                 if (Math.abs(winchDegrees - winchModule.GetDegrees()) < 5)
