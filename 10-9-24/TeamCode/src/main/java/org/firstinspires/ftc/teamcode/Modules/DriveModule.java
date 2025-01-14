@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -97,7 +96,7 @@ public class DriveModule {
 
     // TESTING!!!!
 
-    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu, Telemetry telemetry)
+    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu)
     {
         this.frontLeftMotor = frontLeftMotor;
         this.frontRightMotor = frontRightMotor;
@@ -119,7 +118,7 @@ public class DriveModule {
         finialMovement = new Vector3();
 
         turningPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
-                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD, telemetry);
+                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
     }
 
 

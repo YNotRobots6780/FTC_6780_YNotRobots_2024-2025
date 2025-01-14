@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.Config;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-@Config
 public class Constants
 {
     public enum Team
@@ -78,7 +77,6 @@ public class Constants
 
     }
 
-    @Config
     public static class PathfindingModule
     {
         public final static float DEAD_WHEEL_DIAMETER = 48; // All units are in mm
@@ -94,7 +92,6 @@ public class Constants
         public final static double ODOMETER_DISTANCE_PER_TICK = (ODOMETER_REVOLUTIONS_PER_TICK * DEAD_WHEEL_CIRCUMFERENCE); // All units are in mm
     }
 
-    @Config
     public static class DriveConstants
     {
         public final static double TURNING_KP = 0.01;
@@ -105,7 +102,6 @@ public class Constants
         public final static double TURNING_DEAD_ZONE = 2.5;
     }
 
-    @Config
     public static class IMUConstants
     {
         private static final RevHubOrientationOnRobot.LogoFacingDirection LOGO_DIRECTION = RevHubOrientationOnRobot.LogoFacingDirection.DOWN;
@@ -114,7 +110,6 @@ public class Constants
         public static final RevHubOrientationOnRobot ROBOT_ORIENTATION = new RevHubOrientationOnRobot(LOGO_DIRECTION, USB_DIRECTION);
     }
 
-    @Config
     public static class ClawConstants
     {
         public final static double WRIST_SERVO_ROTATION_AMOUNT = 300;
@@ -128,11 +123,10 @@ public class Constants
         public final static double WRIST_DEFAULT_POSITION_DEGREES = 135;
 
         public final static double ARM_STRAIGHT_UP_POSITION_DEGREES = 0;
-        public final static double ARM_STRAIGHT_OUT_POSITION_DEGREES = 90;
-        public final static double ARM_STRAIGHT_DOWN_POSITION_DEGREES = 180;
+        public final static double ARM_STRAIGHT_OUT_POSITION_DEGREES = 115;
+        public final static double ARM_STRAIGHT_DOWN_POSITION_DEGREES = 215;
     }
 
-    @Config
     public static class ElevatorConstants
     {
         public final static double ENCODER_TICKS_PER_ROTATION = 384.5;
@@ -148,7 +142,6 @@ public class Constants
 
     }
 
-    @Config
     public static class WinchConstants
     {
         public final static double WINCH_OFFSET = -3.5;

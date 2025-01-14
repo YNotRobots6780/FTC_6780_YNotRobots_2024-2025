@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,10 +48,8 @@ public class New6780TeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
-        robot = new Robot(hardwareMap, dashboardTelemetry);
+        robot = new Robot(hardwareMap);
 
         waitForStart();
 
@@ -353,7 +350,7 @@ public class New6780TeleOp extends LinearOpMode {
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
 
 
-                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
 
                 if (gamepad1.right_trigger > 0.25)
                 {
@@ -400,7 +397,7 @@ public class New6780TeleOp extends LinearOpMode {
                 robot.winch_elevator_manager.elevatorModule.SetPower(1);
 
 
-                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Up);
+                robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
 
                 if (gamepad1.right_trigger > 0.25)
                 {

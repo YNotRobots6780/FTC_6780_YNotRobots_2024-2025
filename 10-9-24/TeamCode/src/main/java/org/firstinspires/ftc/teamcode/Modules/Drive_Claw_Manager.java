@@ -22,7 +22,7 @@ public class Drive_Claw_Manager implements Runnable
     private Timer timer;
 
 
-    public Drive_Claw_Manager(HardwareMap hardwareMap, Telemetry telemetry)
+    public Drive_Claw_Manager(HardwareMap hardwareMap)
     {
         clawModule = new ClawModule(
                 hardwareMap.get(Servo.class, Constants.HardwareConstants.CLAW_SERVO_NAME),
@@ -36,7 +36,7 @@ public class Drive_Claw_Manager implements Runnable
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.FRONT_RIGHT_DRIVE_MOTOR_NAME),
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.BACK_LEFT_DRIVE_MOTOR_NAME),
                 hardwareMap.get(DcMotor.class, Constants.HardwareConstants.BACK_RIGHT_DRIVE_MOTOR_NAME),
-                hardwareMap.get(IMU.class, Constants.HardwareConstants.IMU_NAME), telemetry);
+                hardwareMap.get(IMU.class, Constants.HardwareConstants.IMU_NAME));
 
 
         timer = new Timer();

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -42,7 +41,7 @@ public class Robot
 
 
 
-        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, FtcDashboard.getInstance().getTelemetry());
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
 
         drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
 
@@ -65,7 +64,7 @@ public class Robot
 
 
 
-        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, telemetry);
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
 
         drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
 

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.core;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -16,7 +15,6 @@ public class PIDController {
     private double kD;
     private double lastError;
 
-    Telemetry dashboardTelemetry;
 
     public PIDController(double kP, double kI, double kD)
     {
@@ -38,9 +36,8 @@ public class PIDController {
         errorSum = 0;
         kIActiveZone = -1;
     }
-    public PIDController(double kP, double maxError, double kI, double kIActiveZone, double kD, Telemetry telemetry)
+    public PIDController(double kP, double maxError, double kI, double kIActiveZone, double kD)
     {
-        dashboardTelemetry = telemetry;
         this.kP = kP;
         this.maxError = maxError;
         this.kI = kI;
@@ -90,13 +87,6 @@ public class PIDController {
             errorRate = (error - lastError) / deltaTime;
             lastError = errorRate;
         }
-
-
-        dashboardTelemetry.addData("target position", targetPosition);
-        dashboardTelemetry.addData("current position", currentPosition);
-        dashboardTelemetry.addData("kP", kP * error);
-        dashboardTelemetry.addData("kI", kI * errorSum);
-        dashboardTelemetry.addData("kd", kD * errorRate);
 
         return (kP * error) + (kI * errorSum) + (kD * errorRate);
     }
