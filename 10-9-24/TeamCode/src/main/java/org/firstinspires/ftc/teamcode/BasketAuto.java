@@ -23,6 +23,8 @@ public class BasketAuto extends LinearOpMode {
         waitForStart();
 
         robot.Start();
+        robot.drive_claw_manager.driveModule.SetPathFindingBehavior(DriveModule.PathFindingBehavior.ThreeWheelOdometerPods);
+        robot.drive_claw_manager.driveModule.SetPathFindingMotorController(DriveModule.PathFindingMotorController.PID);
 
         while (opModeIsActive())
         {

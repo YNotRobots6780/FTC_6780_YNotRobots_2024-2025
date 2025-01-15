@@ -122,11 +122,11 @@ public class DriveModule {
         turningPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
                 Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
 
-        xPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
-                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
+        xPIDController = new PIDController(Constants.DriveConstants.X_KP, Constants.DriveConstants.X_MAX_ERROR,
+                Constants.DriveConstants.X_KI, Constants.DriveConstants.X_KI_ACTIVE_ZONE, Constants.DriveConstants.X_KD);
 
-        zPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
-                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
+        zPIDController = new PIDController(Constants.DriveConstants.Z_KP, Constants.DriveConstants.Z_MAX_ERROR,
+                Constants.DriveConstants.Z_KI, Constants.DriveConstants.Z_KI_ACTIVE_ZONE, Constants.DriveConstants.Z_KD);
     }
 
 
@@ -175,7 +175,6 @@ public class DriveModule {
                     finialMovement.x = xPIDController.Calculate(pathfindingModule.x, targetPosition.x, deltaTime);
                     finialMovement.z = xPIDController.Calculate(pathfindingModule.z, targetPosition.z, deltaTime);
                     finialMovement.rotation = xPIDController.Calculate(pathfindingModule.rotation, targetPosition.rotation, deltaTime);
-                    System.out.println("PID Has Not been Implemented, Please use one of the other Options");
                     break;
                 case LinearInterpretation:
                     System.out.println("LinearInterpretation Has Not been Implemented, Please use one of the other Options");
@@ -185,11 +184,7 @@ public class DriveModule {
 
         if (driveMode == DriveMode.FieldCentric)
         {
-            // System.out.println("FIELD CENTRIC");
-
             Vector3 oldMovement = finialMovement;
-
-            // System.out.println("orientation " + orientation);
 
             double orientationRadians = Math.toRadians(orientation);
 
