@@ -41,7 +41,7 @@ public class Robot
 
 
 
-        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, pathfindingModule);
 
         drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
 
@@ -64,7 +64,7 @@ public class Robot
 
 
 
-        drive_claw_manager = new Drive_Claw_Manager(hardwareMap);
+        drive_claw_manager = new Drive_Claw_Manager(hardwareMap, pathfindingModule);
 
         drive_claw_thread = new Thread(drive_claw_manager, "Drive & Claw Thread");
 

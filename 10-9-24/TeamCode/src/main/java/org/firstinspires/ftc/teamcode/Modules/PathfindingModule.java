@@ -29,9 +29,9 @@ public class PathfindingModule implements Runnable {
     private int lastBackTick;
 
 
-    private double x;
-    private double z;
-    private double rotation;
+    public double x;
+    public double z;
+    public double rotation;
     private double rotationInRadians;
 
 

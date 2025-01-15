@@ -76,6 +76,7 @@ public class DriveModule {
     private PathFindingBehavior pathFindingBehavior;
     private PathFindingMotorController pathFindingMotorController;
     private double speed = 1;
+    private PathfindingModule pathfindingModule;
 
     // Movement
     private Vector3 movement;
@@ -96,13 +97,14 @@ public class DriveModule {
 
     // TESTING!!!!
 
-    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu)
+    public DriveModule(DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, IMU imu, PathfindingModule pathfindingModule)
     {
         this.frontLeftMotor = frontLeftMotor;
         this.frontRightMotor = frontRightMotor;
         this.backLeftMotor = backLeftMotor;
         this.backRightMotor = backRightMotor;
         this.imu = imu;
+        this.pathfindingModule = pathfindingModule;
 
         this.frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         this.frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -118,6 +120,12 @@ public class DriveModule {
         finialMovement = new Vector3();
 
         turningPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
+                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
+
+        xPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
+                Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
+
+        zPIDController = new PIDController(Constants.DriveConstants.TURNING_KP, Constants.DriveConstants.TURNING_MAX_ERROR,
                 Constants.DriveConstants.TURNING_KI, Constants.DriveConstants.TURNING_KI_ACTIVE_ZONE, Constants.DriveConstants.TURNING_KD);
     }
 
@@ -164,6 +172,9 @@ public class DriveModule {
                     // if ()
                     break;
                 case PID:
+                    finialMovement.x = xPIDController.Calculate(pathfindingModule.x, targetPosition.x, deltaTime);
+                    finialMovement.z = xPIDController.Calculate(pathfindingModule.z, targetPosition.z, deltaTime);
+                    finialMovement.rotation = xPIDController.Calculate(pathfindingModule.rotation, targetPosition.rotation, deltaTime);
                     System.out.println("PID Has Not been Implemented, Please use one of the other Options");
                     break;
                 case LinearInterpretation:

@@ -100,6 +100,20 @@ public class Constants
         public final static double TURNING_KI_ACTIVE_ZONE = 10;
         public final static double TURNING_KD = 0.01;
         public final static double TURNING_DEAD_ZONE = 2.5;
+
+        public final static double X_KP = 0.01;
+        public final static double X_MAX_ERROR = 610;
+        public final static double X_KI = 0.01;
+        public final static double X_KI_ACTIVE_ZONE = 10;
+        public final static double X_KD = 0.01;
+        public final static double X_DEAD_ZONE = 2.5;
+
+        public final static double Z_KP = 0.01;
+        public final static double Z_MAX_ERROR = 60;
+        public final static double Z_KI = 0.01;
+        public final static double Z_KI_ACTIVE_ZONE = 10;
+        public final static double Z_KD = 0.01;
+        public final static double Z_DEAD_ZONE = 2.5;
     }
 
     public static class IMUConstants
@@ -139,6 +153,9 @@ public class Constants
         public final static double MAX_EXTENSION = 976;
         public final static double MIN_EXTENSION = 80;
         public final static double EXTENSION_OFFSET = 80;
+
+        public final static double MAX_HORIZONTAL_EXTENSION = 450;
+        public final static double MAX_HORIZONTAL_EXTENSION_WITH_CLAW = 300;
 
     }
 
