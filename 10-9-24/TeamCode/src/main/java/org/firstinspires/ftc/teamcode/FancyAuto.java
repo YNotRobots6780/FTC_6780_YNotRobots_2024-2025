@@ -144,7 +144,13 @@ public class FancyAuto extends LinearOpMode
 
         telemetry.addData(">", "Ready to Run");
         waitForStart();
+       GetFromHardwareMap();
+        Configure();
+        while(opModeIsActive())
+        {
+            pathFindeing();
 
+        }
 
     }
 
@@ -154,14 +160,11 @@ public class FancyAuto extends LinearOpMode
         int F_B = frontRight + frontLeft / 2;
         int L_R = back;
 
+        targetPoshion_F_B = 1000;
+        targetPoshion_L_R = 1000;
+
         telemetry.addData(">", F_B);
         telemetry.addData(">", L_R);
-
-
-
-
-
-
 
           if (F_B == targetPoshion_F_B)
     {
@@ -225,7 +228,7 @@ public class FancyAuto extends LinearOpMode
 
 
 
-
+/*
     public void rotate (String deirection)
     {
 
@@ -316,7 +319,7 @@ public class FancyAuto extends LinearOpMode
 
     }
 
-
+*/
 
 
     private void GetFromHardwareMap()
@@ -375,7 +378,14 @@ public class FancyAuto extends LinearOpMode
         winchMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         winchMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 }

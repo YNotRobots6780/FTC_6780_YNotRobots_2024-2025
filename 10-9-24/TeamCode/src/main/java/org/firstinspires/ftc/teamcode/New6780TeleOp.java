@@ -4,10 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Modules.ClawModule;
-import org.firstinspires.ftc.teamcode.Modules.DriveModule;
-import org.firstinspires.ftc.teamcode.Modules.WinchModule;
 import org.firstinspires.ftc.teamcode.core.Timer;
 
 @TeleOp(name="New 6780 Teleop", group="Robot")
@@ -30,7 +27,7 @@ public class New6780TeleOp extends LinearOpMode {
 
     // Claw
     private boolean isOutPressed;
-    private boolean isOut;
+    private boolean isClawOut;
     private boolean canMoveArm;
 
     private boolean isClawPickingUp;
@@ -73,6 +70,8 @@ public class New6780TeleOp extends LinearOpMode {
             scoringTimer.Update();
 
             NormalDrive();
+
+            telemetry.addData("Winch Position: ", robot.winch_elevator_manager.elevatorModule.GetPosition());
         }
 
         robot.Stop();
@@ -173,7 +172,7 @@ public class New6780TeleOp extends LinearOpMode {
                     if (gamepad1.right_trigger > 0.25)
                     {
                         boolean canMove;
-                        if (isOut)
+                        if (isClawOut)
                         {
                             canMove = (robot.winch_elevator_manager.elevatorModule.GetPosition() <
                                     Constants.ElevatorConstants.MAX_HORIZONTAL_EXTENSION_WITH_CLAW - 10);
@@ -207,8 +206,8 @@ public class New6780TeleOp extends LinearOpMode {
                         if (!isOutPressed)
                         {
                             isOutPressed = true;
-                            isOut = !isOut;
-                            if (isOut)
+                            isClawOut = !isClawOut;
+                            if (isClawOut)
                             {
                                 if (robot.winch_elevator_manager.elevatorModule.GetPosition() <
                                         Constants.ElevatorConstants.MAX_HORIZONTAL_EXTENSION_WITH_CLAW - 10)
@@ -227,7 +226,7 @@ public class New6780TeleOp extends LinearOpMode {
                         isOutPressed = false;
                     }
 
-                    if (isOut && robot.drive_claw_manager.clawModule.GetArmPosition() != ClawModule.ArmPosition.Out)
+                    if (isClawOut && robot.drive_claw_manager.clawModule.GetArmPosition() != ClawModule.ArmPosition.Out)
                     {
                         if (robot.winch_elevator_manager.elevatorModule.GetPosition() <
                                 Constants.ElevatorConstants.MAX_HORIZONTAL_EXTENSION_WITH_CLAW - 10)
@@ -259,7 +258,7 @@ public class New6780TeleOp extends LinearOpMode {
 
                     if (isClawPickingUp)
                     {
-                        if (isOut)
+                        if (isClawOut)
                         {
                             if (pickingUpTimer.timeSinceStart < 0.1)
                             {
@@ -300,7 +299,7 @@ public class New6780TeleOp extends LinearOpMode {
                     }
                     else
                     {
-                        if (isOut)
+                        if (isClawOut)
                         {
                             robot.winch_elevator_manager.winchModule.SetTargetDegrees(7);
                             robot.drive_claw_manager.clawModule.SetArmPosition(ClawModule.ArmPosition.Out);
